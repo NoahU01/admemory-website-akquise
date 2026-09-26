@@ -1,0 +1,16 @@
+{
+  "name": "admemory-leads",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Website-Bewerter: scannt eine Unternehmensseite, bewertet sie in sieben Kategorien und liefert zitierfähige Befunde.",
+  "scripts": { "scan": "node scan.mjs" },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
+    "chrome-launcher": "^1.1.2",
+    "dotenv": "^16.4.5",
+    "lighthouse": "^12.2.1",
+    "puppeteer-core": "^23.0.0",
+    "zod": "^3.23.8"
+  }
+}
