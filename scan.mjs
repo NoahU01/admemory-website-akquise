@@ -16,6 +16,7 @@ import { checkImpression } from './lib/checks/impression.mjs';
 import { erkenneBranche, profilVon } from './lib/branchen.mjs';
 import { total, lead, allFindings, grade, leadGrade } from './lib/score.mjs';
 import { printReport } from './lib/report.mjs';
+import { speichereScan, dbAktiv } from './lib/db.mjs';
 
 const args = process.argv.slice(2);
 let urls = args.filter((a) => !a.startsWith('--'));
@@ -69,6 +70,17 @@ for (const raw of urls) {
   }
   fs.writeFileSync(path.join(outDir, 'scan.json'), JSON.stringify(result, null, 2));
   if (!result.error) printReport(result);
+
+  // In die Datenbank schreiben, sofern konfiguriert. Ein Fehler hier darf den
+  // Scan nicht entwerten — die Ergebnisse liegen ohnehin als JSON vor.
+  if (!result.error && dbAktiv()) {
+    try {
+      const u = await speichereScan(result);
+      console.log(`  → in Supabase gespeichert: ${u.name} (Status ${u.status})\n`);
+    } catch (e) {
+      console.log(`  → Supabase: ${e.message}\n`);
+    }
+  }
   summary.push({ host, total: result.total, grade: result.grade, leadScore: result.leadScore ?? null,
                  findings: result.findings.length, high: result.findings.filter((f) => f.severity === 'high').length });
 }

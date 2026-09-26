@@ -90,9 +90,45 @@ ganz oben gelandet.
 sonst antwortet die API mit 400. `PSI_API_KEY` ist optional, Lighthouse läuft
 lokal; PageSpeed dient nur als Fallback.
 
+## Datenbank (Supabase)
+
+Schema einspielen: Dashboard → **SQL Editor** → New query → Inhalt von
+`supabase/schema.sql` einfügen → **Run**. Das Skript ist wiederholbar.
+
+Eine Tabelle `unternehmen` plus die View `arbeitsliste`, die nach Dringlichkeit
+sortiert: oben steht, was auf dich wartet (`entwurf_gebaut`), darunter
+Antworten, dann Freigegebenes.
+
+**Der Ablauf über den Status:**
+
+```
+neu → gescannt → entwurf_gebaut ⇄ feedback_gegeben → freigegeben
+    → versendet → geantwortet → kunde | abgelehnt
+```
+
+Du filterst auf `entwurf_gebaut`, siehst dir den Entwurf an, notierst
+Korrekturen. Der Agent sucht `feedback_gegeben`, liest die neueste Runde, baut um
+und setzt zurück auf `entwurf_gebaut`. Feedback ist eine **Historie** — nach drei
+Runden siehst du (und der Agent) noch, was in Runde eins gesagt wurde.
+
+Im Terminal:
+
+```bash
+node liste.mjs                              # alles, nach Dringlichkeit
+node liste.mjs entwurf_gebaut               # nur was auf dich wartet
+node liste.mjs --feedback <id> "Hero zu dunkel, Karte fehlt"
+node liste.mjs --status <id> freigegeben
+```
+
+`node scan.mjs <url>` schreibt automatisch in die Datenbank, sobald
+`SUPABASE_URL` und `SUPABASE_SERVICE_KEY` in der `.env` stehen. Ohne sie läuft
+alles wie bisher in `results/`.
+
+**Zugriff:** RLS ist aktiv, es gibt keine Policies — an die Daten kommt nur der
+`service_role`-Key. Der gehört auf deinen Rechner, nie in eine Website.
+
 ## Was noch fehlt
 
 - **Unterseiten mitscannen** — bei Gastronomie ist die Karte oft wichtiger als die Startseite
 - **Pitch-Potenzial** aus Google-Bewertungen (Places API, Phase 2)
-- **Datenbank** statt JSON-Dateien (Supabase)
 - Preisformel aus Umfang, Befunden und Branche
