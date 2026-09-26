@@ -64,6 +64,20 @@ Fünf Seiten, Gastronomie Crailsheim plus der Acanto-Entwurf:
 Ohne die Design-Bewertung lagen alle zwischen 71 und 88 — die Regelchecks messen
 Korrektheit, nicht Gestaltung. Erst mit ihr trennt sich das Feld.
 
+## Branchenprofile
+
+Die Bewertungsdimensionen und Gewichte sind für alle Branchen gleich — nur wonach
+gesucht wird, unterscheidet sich. Sechs Profile: Gastronomie, Handwerk & Bau,
+Praxis & Gesundheit, Kanzlei & Beratung, Einzelhandel, Dienstleistung (Standard).
+
+Erkannt wird die Branche aus schema.org-Daten (verlässlich) oder per
+Stichwortzählung über Titel, Beschreibung und Text. Überschreiben mit
+`--branche=handwerk`.
+
+Ohne Profile verlor ein Handwerksbetrieb 14 Punkte für eine fehlende Speisekarte
+und bekam den Befund „Keine Speisekarte auffindbar" — und wäre als heißer Lead
+ganz oben gelandet.
+
 ## Entwürfe
 
 `localhost`, `*.vercel.app`, `*.netlify.app` gelten als Entwurf: fehlendes HTTPS,

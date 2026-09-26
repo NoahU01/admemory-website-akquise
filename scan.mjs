@@ -13,11 +13,14 @@ import { checkFreshness } from './lib/checks/freshness.mjs';
 import { checkSeo } from './lib/checks/seo.mjs';
 import { checkLegal } from './lib/checks/legal.mjs';
 import { checkImpression } from './lib/checks/impression.mjs';
+import { erkenneBranche, profilVon } from './lib/branchen.mjs';
 import { total, lead, allFindings, grade, leadGrade } from './lib/score.mjs';
 import { printReport } from './lib/report.mjs';
 
 const args = process.argv.slice(2);
 let urls = args.filter((a) => !a.startsWith('--'));
+const brancheArg = args.find((a) => a.startsWith('--branche='));
+const brancheHinweis = brancheArg ? brancheArg.split('=')[1] : null;
 const listIdx = args.indexOf('--list');
 if (listIdx > -1) urls = fs.readFileSync(args[listIdx + 1], 'utf8').split('\n').map((s) => s.trim()).filter((s) => s && !s.startsWith('#'));
 if (!urls.length) { console.error('Aufruf: node scan.mjs <url> …  oder  node scan.mjs --list urls.txt'); process.exit(1); }
@@ -36,7 +39,9 @@ for (const raw of urls) {
   let result;
   try {
     const data = await collect(url, outDir);
-    process.stdout.write(`ok (${data.desktop.status}, ${(data.desktop.loadMs / 1000).toFixed(1)} s)\n  prüfe … `);
+    // Branche zuerst — sie bestimmt, wonach der Inhalts-Check sucht
+    data.branche = erkenneBranche(data.desktop.dom, data.rawHtml, brancheHinweis);
+    process.stdout.write(`ok (${data.desktop.status}, ${(data.desktop.loadMs / 1000).toFixed(1)} s)\n  Branche: ${profilVon(data.branche.key).label} (${data.branche.quelle})\n  prüfe … `);
     const categories = {
       mobile:    checkMobile(data),
       content:   checkContent(data),
@@ -54,7 +59,7 @@ for (const raw of urls) {
     result = {
       url, finalUrl: data.finalUrl, scannedAt: new Date().toISOString(),
       total: t, grade: grade(t), leadScore: lead(t), leadGrade: leadGrade(lead(t)),
-      categories, findings: allFindings(categories),
+      branche: data.branche, categories, findings: allFindings(categories),
       screenshots: { desktop: data.desktop.shot, mobile: data.mobile.shot, desktopFull: data.desktop.shotFull, mobileFull: data.mobile.shotFull },
       meta: { title: data.desktop.dom.title, generator: data.desktop.dom.generator, status: data.desktop.status },
     };
