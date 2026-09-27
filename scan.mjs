@@ -1,139 +1,93 @@
 #!/usr/bin/env node
-/* Website-Bewerter — Startseite plus bis zu zwei Unterseiten.
-     node scan.mjs <url> …              bewertet jede Seite
-     node scan.mjs --list urls.txt      eine URL pro Zeile
-     node scan.mjs --branche=handwerk   Branche vorgeben statt erkennen
-     node scan.mjs --nur-start          ohne Unterseiten (schneller)          */
+/* Website-Bewerter mit zweistufigem Verfahren.
+
+   Stufe 1 — Vorauswahl, kostenlos, ~10 s je Betrieb:
+     node scan.mjs --stufe1 --list urls.txt
+     node scan.mjs --stufe1 --aus-db            alle mit Status 'neu'
+
+   Stufe 2 — Vollbewertung mit Design-Urteil und Lighthouse, ~50 s, ~11 ct:
+     node scan.mjs <url>                        einzelne Seite
+     node scan.mjs --stufe2 --top=10            die zehn besten aus Stufe 1
+
+   Weitere Schalter:  --gleichzeitig=4  --branche=handwerk                  */
 import 'dotenv/config';
 import fs from 'node:fs';
 import path from 'node:path';
-import { collect, collectSeite, ensureDir } from './lib/browser.mjs';
-import { checkMobile } from './lib/checks/mobile.mjs';
-import { checkTech } from './lib/checks/tech.mjs';
-import { checkContent } from './lib/checks/content.mjs';
-import { checkFreshness } from './lib/checks/freshness.mjs';
-import { checkSeo } from './lib/checks/seo.mjs';
-import { checkLegal } from './lib/checks/legal.mjs';
-import { checkImpression } from './lib/checks/impression.mjs';
-import { erkenneBranche, profilVon } from './lib/branchen.mjs';
-import { waehleUnterseiten } from './lib/unterseiten.mjs';
-import { fasseZusammen, checkVollstaendigkeit } from './lib/aggregat.mjs';
-import { total, lead, grade, leadGrade } from './lib/score.mjs';
+import { stufe1, stufe2, parallel } from './lib/stufen.mjs';
 import { printReport } from './lib/report.mjs';
-import { speichereScan, dbAktiv } from './lib/db.mjs';
+import { speichereScan, dbAktiv, db } from './lib/db.mjs';
 
 const args = process.argv.slice(2);
+const flag = (n, d) => { const a = args.find((x) => x.startsWith(`--${n}=`)); return a ? a.split('=')[1] : d; };
+const istStufe1 = args.includes('--stufe1');
+const gleichzeitig = Number(flag('gleichzeitig', istStufe1 ? 4 : 2));
+const brancheHinweis = flag('branche', null);
+
+// ── Was soll gescannt werden? ────────────────────────────────────────
 let urls = args.filter((a) => !a.startsWith('--'));
-const brancheArg = args.find((a) => a.startsWith('--branche='));
-const brancheHinweis = brancheArg ? brancheArg.split('=')[1] : null;
-const nurStart = args.includes('--nur-start');
 const listIdx = args.indexOf('--list');
 if (listIdx > -1) urls = fs.readFileSync(args[listIdx + 1], 'utf8').split('\n').map((s) => s.trim()).filter((s) => s && !s.startsWith('#'));
-if (!urls.length) { console.error('Aufruf: node scan.mjs <url> …  oder  node scan.mjs --list urls.txt'); process.exit(1); }
 
-if (!process.env.ANTHROPIC_API_KEY) {
-  console.log('\n⚠  Kein ANTHROPIC_API_KEY — die Kategorie „Eindruck & Design" (24 % Gewicht) wird übersprungen.\n');
+if (args.includes('--aus-db') || args.includes('--top') || flag('top', null)) {
+  if (!dbAktiv()) { console.error('Supabase nicht konfiguriert'); process.exit(1); }
+  const top = Number(flag('top', 0));
+  let q = db().from('unternehmen').select('website,lead_score,status');
+  q = top ? q.eq('status', 'gescannt').order('lead_score', { ascending: false }).limit(top)
+          : q.eq('status', 'neu').limit(500);
+  const { data, error } = await q;
+  if (error) { console.error(error.message); process.exit(1); }
+  urls = data.map((u) => u.website).filter(Boolean);
+  console.log(`${urls.length} Betriebe aus der Datenbank geladen${top ? ` (beste ${top} nach Lead-Wert)` : " (Status 'neu')"}`);
 }
+if (!urls.length) { console.error('Nichts zu tun. --list <datei>, --aus-db oder --top=N angeben.'); process.exit(1); }
 
-const summary = [];
-for (const raw of urls) {
+if (!istStufe1 && !process.env.ANTHROPIC_API_KEY)
+  console.log('\n⚠  Kein ANTHROPIC_API_KEY — das Design-Urteil (22 % Gewicht) wird übersprungen.\n');
+
+console.log(`\n${istStufe1 ? 'STUFE 1 — Vorauswahl' : 'STUFE 2 — Vollbewertung'}: ${urls.length} Betrieb${urls.length > 1 ? 'e' : ''}, ${gleichzeitig} gleichzeitig\n`);
+const beginn = Date.now();
+
+const ergebnisse = await parallel(urls, gleichzeitig, async (raw, i) => {
   const url = /^https?:\/\//i.test(raw) ? raw : 'https://' + raw;
   const host = new URL(url).hostname.replace(/^www\./, '');
-  const outDir = ensureDir(path.join('results', host));
-  process.stdout.write(`\n▶ ${url}\n  Startseite … `);
+  const outDir = path.join('results', host);
+  const nr = `[${String(i + 1).padStart(String(urls.length).length)}/${urls.length}]`;
   let result;
   try {
-    const start = await collect(url, outDir);
-    const branche = erkenneBranche(start.desktop.dom, start.rawHtml, brancheHinweis);
-    const profil = profilVon(branche.key);
-    process.stdout.write(`ok (${start.desktop.status}) · ${profil.label}\n`);
-
-    // ── Unterseiten wählen und holen ────────────────────────────────
-    const auswahl = nurStart ? [] : waehleUnterseiten(start.desktop.dom, start.finalUrl, branche.key);
-    const weitere = [];
-    for (const [i, s] of auswahl.entries()) {
-      process.stdout.write(`  Unterseite (${s.grund}) … `);
-      try {
-        const d = await collectSeite(s.url, outDir, `unter${i + 1}`);
-        weitere.push({ ...d, grund: s.grund, label: s.grund });
-        process.stdout.write('ok\n');
-      } catch (e) { process.stdout.write(`übersprungen (${e.message.slice(0, 40)})\n`); }
-    }
-    if (!auswahl.length && !nurStart) console.log('  (keine Unterseiten gefunden — vermutlich eine Single-Page)');
-
-    // ── Regelchecks: Mobil und Inhalt je Seite, Rest nur Startseite ──
-    process.stdout.write('  prüfe … ');
-    const alle = [{ ...start, label: 'Startseite' }, ...weitere];
-    const proSeite = alle.map((s, i) => ({
-      url: s.finalUrl, label: s.label, titel: s.desktop.dom.title,
-      text: s.desktop.dom.text, links: s.desktop.dom.links,
-      kategorien: {
-        mobile:  checkMobile(s),
-        content: checkContent({ ...s, branche }),
-        ...(i === 0 ? {} : {}),
-      },
-      findings: [],
-    }));
-    // Startseite trägt die globalen Kategorien
-    proSeite[0].kategorien.freshness = checkFreshness(start);
-    proSeite[0].kategorien.seo       = checkSeo({ ...start, isDraft: start.isDraft });
-    proSeite[0].kategorien.legal     = checkLegal(start);
-    process.stdout.write('Lighthouse … ');
-    proSeite[0].kategorien.tech      = await checkTech(start);
-
-    // ── Design über alle Seiten, ein Aufruf ─────────────────────────
-    process.stdout.write('Eindruck … ');
-    const imp = await checkImpression(alle.map((s) => ({
-      label: s.label, url: s.finalUrl, desktopShot: s.desktop.shot, mobileShot: s.mobile.shot,
-    })));
-    proSeite.forEach((p, i) => { p.kategorien.impression = imp.proSeite[i] || imp.gesamt; });
-    if (imp.gesamt.skipped) proSeite[0].kategorien.impression = imp.gesamt;
-
-    // Befunde je Seite einsammeln
-    proSeite.forEach((p) => {
-      p.findings = Object.entries(p.kategorien).flatMap(([k, c]) => (c.findings || []).map((f) => ({ ...f, category: f.category || k })));
-    });
-
-    // ── Zusammenfassen ──────────────────────────────────────────────
-    const { kategorien, befunde } = fasseZusammen(proSeite);
-    kategorien.completeness = checkVollstaendigkeit(proSeite, branche.key, profil);
-    const alleBefunde = [...befunde, ...kategorien.completeness.findings.map((f) => ({ ...f, seiten: ['Auftritt gesamt'] }))]
-      .sort((a, b) => ({ high: 0, medium: 1, low: 2 }[a.severity] - { high: 0, medium: 1, low: 2 }[b.severity]));
-    process.stdout.write('fertig\n');
-
-    const t = total(kategorien);
-    result = {
-      url, finalUrl: start.finalUrl, scannedAt: new Date().toISOString(),
-      total: t, grade: grade(t), leadScore: lead(t), leadGrade: leadGrade(lead(t)),
-      branche, categories: kategorien, findings: alleBefunde,
-      seiten: proSeite.map((p, i) => ({ url: p.url, label: p.label, titel: p.titel,
-        scores: Object.fromEntries(Object.entries(p.kategorien).map(([k, c]) => [k, c.score])),
-        screenshots: { desktop: alle[i].desktop.shot, mobile: alle[i].mobile.shot } })),
-      screenshots: { desktop: start.desktop.shot, mobile: start.mobile.shot, desktopFull: start.desktop.shotFull, mobileFull: start.mobile.shotFull },
-      meta: { title: start.desktop.dom.title, generator: start.desktop.dom.generator, status: start.desktop.status, seitenGeprueft: alle.length },
-    };
+    const schritte = [];
+    result = await (istStufe1 ? stufe1 : stufe2)(url, outDir, brancheHinweis, (s) => schritte.push(s));
+    console.log(`${nr} ${host.padEnd(34)} Qual ${String(result.total).padStart(3)} · Lead ${String(result.leadScore).padStart(3)} · ${result.findings.length} Befunde   ${schritte.join(' · ')}`);
   } catch (e) {
-    console.log(`FEHLER: ${e.message}`);
-    result = { url, scannedAt: new Date().toISOString(), error: String(e.message), total: null, grade: '–', leadScore: null, categories: {}, findings: [] };
+    console.log(`${nr} ${host.padEnd(34)} FEHLER: ${e.message.slice(0, 60)}`);
+    result = { url, scannedAt: new Date().toISOString(), error: String(e.message), total: null, grade: '–', leadScore: null, categories: {}, findings: [], stufe: istStufe1 ? 1 : 2 };
   }
-  fs.writeFileSync(path.join(outDir, 'scan.json'), JSON.stringify(result, null, 2));
-  if (!result.error) printReport(result);
+  fs.mkdirSync(outDir, { recursive: true });
+  fs.writeFileSync(path.join(outDir, `scan${result.stufe === 1 ? '-stufe1' : ''}.json`), JSON.stringify(result, null, 2));
 
   if (!result.error && dbAktiv()) {
-    try {
-      const u = await speichereScan(result);
-      console.log(`  → in Supabase gespeichert: ${u.name} (Status ${u.status})\n`);
-    } catch (e) { console.log(`  → Supabase: ${e.message}\n`); }
+    try { await speichereScan(result); }
+    catch (e) { console.log(`${' '.repeat(nr.length)} ${host.padEnd(34)} Supabase: ${e.message.slice(0, 60)}`); }
   }
-  summary.push({ host, total: result.total, grade: result.grade, leadScore: result.leadScore ?? null,
-                 seiten: result.meta?.seitenGeprueft ?? 0,
-                 findings: result.findings.length, high: result.findings.filter((f) => f.severity === 'high').length });
-}
+  return result;
+});
 
-if (urls.length > 1) {
-  console.log('\nÜBERSICHT — sortiert nach Lead-Wert (lohnendste zuerst)');
-  console.log('─'.repeat(78));
-  console.log('Lead  Qual  Note          Seiten  Befunde        Seite');
-  for (const s of summary.sort((a, b) => (b.leadScore ?? -1) - (a.leadScore ?? -1)))
-    console.log(`${String(s.leadScore ?? '–').padStart(4)}  ${String(s.total ?? '–').padStart(4)}  ${s.grade.padEnd(12)} ${String(s.seiten).padStart(4)}    ${String(s.high).padStart(2)} schwer/${String(s.findings).padStart(2)}    ${s.host}`);
+// ── Übersicht ────────────────────────────────────────────────────────
+const ok = ergebnisse.filter((r) => !r.error);
+const dauer = (Date.now() - beginn) / 1000;
+console.log(`\n${'─'.repeat(78)}`);
+console.log(`${ok.length} von ${urls.length} bewertet in ${dauer.toFixed(0)} s  (${(dauer / urls.length).toFixed(1)} s je Betrieb)`);
+
+if (ok.length > 1) {
+  console.log('\nLead  Qual  Note          Befunde     Betrieb');
+  for (const r of [...ok].sort((a, b) => (b.leadScore ?? -1) - (a.leadScore ?? -1))) {
+    const unvollstaendig = ['impression', 'mobile', 'content']
+      .some((k) => r.categories?.[k] && (r.categories[k].score === null || r.categories[k].score === undefined));
+    console.log(`${String(r.leadScore ?? '–').padStart(4)}  ${String(r.total ?? '–').padStart(4)}  ${r.grade.padEnd(12)} ${String(r.findings.filter((f) => f.severity === 'high').length).padStart(2)} schwer/${String(r.findings.length).padStart(2)}  ${new URL(r.finalUrl || r.url).hostname.replace(/^www\./, '')}${unvollstaendig && !istStufe1 ? '  ⚠ unvollständig' : ''}`);
+  }
+}
+if (istStufe1) {
+  console.log(`\nStufe 1 ist eine Vorauswahl ohne Design-Urteil und ohne Lighthouse.`);
+  console.log(`Für die aussichtsreichsten Betriebe jetzt:  node scan.mjs --stufe2 --top=10\n`);
+} else if (ok.length === 1) {
+  printReport(ok[0]);
 }

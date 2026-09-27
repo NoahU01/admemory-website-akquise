@@ -7,9 +7,31 @@ formuliert, dass er wörtlich auf der Pitch-Landingpage stehen kann.
 ```bash
 npm install
 cp .env.example .env          # ANTHROPIC_API_KEY eintragen
-node scan.mjs https://beispiel.de/
-node scan.mjs --list urls-kalibrierung.txt
+
+# Stufe 1 — Vorauswahl: kostenlos, ~3 s je Betrieb, 4 gleichzeitig
+node scan.mjs --stufe1 --list urls.txt
+node scan.mjs --stufe1 --aus-db            # alles mit Status 'neu'
+
+# Stufe 2 — Vollbewertung: ~50 s, ~11 ct je Betrieb
+node scan.mjs --stufe2 --top=10            # die zehn besten aus Stufe 1
+node scan.mjs https://beispiel.de/         # einzelne Seite
 ```
+
+## Warum zwei Stufen
+
+Gemessen an einem Betrieb: Unterseiten laden 18 s, Design-Urteil 14 s,
+Startseite 10 s, Lighthouse 9 s — die Regelchecks dagegen 0,0 s. Das Teure ist
+ausschließlich das Laden und das Design-Urteil.
+
+| | 100 Betriebe | Kosten |
+|---|---|---|
+| alles voll bewerten | ~50 min | 11 € |
+| **Stufe 1, dann Stufe 2 für die besten 10** | **~6 min + 8 min** | **1,12 €** |
+
+Stufe 1 braucht kein Design-Urteil, um zu erkennen, dass eine Seite kein
+Impressum hat, mobil nicht funktioniert und das Copyright von 2019 stammt. Das
+Design-Urteil lohnt sich erst für die Betriebe, die tatsächlich angeschrieben
+werden.
 
 Ergebnis pro Seite in `results/<host>/`: `scan.json` (alles) und Screenshots
 Desktop/Mobil, jeweils Ausschnitt und ganze Seite.
