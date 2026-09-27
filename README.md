@@ -30,13 +30,21 @@ lebendigen Betrieb ist der beste Kandidat.
 
 | Kategorie | Gewicht | Modell | Was geprüft wird |
 |---|---|---|---|
-| Eindruck & Design | 24 | Verdienen | Claude sieht Desktop- und Mobil-Screenshot, sechs Skalen 1–5 |
-| Mobil | 22 | **Verdienen** | Hygiene (40) + Komposition (60): Hero, H1, CTA über dem Fold, Overlay-Abdeckung, Tap-Ziele |
-| Inhalt & Nutzen | 18 | **Verdienen** | Öffnungszeiten, tel:-Link, Adresse, CTA, Karte als HTML statt PDF, Fotos, Reservierung |
-| Technik & Tempo | 14 | Abzüge | Lighthouse lokal (mobil), HTTPS, Seitengewicht, Bildgrößen |
-| Aktualität | 10 | Abzüge | Copyright-Jahr, Corona-Reste, Theme-Platzhalter, alte Versionen |
-| Auffindbarkeit | 7 | **Verdienen** | Title, Description, H1, OG, strukturierte Daten, Sitemap, Alt-Texte |
-| Rechtliches | 5 | Abzüge | Impressum, Datenschutz, Google Fonts extern, Tracking ohne Consent |
+| Eindruck & Design | 22 | Verdienen | Claude bewertet jede Seite einzeln, sechs Skalen 1–5 |
+| Mobil | 20 | **Verdienen** | Hygiene (40) + Komposition (60): Hero, H1, CTA über dem Fold, Overlay-Abdeckung, Tap-Ziele |
+| Inhalt & Nutzen | 16 | **Verdienen** | Zeiten, tel:-Link, Adresse, CTA, Angebot als HTML statt PDF, Fotos, Vertrauen |
+| Vollständigkeit | 12 | **Verdienen** | Fehlt im ganzen Auftritt Wesentliches? Angebot, Zeiten, Kontakt, Impressum, Datenschutz |
+| Technik & Tempo | 12 | Abzüge | Lighthouse lokal (mobil), HTTPS, Seitengewicht, Bildgrößen |
+| Aktualität | 9 | Abzüge | Copyright-Jahr, Corona-Reste, Theme-Platzhalter, alte Versionen |
+| Auffindbarkeit | 6 | **Verdienen** | Title, Description, H1, OG, strukturierte Daten, Sitemap, Alt-Texte |
+| Rechtliches | 3 | Abzüge | Impressum, Datenschutz, Google Fonts extern, Tracking ohne Consent |
+
+Gescannt werden **Startseite plus bis zu zwei Unterseiten** (Angebot, Kontakt).
+Recht, Aktualität, Technik und SEO gelten global und werden nur an der Startseite
+gemessen. Design und Mobil laufen über alle Seiten: Startseite doppelt gewichtet,
+der schlechteste Wert zusätzlich — eine schöne Startseite mit miserabler Karte ist
+ein schlechter Auftritt, kein mittelmäßiger. Inhalt zählt das beste Ergebnis, weil
+Öffnungszeiten auf der Kontaktseite stehen dürfen.
 
 **Warum zwei Modelle?** Bei Recht und Aktualität geht es um Fehler — da zieht man
 ab. Bei Mobil, Inhalt und Auffindbarkeit geht es um Leistung — da muss man Punkte
@@ -90,6 +98,29 @@ ganz oben gelandet.
 sonst antwortet die API mit 400. `PSI_API_KEY` ist optional, Lighthouse läuft
 lokal; PageSpeed dient nur als Fallback.
 
+## Betriebe sammeln (Google Places)
+
+```bash
+node sammeln.mjs "Malerbetrieb" "Crailsheim"
+node sammeln.mjs "Restaurant" "Schwäbisch Hall" --min-bewertungen=10
+node sammeln.mjs --liste suchen.txt          # Zeilen: Was;Ort
+node sammeln.mjs "Zahnarzt" "Crailsheim" --trocken    # nur anzeigen
+```
+
+Braucht `GOOGLE_PLACES_KEY` in der `.env` (Google Cloud Console → APIs &
+Dienste → Anmeldedaten; **Places API (New)** muss aktiviert sein).
+
+Google liefert je Suche höchstens 20 Treffer pro Seite und 60 insgesamt — für
+mehr braucht es engere Suchbegriffe oder weitere Orte. Aussortiert werden
+Betriebe ohne Website, mit reinem Social-Profil als Website und dauerhaft
+geschlossene. Der Google-Typ wird auf unsere Branchenprofile abgebildet;
+Unbekanntes fällt auf `dienstleistung` und wird beim Scan aus dem Seiteninhalt
+korrigiert.
+
+Bewertungsschnitt und Anzahl der Rezensionen landen in der Datenbank und fließen
+später in den Lead-Wert: eine schwache Seite bei einem lebendigen Betrieb ist der
+beste Kandidat.
+
 ## Datenbank (Supabase)
 
 Schema einspielen: Dashboard → **SQL Editor** → New query → Inhalt von
@@ -129,6 +160,4 @@ alles wie bisher in `results/`.
 
 ## Was noch fehlt
 
-- **Unterseiten mitscannen** — bei Gastronomie ist die Karte oft wichtiger als die Startseite
-- **Pitch-Potenzial** aus Google-Bewertungen (Places API, Phase 2)
 - Preisformel aus Umfang, Befunden und Branche
