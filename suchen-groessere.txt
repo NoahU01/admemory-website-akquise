@@ -1,0 +1,53 @@
+# Größere Betriebe — mehr Budget je Auftrag.
+# Ein Imbiss zahlt 900–1.500 €, ein Autohaus 4.500–9.000 € für dieselbe Arbeit.
+# Format: Was;Ort
+
+# ── Autohäuser und Kfz ───────────────────────────────────────────────
+Autohaus;Crailsheim
+Autohaus;Schwäbisch Hall
+Autohaus;Ellwangen
+Kfz-Werkstatt;Crailsheim
+Kfz-Werkstatt;Schwäbisch Hall
+Autolackiererei;Crailsheim
+Reifenhandel;Schwäbisch Hall
+Landmaschinen;Crailsheim
+
+# ── Industrie, Produktion, Logistik ──────────────────────────────────
+Maschinenbau;Crailsheim
+Maschinenbau;Schwäbisch Hall
+Metallbau;Crailsheim
+Kunststofftechnik;Crailsheim
+Werkzeugbau;Schwäbisch Hall
+Spedition;Crailsheim
+Spedition;Schwäbisch Hall
+Großhandel;Crailsheim
+
+# ── Bau und größeres Handwerk ────────────────────────────────────────
+Bauunternehmen;Crailsheim
+Bauunternehmen;Schwäbisch Hall
+Zimmerei;Crailsheim
+Garten- und Landschaftsbau;Schwäbisch Hall
+Heizung Sanitär Betrieb;Crailsheim
+Fensterbau;Schwäbisch Hall
+Elektrotechnik Unternehmen;Crailsheim
+
+# ── Gesundheit mit Struktur ──────────────────────────────────────────
+Pflegedienst;Crailsheim
+Pflegeheim;Schwäbisch Hall
+Zahnarztpraxis Gemeinschaftspraxis;Schwäbisch Hall
+Physiotherapie Zentrum;Crailsheim
+Sanitätshaus;Schwäbisch Hall
+
+# ── Beratung und Immobilien ──────────────────────────────────────────
+Steuerkanzlei;Schwäbisch Hall
+Rechtsanwaltskanzlei;Crailsheim
+Immobilienmakler;Crailsheim
+Versicherungsmakler;Schwäbisch Hall
+Ingenieurbüro;Crailsheim
+Architekturbüro;Schwäbisch Hall
+
+# ── Hotellerie und größere Gastronomie ───────────────────────────────
+Hotel;Crailsheim
+Hotel;Schwäbisch Hall
+Tagungshotel;Schwäbisch Hall
+Catering Unternehmen;Crailsheim

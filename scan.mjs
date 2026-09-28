@@ -25,18 +25,23 @@ const brancheHinweis = flag('branche', null);
 
 // ── Was soll gescannt werden? ────────────────────────────────────────
 let urls = args.filter((a) => !a.startsWith('--'));
+const externeSignale = new Map();
+const normHost = (u) => { try { return new URL(/^https?:\/\//i.test(u) ? u : 'https://' + u).hostname.replace(/^www\./, ''); } catch { return u; } };
 const listIdx = args.indexOf('--list');
 if (listIdx > -1) urls = fs.readFileSync(args[listIdx + 1], 'utf8').split('\n').map((s) => s.trim()).filter((s) => s && !s.startsWith('#'));
 
 if (args.includes('--aus-db') || args.includes('--top') || flag('top', null)) {
   if (!dbAktiv()) { console.error('Supabase nicht konfiguriert'); process.exit(1); }
   const top = Number(flag('top', 0));
-  let q = db().from('unternehmen').select('website,lead_score,status');
+  let q = db().from('unternehmen').select('website,lead_score,status,google_rating,google_reviews,standorte');
   q = top ? q.eq('status', 'gescannt').order('lead_score', { ascending: false }).limit(top)
           : q.eq('status', 'neu').limit(500);
   const { data, error } = await q;
   if (error) { console.error(error.message); process.exit(1); }
   urls = data.map((u) => u.website).filter(Boolean);
+  // Sterne und Bewertungszahl gehen in den Lead-Wert ein — bisher lagen sie
+  // ungenutzt in der Tabelle, weil der Bewerter sie nie zu sehen bekam.
+  for (const u of data) if (u.website) externeSignale.set(normHost(u.website), { rating: u.google_rating, reviews: u.google_reviews, standorte: u.standorte });
   console.log(`${urls.length} Betriebe aus der Datenbank geladen${top ? ` (beste ${top} nach Lead-Wert)` : " (Status 'neu')"}`);
 }
 if (!urls.length) { console.error('Nichts zu tun. --list <datei>, --aus-db oder --top=N angeben.'); process.exit(1); }
@@ -55,7 +60,7 @@ const ergebnisse = await parallel(urls, gleichzeitig, async (raw, i) => {
   let result;
   try {
     const schritte = [];
-    result = await (istStufe1 ? stufe1 : stufe2)(url, outDir, brancheHinweis, (s) => schritte.push(s));
+    result = await (istStufe1 ? stufe1 : stufe2)(url, outDir, brancheHinweis, (s) => schritte.push(s), externeSignale.get(host) || {});
     console.log(`${nr} ${host.padEnd(34)} Qual ${String(result.total).padStart(3)} · Lead ${String(result.leadScore).padStart(3)} · ${result.findings.length} Befunde   ${schritte.join(' · ')}`);
   } catch (e) {
     console.log(`${nr} ${host.padEnd(34)} FEHLER: ${e.message.slice(0, 60)}`);

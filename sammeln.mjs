@@ -52,7 +52,7 @@ for (const { was, ort } of auftraege) {
       await upsertUnternehmen({
         name: t.name, website: t.website, branche: t.branche, stadt: t.stadt,
         telefon: t.telefon, email: null,
-        google_rating: t.google_rating, google_reviews: t.google_reviews,
+        google_rating: t.google_rating, google_reviews: t.google_reviews, standorte: t.standorte ?? 1,
         notiz: t.typ_label ? `Google: ${t.typ_label}` : null,
       });
       gesamtNeu++;

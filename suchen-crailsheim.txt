@@ -1,0 +1,11 @@
+# Erste echte Region: Crailsheim und Umgebung, gemischte Branchen
+# Format: Was;Ort
+Restaurant;Crailsheim
+Malerbetrieb;Crailsheim
+Elektriker;Crailsheim
+Sanitär Heizung;Crailsheim
+Zahnarzt;Crailsheim
+Steuerberater;Crailsheim
+Restaurant;Schwäbisch Hall
+Dachdecker;Schwäbisch Hall
+Physiotherapie;Schwäbisch Hall
