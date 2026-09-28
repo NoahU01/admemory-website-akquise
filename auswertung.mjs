@@ -8,9 +8,17 @@ import { db, dbAktiv } from './lib/db.mjs';
 if (!dbAktiv()) { console.error('Supabase nicht konfiguriert'); process.exit(1); }
 const top = Number((process.argv.find((a) => a.startsWith('--top=')) || '--top=15').split('=')[1]);
 
-const { data, error } = await db().from('arbeitsliste')
-  .select('name,stadt,branche,qualitaet,lead,groesse_stufe,groesse_score,preis_von,preis_bis,website,schwere_befunde,google_reviews');
-if (error) { console.error(error.message); process.exit(1); }
+// Supabase liefert höchstens 1000 Zeilen je Abfrage — ohne Blättern zeigte die
+// Auswertung 1000 von 1301 Betrieben und behauptete, das seien alle.
+const data = [];
+for (let von = 0; ; von += 1000) {
+  const { data: teil, error } = await db().from('arbeitsliste')
+    .select('name,stadt,branche,qualitaet,lead,groesse_stufe,groesse_score,preis_von,preis_bis,website,schwere_befunde,google_reviews')
+    .range(von, von + 999);
+  if (error) { console.error(error.message); process.exit(1); }
+  data.push(...teil);
+  if (teil.length < 1000) break;
+}
 
 const mitScan = data.filter((r) => r.qualitaet !== null);
 console.log(`\n${data.length} Betriebe, davon ${mitScan.length} bewertet\n`);
