@@ -103,3 +103,10 @@ if (istStufe1) {
 } else if (ok.length === 1) {
   printReport(ok[0]);
 }
+
+/* Node bleibt nach großen Läufen hängen — offene Handles aus dem Supabase-Client
+   und gelegentlich ein Browser, dessen close() nicht durchkam. Alles ist zu
+   diesem Zeitpunkt gespeichert und ausgegeben, also beenden wir selbst. Ohne das
+   bleiben bei einem täglichen Lauf Chrome-Prozesse liegen. */
+await new Promise((r) => setTimeout(r, 200));   // stdout leeren lassen
+process.exit(0);
