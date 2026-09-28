@@ -4,6 +4,7 @@
    Stufe 1 — Vorauswahl, kostenlos, ~10 s je Betrieb:
      node scan.mjs --stufe1 --list urls.txt
      node scan.mjs --stufe1 --aus-db            alle mit Status 'neu'
+     node scan.mjs --stufe1 --alle              auch schon gescannte (nach Änderungen am Bewerter)
 
    Stufe 2 — Vollbewertung mit Design-Urteil und Lighthouse, ~50 s, ~11 ct:
      node scan.mjs <url>                        einzelne Seite
@@ -30,19 +31,25 @@ const normHost = (u) => { try { return new URL(/^https?:\/\//i.test(u) ? u : 'ht
 const listIdx = args.indexOf('--list');
 if (listIdx > -1) urls = fs.readFileSync(args[listIdx + 1], 'utf8').split('\n').map((s) => s.trim()).filter((s) => s && !s.startsWith('#'));
 
-if (args.includes('--aus-db') || args.includes('--top') || flag('top', null)) {
+if (args.includes('--aus-db') || args.includes('--alle') || args.includes('--top') || flag('top', null)) {
   if (!dbAktiv()) { console.error('Supabase nicht konfiguriert'); process.exit(1); }
   const top = Number(flag('top', 0));
+  /* --alle nimmt auch schon gescannte Betriebe. Gebraucht, wenn sich der
+     Bewerter geändert hat: Stufe 1 ist gratis, ein Neulauf kostet nur Zeit.
+     Betriebe mit Entwurf oder gesendeter Mail bleiben außen vor — dort hängt
+     Arbeit dran, die ein Neuscan nicht anfassen soll. */
+  const alle = args.includes('--alle');
   let q = db().from('unternehmen').select('website,lead_score,status,google_rating,google_reviews,standorte');
   q = top ? q.eq('status', 'gescannt').order('lead_score', { ascending: false }).limit(top)
-          : q.eq('status', 'neu').limit(500);
+      : alle ? q.in('status', ['neu', 'gescannt']).limit(2000)
+      : q.eq('status', 'neu').limit(500);
   const { data, error } = await q;
   if (error) { console.error(error.message); process.exit(1); }
   urls = data.map((u) => u.website).filter(Boolean);
   // Sterne und Bewertungszahl gehen in den Lead-Wert ein — bisher lagen sie
   // ungenutzt in der Tabelle, weil der Bewerter sie nie zu sehen bekam.
   for (const u of data) if (u.website) externeSignale.set(normHost(u.website), { rating: u.google_rating, reviews: u.google_reviews, standorte: u.standorte });
-  console.log(`${urls.length} Betriebe aus der Datenbank geladen${top ? ` (beste ${top} nach Lead-Wert)` : " (Status 'neu')"}`);
+  console.log(`${urls.length} Betriebe aus der Datenbank geladen${top ? ` (beste ${top} nach Lead-Wert)` : alle ? " (neu + bereits gescannt)" : " (Status 'neu')"}`);
 }
 if (!urls.length) { console.error('Nichts zu tun. --list <datei>, --aus-db oder --top=N angeben.'); process.exit(1); }
 
