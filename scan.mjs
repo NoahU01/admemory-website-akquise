@@ -39,11 +39,27 @@ if (args.includes('--aus-db') || args.includes('--alle') || args.includes('--top
      Betriebe mit Entwurf oder gesendeter Mail bleiben außen vor — dort hängt
      Arbeit dran, die ein Neuscan nicht anfassen soll. */
   const alle = args.includes('--alle');
-  let q = db().from('unternehmen').select('website,lead_score,status,google_rating,google_reviews,standorte');
-  q = top ? q.eq('status', 'gescannt').order('lead_score', { ascending: false }).limit(top)
-      : alle ? q.in('status', ['neu', 'gescannt']).limit(2000)
-      : q.eq('status', 'neu').limit(500);
-  const { data, error } = await q;
+  const status = alle ? ['neu', 'gescannt'] : ['neu'];
+
+  /* Supabase liefert höchstens 1000 Zeilen je Abfrage. Ohne Blättern fällt bei
+     größeren Beständen der Rest stillschweigend weg — bei 1036 offenen Betrieben
+     wären 36 nie gescannt worden, ohne jede Fehlermeldung. */
+  let data = [], error = null;
+  if (top) {
+    ({ data, error } = await db().from('unternehmen')
+      .select('website,lead_score,status,google_rating,google_reviews,standorte')
+      .eq('status', 'gescannt').order('lead_score', { ascending: false }).limit(top));
+  } else {
+    const SEITE = 1000;
+    for (let von = 0; ; von += SEITE) {
+      const { data: teil, error: e } = await db().from('unternehmen')
+        .select('website,lead_score,status,google_rating,google_reviews,standorte')
+        .in('status', status).order('id', { ascending: true }).range(von, von + SEITE - 1);
+      if (e) { error = e; break; }
+      data.push(...teil);
+      if (teil.length < SEITE) break;
+    }
+  }
   if (error) { console.error(error.message); process.exit(1); }
   urls = data.map((u) => u.website).filter(Boolean);
   // Sterne und Bewertungszahl gehen in den Lead-Wert ein — bisher lagen sie
