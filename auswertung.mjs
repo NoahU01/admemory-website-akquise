@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 /* Überblick nach einem Scan-Lauf: Wo lohnt sich die Arbeit?
      node auswertung.mjs            Verteilung und die aussichtsreichsten Betriebe
-     node auswertung.mjs --top=25   mehr Zeilen                                  */
+     node auswertung.mjs --top=25   mehr Zeilen
+     node auswertung.mjs --gross    nur Betriebe ab Stufe 'etabliert'            */
 import 'dotenv/config';
 import { db, dbAktiv } from './lib/db.mjs';
+import { istKonzern } from './lib/sammler.mjs';
 
 if (!dbAktiv()) { console.error('Supabase nicht konfiguriert'); process.exit(1); }
 const top = Number((process.argv.find((a) => a.startsWith('--top=')) || '--top=15').split('=')[1]);
@@ -20,8 +22,14 @@ for (let von = 0; ; von += 1000) {
   if (teil.length < 1000) break;
 }
 
-const mitScan = data.filter((r) => r.qualitaet !== null);
-console.log(`\n${data.length} Betriebe, davon ${mitScan.length} bewertet\n`);
+const nurGross = process.argv.includes('--gross');
+// Konzernauftritte sind keine Leads: Bei Google steht die Filiale, die Website
+// gehört der Zentrale und wird von einer großen Agentur betreut.
+const konzerne = data.filter((r) => istKonzern(r.website || ''));
+let mitScan = data.filter((r) => r.qualitaet !== null && !istKonzern(r.website || ''));
+if (nurGross) mitScan = mitScan.filter((r) => ['mittelstand', 'etabliert'].includes(r.groesse_stufe));
+console.log(`\n${data.length} Betriebe, ${konzerne.length} Konzernauftritte übergangen, ${mitScan.length} in dieser Ansicht` +
+            (nurGross ? " (nur ab Stufe 'etabliert')" : '') + '\n');
 
 const zaehle = (feld, sortiert = null) => {
   const m = new Map();
@@ -40,7 +48,7 @@ const summe = mitScan.reduce((s, r) => s + (r.preis_bis ?? 0), 0);
 console.log(`\nPotenzial über alle bewerteten Betriebe: ${(summe / 1000).toFixed(0)} Tsd. € (obere Preisgrenze)\n`);
 
 console.log(`DIE ${top} AUSSICHTSREICHSTEN`);
-console.log('Lead  Qual  Größe        Preisrahmen      Schwer  Betrieb');
+console.log('Lead  Qual  Größe        Preisrahmen      Schwer  Branche        Betrieb');
 for (const r of mitScan.sort((a, b) => (b.lead ?? -1) - (a.lead ?? -1)).slice(0, top)) {
   console.log(
     String(r.lead ?? '–').padStart(4),
@@ -48,7 +56,7 @@ for (const r of mitScan.sort((a, b) => (b.lead ?? -1) - (a.lead ?? -1)).slice(0,
     ' ' + String(r.groesse_stufe ?? '–').padEnd(12),
     (r.preis_von ? `${r.preis_von}–${r.preis_bis} €` : '–').padStart(14),
     String(r.schwere_befunde ?? 0).padStart(6),
-    ' ' + (r.name ?? '').slice(0, 34));
+    ' ' + String(r.branche ?? '').padEnd(14) + (r.website ?? '').replace(/^https:\/\//, '').slice(0, 30));
 }
 console.log();
 process.exit(0);
