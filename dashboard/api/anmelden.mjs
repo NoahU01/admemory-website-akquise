@@ -1,6 +1,6 @@
 /* Anmeldung mit einem Passwort. Ein Nutzer, ein Passwort — eine Benutzerverwaltung
    wäre hier Beiwerk. Bei Fehlversuchen wird bewusst nicht gesagt, was falsch war. */
-import { passwortStimmt, keksBauen, KEKS, koerper, fehlerAntwort } from './_lib.mjs';
+import { passwortStimmt, passwortEingerichtet, keksBauen, KEKS, koerper, fehlerAntwort } from './_lib.mjs';
 
 export default async function handler(req, res) {
   try {
@@ -9,6 +9,12 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
     if (req.method !== 'POST') return res.status(405).json({ fehler: 'Methode nicht erlaubt' });
+
+    if (!passwortEingerichtet())
+      return res.status(503).json({
+        fehler: 'Auf dem Server ist kein Passwort hinterlegt. Bei Vercel unter ' +
+                'Settings → Environment Variables die Variable DASHBOARD_PASSWORT anlegen ' +
+                'und danach neu deployen.' });
 
     const { passwort } = await koerper(req);
     if (!passwortStimmt(passwort)) {

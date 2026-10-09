@@ -54,6 +54,16 @@ export function angemeldet(req, res) {
   return false;
 }
 
+/* Unterscheidet "falsch eingegeben" von "nie eingerichtet". Vorher meldete der
+   Server auch dann "Passwort falsch", wenn gar keines hinterlegt war — man
+   sucht den Fehler dann bei sich statt in den Umgebungsvariablen. Das
+   preiszugeben ist unbedenklich: Ohne gesetztes Passwort kommt ohnehin niemand
+   hinein, und wer es erfährt, kann damit nichts anfangen. */
+export function passwortEingerichtet() {
+  return typeof process.env.DASHBOARD_PASSWORT === 'string' &&
+         process.env.DASHBOARD_PASSWORT.length > 0;
+}
+
 export function passwortStimmt(eingabe) {
   const soll = process.env.DASHBOARD_PASSWORT;
   if (!soll || typeof eingabe !== 'string') return false;
