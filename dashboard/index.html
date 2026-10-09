@@ -149,7 +149,7 @@ main{padding:1.7rem 1.9rem calc(2.5rem + var(--unten));min-width:0}
 .bar-track{display:block;background:var(--sunk);border-radius:5px;height:20px;overflow:hidden}
 .bar-fill{display:block;height:100%;border-radius:0 5px 5px 0;background:var(--accent)}
 .bar-val{font-family:"IBM Plex Mono",monospace;font-size:.76rem;color:var(--ink-2);
-  min-width:62px;text-align:right}
+  min-width:94px;text-align:right}
 .bar-row .flabel{color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ring{display:flex;align-items:center;gap:1.3rem;flex-wrap:wrap}
 .legende{font-size:.8rem;display:flex;flex-direction:column;gap:.35rem;min-width:140px}
@@ -391,10 +391,10 @@ const BRANCHE = { gastro:'Gastro', handwerk:'Handwerk', gesundheit:'Praxis', ber
                   handel:'Handel', dienstleistung:'Dienstleistung', autohaus:'Autohaus', industrie:'Industrie' };
 const SCHWERE = { high:'schwer', medium:'mittel', low:'leicht' };
 const PRUEFTIEFE = {
-  1: { label:'Schnellprüfung', hinweis:'ohne Design-Urteil und Technik — im Mittel 8 Punkte zu gut' },
-  2: { label:'Vollbewertung',  hinweis:'alle acht Kategorien, plus zwei Unterseiten' },
+  1: { label:'Phase 1', hinweis:'Schnellprüfung ohne Design-Urteil und Technik — im Mittel 8 Punkte zu gut' },
+  2: { label:'Phase 2', hinweis:'vollbewertet: alle acht Kategorien, plus zwei Unterseiten' },
 };
-const VERBRAUCHSPHASE = { scan_stufe1:'Schnellprüfung', scan_stufe2:'Vollbewertung',
+const VERBRAUCHSPHASE = { scan_stufe1:'Phase 1', scan_stufe2:'Phase 2',
                           entwurf:'Entwürfe bauen', mail:'Mail-Entwürfe' };
 const RINGFARBEN = ['var(--s1)','var(--s2)','var(--s3)','var(--s4)','var(--s5)'];
 
@@ -508,16 +508,13 @@ function ring(teile, gesamt){
 
 function zeichneDashboard(){
   const u = uebersicht, k = u.kennzahlen;
-  const inPipeline = u.pipeline.filter((p) => !['kunde','abgelehnt','pausiert','neu'].includes(p.key))
-                               .reduce((s, p) => s + p.anzahl, 0);
-  const wartetAufDich = u.pipeline.filter((p) => ['entwurf_gebaut','geantwortet'].includes(p.key))
-                                  .reduce((s, p) => s + p.anzahl, 0);
+  const wartetAufDich = k.wartend ?? 0;
 
   const kpis = '<div class="grid g4">' +
     kachel(zahl(k.bewertet), 'Bewertet', 'leute',
-           'von ' + zahl(k.gesamt) + ' gesammelten Betrieben') +
-    kachel(zahl(k.voll), 'Vollbewertet', 'haken',
-           zahl(k.schnell) + ' erst schnellgeprüft') +
+           'von ' + zahl(k.gesamt) + ' gescrapten Betrieben') +
+    kachel(zahl(k.voll), 'In Phase 2', 'haken',
+           zahl(k.schnell) + ' erst in Phase 1') +
     kachel(zahl(wartetAufDich), 'Wartet auf dich', 'uhr',
            k.offeneAuftraege ? k.offeneAuftraege + ' Aufträge beim Agenten'
                              : (wartetAufDich ? 'ansehen und entscheiden' : 'gerade nichts')) +
@@ -525,17 +522,23 @@ function zeichneDashboard(){
            u.neueSpalten === false ? 'ohne Auftragswerte — Migration 05 fehlt' : 'ohne Kunden und Absagen') +
     '</div>';
 
-  const max = Math.max(...u.pipeline.map((p) => p.anzahl), 1);
-  const pipeline = '<div class="card"><h2>' + ic('status') + 'Pipeline</h2>' +
-    '<p class="sub">Jede Zeile ist eine Station. Von oben nach unten nimmt die Arbeit zu.</p>' +
-    u.pipeline.filter((p) => p.anzahl > 0).map((p) =>
-      '<div class="bar-row"><span class="flabel" title="' + text(p.hinweis ?? '') + '">' +
-        text(p.label) + '</span>' +
-      '<span class="bar-track"><span class="bar-fill" style="width:' +
-        Math.max(2, (p.anzahl / max) * 100).toFixed(1) + '%' +
-        (['entwurf_gebaut','geantwortet'].includes(p.key) ? ';background:var(--warn)' : '') +
-        '"></span></span>' +
-      '<span class="bar-val">' + zahl(p.anzahl) + '</span></div>').join('') +
+  /* Funnel: jede Stufe als Anteil der vorigen. Die Durchlaufquote daneben ist
+     die Zahl, die zählt — wo verliert die Akquise ihre Betriebe? */
+  const f0 = u.funnel[0].anzahl || 1;
+  const pipeline = '<div class="card"><h2>' + ic('status') + 'Funnel</h2>' +
+    '<p class="sub">Jede Stufe enthält alle, die weiter sind.</p>' +
+    u.funnel.map((p, i) => {
+      const vor = i ? u.funnel[i-1].anzahl : null;
+      const quote = vor ? (vor ? Math.round((p.anzahl / vor) * 100) : 0) : null;
+      return '<div class="bar-row" title="' + text(p.hinweis) + '">' +
+        '<span class="flabel">' + text(p.label) + '</span>' +
+        '<span class="bar-track"><span class="bar-fill" style="width:' +
+          Math.max(p.anzahl ? 2 : 0, (p.anzahl / f0) * 100).toFixed(1) + '%' +
+          (p.key === 'kunde' ? ';background:var(--good)' : '') + '"></span></span>' +
+        '<span class="bar-val">' + zahl(p.anzahl) +
+          (quote != null && vor ? ' <span style="color:var(--ink-3)">' + quote + '%</span>' : '') +
+        '</span></div>';
+    }).join('') +
     '</div>';
 
   const vb = (u.verbrauch ?? []).filter((v) => Number(v.euro) > 0 || Number(v.tokens_ein) > 0);
@@ -558,10 +561,11 @@ function zeichneDashboard(){
      stattdessen, wie belastbar der Bestand ist — das ist die Frage, die vor
      dem ersten Anschreiben zählt. */
   const tiefe = '<div class="card"><h2>' + ic('befund') + 'Prüftiefe</h2>' +
-    '<p class="sub">Nur die Vollbewertung taugt für einen Pitch. Der Schnellprüfung fehlen ' +
-    'das Design-Urteil und die Technikmessung — zusammen ein Drittel der Gewichtung.</p>' +
-    [['Vollbewertung', k.voll, 'var(--good)'], ['Schnellprüfung', k.schnell, 'var(--warn)'],
-     ['Noch nicht bewertet', k.gesamt - k.bewertet, 'var(--ink-3)']]
+    '<p class="sub">Nur Phase 2 taugt für einen Pitch. Phase 1 fehlen das Design-Urteil ' +
+    'und die Technikmessung — zusammen ein Drittel der Gewichtung.</p>' +
+    [['Phase 2 — vollbewertet', k.voll, 'var(--good)'],
+     ['Phase 1 — schnellgeprüft', k.schnell, 'var(--warn)'],
+     ['noch nicht bewertet', k.gesamt - k.bewertet, 'var(--ink-3)']]
       .filter(([, n]) => n > 0).map(([l, n, farbe]) =>
         '<div class="bar-row"><span class="flabel">' + l + '</span>' +
         '<span class="bar-track"><span class="bar-fill" style="width:' +
@@ -579,7 +583,7 @@ function zeichneDashboard(){
     '<div class="zeile"><span>Antwortrate</span><span class="mono">' +
       (k.antwortrate != null ? k.antwortrate + ' %' : '–') + '</span></div>' +
     '<div class="zeile"><span>Daraus Kunden</span><span class="mono">' +
-      zahl(u.pipeline.find((p) => p.key === 'kunde')?.anzahl ?? 0) + '</span></div>' +
+      zahl(u.funnel.find((p) => p.key === 'kunde')?.anzahl ?? 0) + '</span></div>' +
     (k.gesperrt ? '<div class="zeile"><span>Unvollständig gescannt</span><span class="mono">' +
       zahl(k.gesperrt) + '</span></div>' : '') +
     '</div>';
@@ -618,7 +622,7 @@ function zeichneDatenbank(sichtbar, gesamt){
   const gesetzt = Object.values(filter).some((v) => v !== '');
   const leiste = '<div class="filter">' +
     auswahl('fStatus', 'Phase', Object.entries(PHASE), filter.status) +
-    auswahl('fStufe', 'Prüftiefe', [[2, 'Vollbewertung'], [1, 'Schnellprüfung']], filter.stufe) +
+    auswahl('fStufe', 'Prüftiefe', [[2, 'Phase 2 — vollbewertet'], [1, 'Phase 1 — schnellgeprüft']], filter.stufe) +
     auswahl('fBudget', 'Budget', Object.entries(BUDGET), filter.budget) +
     auswahl('fBranche', 'Branche', Object.entries(BRANCHE), filter.branche) +
     '<div class="fgruppe"><label for="fMin">Qualitäts-Score</label><span class="fspanne">' +
@@ -642,7 +646,8 @@ function zeichneDatenbank(sichtbar, gesamt){
                     text(PHASE[b.status] ?? b.status) + '</span>');
         const wert = b.auftragswert ?? b.preis_bis;
         if (wert) pillen.push('<span class="pille">' + euro(wert) + '</span>');
-        if (b.scan_stufe === 1) pillen.push('<span class="pille">Schnellprüfung</span>');
+        if (b.scan_stufe) pillen.push('<span class="pille' + (b.scan_stufe === 2 ? ' pille--good' : '') +
+          '">' + PRUEFTIEFE[b.scan_stufe].label + '</span>');
         if (b.scan_unvollstaendig) pillen.push('<span class="pille pille--bad">Scan unvollständig</span>');
         if (b.befunde_schwer) pillen.push('<span class="pille pille--bad">' + b.befunde_schwer +
           ' schwere Mängel</span>');
@@ -702,7 +707,7 @@ function zeichneBlatt(){
       w(b.quality_score, 'Qualität') + w(b.lead_score, 'Lead') + w(k.impression, 'Eindruck') +
       w(k.mobile, 'Mobil') + w(k.content, 'Inhalt') + w(k.tech, 'Technik') + '</div>' +
       (b.scan_unvollstaendig ? '<p class="meldung meldung--fehler">' + text(b.scan_hinweis ?? 'Scan unvollständig') + '</p>' : '') +
-      (b.scan_stufe === 1 ? '<p class="meldung meldung--warn">Schnellprüfung — Design-Urteil und Technik fehlen, der Wert liegt im Mittel 8 Punkte zu hoch.</p>' : '') +
+      (b.scan_stufe === 1 ? '<p class="meldung meldung--warn">Phase 1 — Design-Urteil und Technik fehlen, der Wert liegt im Mittel 8 Punkte zu hoch.</p>' : '') +
     '</div>' +
 
     '<div class="card"><h3>' + ic('betrieb') + 'Betrieb</h3>' +

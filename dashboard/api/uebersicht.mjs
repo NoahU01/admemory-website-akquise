@@ -2,17 +2,17 @@
    wartet auf wen, was wurde verbraucht, was kam zurück. */
 import { datenbank, angemeldet, fehlerAntwort } from './_lib.mjs';
 
-const PHASEN = [
-  { key: 'neu',              label: 'Gesammelt',        hinweis: 'noch nicht bewertet' },
-  { key: 'gescannt',         label: 'Bewertet',         hinweis: 'warten auf einen Entwurf' },
-  { key: 'entwurf_gebaut',   label: 'Entwurf da',       hinweis: 'warten auf dich' },
-  { key: 'feedback_gegeben', label: 'Feedback gegeben', hinweis: 'wartet auf den Agenten' },
-  { key: 'freigegeben',      label: 'Freigegeben',      hinweis: 'Mail kann raus' },
-  { key: 'versendet',        label: 'Versendet',        hinweis: 'Antwort steht aus' },
-  { key: 'geantwortet',      label: 'Geantwortet',      hinweis: 'warten auf dich' },
-  { key: 'kunde',            label: 'Kunde',            hinweis: 'gewonnen' },
-  { key: 'abgelehnt',        label: 'Abgelehnt',        hinweis: '' },
-  { key: 'pausiert',         label: 'Zurückgestellt',   hinweis: '' },
+/* Der Funnel ist kumulativ: Jede Stufe enthält alle, die weiter sind. Vorher
+   waren es sich ausschließende Status — "Gesammelt 113" neben "Bewertet 990"
+   las sich wie zwei getrennte Töpfe, obwohl die 990 ja auch gescraped wurden. */
+const STUFEN = [
+  { key: 'scraped',   label: 'Scraped',     hinweis: 'von Google geholt' },
+  { key: 'bewertet',  label: 'Bewertet',    hinweis: 'Website geprüft, Score vorhanden' },
+  { key: 'phase2',    label: 'Phase 2',     hinweis: 'vollbewertet — belastbar für einen Pitch' },
+  { key: 'entwurf',   label: 'Entwurf',     hinweis: 'Seite nachgebaut' },
+  { key: 'versendet', label: 'Versendet',   hinweis: 'Mail ist raus' },
+  { key: 'antwort',   label: 'Geantwortet', hinweis: 'Rückmeldung erhalten' },
+  { key: 'kunde',     label: 'Kunde',       hinweis: 'gewonnen' },
 ];
 
 export default async function handler(req, res) {
@@ -21,15 +21,32 @@ export default async function handler(req, res) {
     const db = datenbank();
     const zaehle = async (bauen) => (await bauen(db.from('unternehmen').select('*', { count: 'exact', head: true }))).count ?? 0;
 
-    const [pipeline, gesamt, bewertet, gross, gesperrt, schnell, voll] = await Promise.all([
-      Promise.all(PHASEN.map(async (p) => ({ ...p, anzahl: await zaehle((q) => q.eq('status', p.key)) }))),
+    const NACH_ENTWURF = ['entwurf_gebaut', 'feedback_gegeben', 'freigegeben',
+                          'versendet', 'geantwortet', 'kunde'];
+    const [gesamt, bewertet, gross, gesperrt, schnell, voll,
+           mitEntwurf, mitMail, mitAntwort, kunden, wartend] = await Promise.all([
       zaehle((q) => q),
       zaehle((q) => q.not('quality_score', 'is', null)),
       zaehle((q) => q.in('groesse_stufe', ['mittelstand', 'etabliert']).not('quality_score', 'is', null)),
       zaehle((q) => q.eq('scan_unvollstaendig', true)),
       zaehle((q) => q.eq('scan_stufe', 1).not('quality_score', 'is', null)),
       zaehle((q) => q.eq('scan_stufe', 2).not('quality_score', 'is', null)),
+      zaehle((q) => q.in('status', NACH_ENTWURF)),
+      zaehle((q) => q.not('mail_gesendet_am', 'is', null)),
+      zaehle((q) => q.not('antwort_am', 'is', null)),
+      zaehle((q) => q.eq('status', 'kunde')),
+      zaehle((q) => q.in('status', ['entwurf_gebaut', 'geantwortet'])),
     ]);
+
+    const funnel = [
+      { ...STUFEN[0], anzahl: gesamt },
+      { ...STUFEN[1], anzahl: bewertet },
+      { ...STUFEN[2], anzahl: voll },
+      { ...STUFEN[3], anzahl: mitEntwurf },
+      { ...STUFEN[4], anzahl: mitMail },
+      { ...STUFEN[5], anzahl: mitAntwort },
+      { ...STUFEN[6], anzahl: kunden },
+    ];
 
     /* Offenes Potenzial: nur was noch nicht gewonnen oder abgelehnt ist. Die
        Summe über alle Betriebe wäre eine hübsche, aber nutzlose Zahl. */
@@ -77,9 +94,10 @@ export default async function handler(req, res) {
     const tage = Object.entries(verlauf).sort().slice(-30).map(([tag, n]) => ({ tag, n }));
 
     res.status(200).json({
-      pipeline, verbrauch, verbrauchFehlt, auftraegeFehlt, neueSpalten,
+      funnel, verbrauch, verbrauchFehlt, auftraegeFehlt, neueSpalten,
       kennzahlen: {
-        gesamt, bewertet, gross, gesperrt, schnell, voll, potenzialOffen, umsatz, versendet, geantwortet,
+        gesamt, bewertet, gross, gesperrt, schnell, voll, wartend,
+        potenzialOffen, umsatz, versendet, geantwortet,
         antwortrate: versendet ? Math.round((geantwortet / versendet) * 100) : null,
         offeneAuftraege: auftraege.filter((x) => x.status !== 'fehler').length,
         fehlerAuftraege: auftraege.filter((x) => x.status === 'fehler').length,
