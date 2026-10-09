@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Leads · AdMemory</title>
+<style>
+  :root{
+    --grund:#fbfaf8; --karte:#fff; --rand:#e6e2db; --text:#1b1815; --leise:#6d665d;
+    --akzent:#1f6f4a; --akzent-hell:#e8f2ec;
+    --warm:#b4541f; --warm-hell:#fdf0e7;
+    --rot:#a32b22; --rot-hell:#fcebe9;
+    --radius:12px;
+    --oben:env(safe-area-inset-top,0px); --unten:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --grund:#15130f; --karte:#1e1b17; --rand:#332e27; --text:#f0ece5; --leise:#9a9186;
+           --akzent:#5fb98c; --akzent-hell:#1c2f26; --warm:#e0915e; --warm-hell:#2e2318;
+           --rot:#e8766c; --rot-hell:#2e1a18; }
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--grund);color:var(--text);
+       font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+       padding-top:var(--oben);padding-bottom:var(--unten)}
+  [hidden]{display:none!important}
+  button{font:inherit;cursor:pointer}
+  a{color:var(--akzent)}
+
+  /* ── Anmeldung ─────────────────────────────────────────────── */
+  #tor{position:fixed;inset:0;background:var(--grund);z-index:50;
+       display:grid;place-items:center;padding:24px}
+  #tor form{width:100%;max-width:300px;text-align:center}
+  #tor h1{font-size:19px;margin:0 0 4px}
+  #tor p{color:var(--leise);font-size:13px;margin:0 0 20px}
+  .feld{width:100%;padding:11px 13px;border:1px solid var(--rand);border-radius:10px;
+        background:var(--karte);color:var(--text);font:inherit}
+  .feld:focus{outline:2px solid var(--akzent);outline-offset:1px;border-color:var(--akzent)}
+  .knopf{width:100%;margin-top:10px;padding:13px;min-height:46px;border:0;border-radius:10px;
+         background:var(--akzent);color:#fff;font-weight:600}
+  .fehler{color:var(--rot);font-size:13px;margin-top:10px;min-height:19px}
+
+  /* ── Kopf ──────────────────────────────────────────────────── */
+  header{position:sticky;top:var(--oben);z-index:20;background:var(--grund);
+         border-bottom:1px solid var(--rand)}
+  .kopfzeile{display:flex;align-items:center;gap:10px;padding:12px 16px 8px}
+  .kopfzeile h1{font-size:16px;margin:0;flex:1;letter-spacing:-.01em}
+  .zahl{color:var(--leise);font-size:12px;font-variant-numeric:tabular-nums}
+  .abmelden{background:none;border:0;color:var(--leise);font-size:12.5px;padding:10px 4px;min-height:38px}
+
+  .reiter{display:flex;gap:6px;overflow-x:auto;padding:0 16px 10px;
+          scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .reiter::-webkit-scrollbar{display:none}
+  .reiter button{white-space:nowrap;padding:9px 14px;min-height:38px;border:1px solid var(--rand);
+                 border-radius:999px;background:var(--karte);color:var(--leise);font-size:13px}
+  .reiter button[aria-selected=true]{background:var(--text);color:var(--grund);border-color:var(--text);font-weight:600}
+  .reiter .n{font-variant-numeric:tabular-nums;opacity:.65;margin-left:4px}
+
+  /* ── Liste ─────────────────────────────────────────────────── */
+  main{padding:12px 16px 32px;max-width:860px;margin:0 auto}
+  .hinweis{color:var(--leise);font-size:13px;padding:28px 4px;text-align:center}
+  .karte{background:var(--karte);border:1px solid var(--rand);border-radius:var(--radius);
+         padding:12px 14px;margin-bottom:8px;display:block;width:100%;text-align:left;
+         color:inherit;border-left:3px solid var(--rand)}
+  .karte:focus-visible{outline:2px solid var(--akzent);outline-offset:2px}
+  .karte--pruefen{border-left-color:var(--warm)}
+  .karte--antwort{border-left-color:var(--akzent)}
+  .k-oben{display:flex;align-items:baseline;gap:8px}
+  .k-name{font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .k-lead{font-variant-numeric:tabular-nums;font-weight:700;font-size:15px}
+  .k-unten{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:7px;
+           color:var(--leise);font-size:12.5px}
+  .marke{padding:2px 7px;border-radius:999px;background:var(--grund);border:1px solid var(--rand);
+         font-size:11.5px;white-space:nowrap}
+  .marke--pruefen{background:var(--warm-hell);border-color:transparent;color:var(--warm);font-weight:600}
+  .marke--antwort{background:var(--akzent-hell);border-color:transparent;color:var(--akzent);font-weight:600}
+  .marke--schwer{background:var(--rot-hell);border-color:transparent;color:var(--rot)}
+  .trenner{color:var(--rand)}
+
+  /* ── Detailblatt ───────────────────────────────────────────── */
+  #blatt{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;
+         background:var(--grund)}
+  .b-kopf{position:sticky;top:0;display:flex;align-items:center;gap:10px;
+          padding:calc(12px + var(--oben)) 16px 12px;border-bottom:1px solid var(--rand);
+          background:var(--grund)}
+  .b-kopf h2{font-size:16px;margin:0;flex:1;min-width:0;overflow:hidden;
+             text-overflow:ellipsis;white-space:nowrap}
+  .zu{background:none;border:0;color:var(--leise);font-size:24px;line-height:1;
+      min-width:44px;min-height:44px;margin:-4px -8px -4px 0}
+  .b-rumpf{flex:1;overflow-y:auto;padding:14px 16px calc(28px + var(--unten));
+           max-width:860px;margin:0 auto;width:100%;-webkit-overflow-scrolling:touch}
+  .b-rumpf h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;
+              color:var(--leise);margin:22px 0 9px;font-weight:600}
+  .b-rumpf h3:first-child{margin-top:0}
+
+  .gitter{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:7px}
+  .wert{background:var(--karte);border:1px solid var(--rand);border-radius:9px;padding:8px 9px}
+  .wert b{display:block;font-size:18px;font-variant-numeric:tabular-nums;line-height:1.2}
+  .wert span{color:var(--leise);font-size:11px}
+
+  .zeile{display:flex;justify-content:space-between;gap:12px;padding:7px 0;
+         border-bottom:1px solid var(--rand);font-size:14px}
+  .zeile:last-child{border-bottom:0}
+  .zeile span:first-child{color:var(--leise)}
+  .zeile span:last-child{text-align:right;font-variant-numeric:tabular-nums}
+  .zeile a{display:inline-block;padding:6px 0;min-height:32px}
+
+  .befund{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--rand);font-size:13.5px}
+  .befund:last-child{border-bottom:0}
+  .punkt{flex:none;width:7px;height:7px;border-radius:50%;margin-top:6px;background:var(--leise)}
+  .punkt--high{background:var(--rot)} .punkt--medium{background:var(--warm)}
+  .befund p{margin:0} .befund em{color:var(--leise);font-style:normal;font-size:12.5px}
+
+  .knopfreihe{display:flex;flex-wrap:wrap;gap:7px}
+  .tat{padding:11px 14px;min-height:42px;border:1px solid var(--rand);border-radius:9px;
+       background:var(--karte);color:var(--text);font-size:13.5px;font-weight:500}
+  .tat--haupt{background:var(--akzent);border-color:var(--akzent);color:#fff}
+  .tat--warn{color:var(--rot);border-color:var(--rot)}
+  .tat:disabled{opacity:.45;cursor:default}
+  textarea.feld{min-height:84px;resize:vertical;margin-bottom:8px}
+  .meldung{font-size:13px;margin-top:9px;min-height:19px;color:var(--akzent)}
+  .meldung--fehler{color:var(--rot)}
+
+  .verlauf{font-size:13px;color:var(--leise)}
+  .verlauf li{margin-bottom:7px}
+
+  @media (min-width:700px){
+    .reiter{padding-bottom:12px}
+    main{padding-top:16px}
+  }
+</style>
+</head>
+<body>
+
+<div id="tor">
+  <form id="anmeldung">
+    <h1>Leads</h1>
+    <p>AdMemory · Akquise</p>
+    <input class="feld" type="password" id="passwort" placeholder="Passwort"
+           autocomplete="current-password" required>
+    <button class="knopf" type="submit">Anmelden</button>
+    <div class="fehler" id="torFehler" role="alert"></div>
+  </form>
+</div>
+
+<div id="app" hidden>
+  <header>
+    <div class="kopfzeile">
+      <h1>Leads</h1>
+      <span class="zahl" id="warteschlange"></span>
+      <button class="abmelden" id="abmelden">Abmelden</button>
+    </div>
+    <div class="reiter" id="reiter" role="tablist"></div>
+  </header>
+  <main id="liste"><p class="hinweis">Lade …</p></main>
+</div>
+
+<div id="blatt" hidden>
+  <div class="b-kopf">
+    <h2 id="bName"></h2>
+    <button class="zu" id="bZu" aria-label="Schließen">&times;</button>
+  </div>
+  <div class="b-rumpf" id="bRumpf"></div>
+</div>
+
+<script>
+const ANSICHTEN = [
+  { id:'pruefen',  label:'Entwurf prüfen', status:'entwurf_gebaut' },
+  { id:'antwort',  label:'Geantwortet',    status:'geantwortet' },
+  { id:'frei',     label:'Freigegeben',    status:'freigegeben' },
+  { id:'wartet',   label:'Beim Agenten',   status:'feedback_gegeben' },
+  { id:'leads',    label:'Beste Leads',    status:'gescannt', sortierung:'lead' },
+  { id:'versendet',label:'Versendet',      status:'versendet' },
+  { id:'alle',     label:'Alle',           status:null },
+];
+const STUFE = { mittelstand:'Mittelstand', etabliert:'etabliert', klein:'klein', kleinst:'kleinst' };
+const BRANCHE = { gastro:'Gastro', handwerk:'Handwerk', gesundheit:'Praxis', beratung:'Beratung',
+                  handel:'Handel', dienstleistung:'Dienstleistung', autohaus:'Autohaus',
+                  industrie:'Industrie' };
+const SCHWERE = { high:'schwer', medium:'mittel', low:'leicht' };
+
+let aktiv = null, daten = [], zaehler = {}, offen = null;
+
+const el = (id) => document.getElementById(id);
+const text = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const euro = (n) => n == null ? '–' : n.toLocaleString('de-DE') + ' €';
+const datum = (s) => s ? new Date(s).toLocaleDateString('de-DE', { day:'2-digit', month:'2-digit', year:'2-digit' }) : '–';
+
+async function hole(pfad, opt) {
+  const a = await fetch(pfad, { credentials:'same-origin', ...opt });
+  if (a.status === 401) { zeigeTor(); throw new Error('nicht angemeldet'); }
+  if (!a.ok) throw new Error((await a.json().catch(() => ({}))).fehler || 'Fehler');
+  return a.json();
+}
+
+/* ── Anmeldung ───────────────────────────────────────────────── */
+function zeigeTor(){ el('tor').hidden = false; el('app').hidden = true; el('blatt').hidden = true; }
+function zeigeApp(){ el('tor').hidden = true;  el('app').hidden = false; lade(); }
+
+el('anmeldung').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  el('torFehler').textContent = '';
+  try {
+    await hole('/api/anmelden', { method:'POST', headers:{'Content-Type':'application/json'},
+                                  body: JSON.stringify({ passwort: el('passwort').value }) });
+    el('passwort').value = '';
+    zeigeApp();
+  } catch (f) { el('torFehler').textContent = f.message; }
+});
+
+el('abmelden').addEventListener('click', async () => {
+  await fetch('/api/anmelden', { method:'DELETE', credentials:'same-origin' });
+  zeigeTor();
+});
+
+/* ── Liste ───────────────────────────────────────────────────── */
+function zeichneReiter(){
+  el('reiter').innerHTML = ANSICHTEN.map((a) => {
+    const n = a.status ? (zaehler[a.status] ?? 0) : Object.values(zaehler).reduce((s,x)=>s+x,0);
+    return `<button role="tab" aria-selected="${a.id===aktiv}" data-id="${a.id}">${a.label}` +
+           (n ? `<span class="n">${n}</span>` : '') + `</button>`;
+  }).join('');
+}
+
+el('reiter').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-id]');
+  if (!b) return;
+  aktiv = b.dataset.id;
+  zeichneReiter();
+  lade();
+});
+
+async function lade(){
+  /* Beim ersten Aufruf den ersten Reiter nehmen, in dem etwas steht. Fest auf
+     'Entwurf prüfen' zu starten hieß: solange noch kein Entwurf gebaut ist,
+     begrüßt das Dashboard mit einer leeren Seite. */
+  if (!aktiv) {
+    try { zaehler = (await hole('/api/zaehler')).nachStatus; } catch {}
+    aktiv = (ANSICHTEN.find((x) => x.status && zaehler[x.status]) ?? ANSICHTEN.find((x) => x.id === 'leads')).id;
+    zeichneReiter();
+  }
+  const a = ANSICHTEN.find((x) => x.id === aktiv);
+  el('liste').innerHTML = '<p class="hinweis">Lade …</p>';
+  const p = new URLSearchParams({ nurBewertet:'1' });
+  if (a.status) p.set('status', a.status);
+  if (a.sortierung) p.set('sortierung', a.sortierung);
+  try {
+    const r = await hole('/api/liste?' + p);
+    daten = r.betriebe;
+    hole('/api/zaehler').then((z) => { zaehler = z.nachStatus; zeichneReiter(); }).catch(() => {});
+    zeichneReiter(); zeichneListe();
+    ladeWarteschlange();
+  } catch (f) { el('liste').innerHTML = `<p class="hinweis">${text(f.message)}</p>`; }
+}
+
+function zeichneListe(){
+  if (!daten.length) {
+    el('liste').innerHTML = '<p class="hinweis">Hier ist gerade nichts zu tun.</p>';
+    return;
+  }
+  el('liste').innerHTML = daten.map((b) => {
+    const art = b.status === 'entwurf_gebaut' ? 'pruefen'
+              : b.status === 'geantwortet'    ? 'antwort' : '';
+    const marken = [];
+    if (b.status === 'entwurf_gebaut') marken.push('<span class="marke marke--pruefen">Entwurf da</span>');
+    if (b.status === 'geantwortet')    marken.push('<span class="marke marke--antwort">hat geantwortet</span>');
+    if (b.scan_stufe === 1)            marken.push('<span class="marke">nur Vorauswahl</span>');
+    if (b.befunde_schwer)              marken.push(`<span class="marke marke--schwer">${b.befunde_schwer} schwer</span>`);
+    return `<button class="karte ${art ? 'karte--' + art : ''}" data-id="${b.id}">
+      <span class="k-oben">
+        <span class="k-name">${text(b.name)}</span>
+        <span class="k-lead">${b.lead_score ?? '–'}</span>
+      </span>
+      <span class="k-unten">
+        <span>${text(BRANCHE[b.branche] ?? b.branche ?? '–')}</span>
+        <span class="trenner">·</span><span>${text(STUFE[b.groesse_stufe] ?? '–')}</span>
+        <span class="trenner">·</span><span>${euro(b.preis_bis)}</span>
+        ${marken.join('')}
+      </span>
+    </button>`;
+  }).join('');
+}
+
+el('liste').addEventListener('click', (e) => {
+  const k = e.target.closest('.karte[data-id]');
+  if (k) oeffne(k.dataset.id);
+});
+
+async function ladeWarteschlange(){
+  try {
+    const { auftraege, hinweis } = await hole('/api/warteschlange');
+    if (hinweis) { el('warteschlange').textContent = hinweis; return; }
+    const o = auftraege.filter((a) => a.status !== 'fehler').length;
+    const f = auftraege.filter((a) => a.status === 'fehler').length;
+    el('warteschlange').textContent =
+      (o ? `${o} beim Agenten` : '') + (f ? `${o ? ' · ' : ''}${f} Fehler` : '');
+  } catch {}
+}
+
+/* ── Detailblatt ─────────────────────────────────────────────── */
+async function oeffne(id){
+  el('blatt').hidden = false;
+  el('bName').textContent = 'Lade …';
+  el('bRumpf').innerHTML = '';
+  try { offen = await hole('/api/betrieb?id=' + encodeURIComponent(id)); zeichneBlatt(); }
+  catch (f) { el('bRumpf').innerHTML = `<p class="hinweis">${text(f.message)}</p>`; }
+}
+function schliesse(){ el('blatt').hidden = true; offen = null; }
+el('bZu').addEventListener('click', schliesse);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !el('blatt').hidden) schliesse(); });
+
+function zeichneBlatt(){
+  const b = offen;
+  el('bName').textContent = b.name;
+  const host = (b.website || '').replace(/^https?:\/\//, '');
+  const k = b.kategorien || {};
+  const wert = (n, l) => `<div class="wert"><b>${n ?? '–'}</b><span>${l}</span></div>`;
+
+  el('bRumpf').innerHTML = `
+    <h3>Bewertung</h3>
+    <div class="gitter">
+      ${wert(b.quality_score, 'Qualität')}
+      ${wert(b.lead_score, 'Lead')}
+      ${wert(k.impression, 'Eindruck')}
+      ${wert(k.mobile, 'Mobil')}
+      ${wert(k.content, 'Inhalt')}
+      ${wert(k.tech, 'Technik')}
+    </div>
+    ${b.scan_stufe === 1 ? '<p class="meldung">Nur Vorauswahl — Design-Urteil und Technik fehlen noch.</p>' : ''}
+    ${b.scan_unvollstaendig ? `<p class="meldung meldung--fehler">Scan unvollständig: ${text(b.scan_hinweis ?? '')}</p>` : ''}
+
+    <h3>Betrieb</h3>
+    <div class="zeile"><span>Website</span><span><a href="${text(b.website)}" target="_blank" rel="noopener noreferrer">${text(host)}</a></span></div>
+    <div class="zeile"><span>Branche</span><span>${text(BRANCHE[b.branche] ?? b.branche ?? '–')}</span></div>
+    <div class="zeile"><span>Ort</span><span>${text(b.stadt ?? '–')}</span></div>
+    <div class="zeile"><span>Größe</span><span>${text(STUFE[b.groesse_stufe] ?? '–')}${b.groesse_score != null ? ` (${b.groesse_score})` : ''}</span></div>
+    <div class="zeile"><span>Preisrahmen</span><span>${b.preis_von ? euro(b.preis_von) + ' – ' + euro(b.preis_bis) : '–'}</span></div>
+    <div class="zeile"><span>Google</span><span>${b.google_rating ?? '–'}★ · ${b.google_reviews ?? 0}</span></div>
+    <div class="zeile"><span>Letzter Scan</span><span>${datum(b.letzter_scan)}</span></div>
+    ${b.groesse_signale?.length ? `<div class="zeile"><span>Größensignale</span><span>${text(b.groesse_signale.join(', '))}</span></div>` : ''}
+    ${b.entwurf_url ? `<div class="zeile"><span>Entwurf</span><span><a href="${text(b.entwurf_url)}" target="_blank" rel="noopener noreferrer">ansehen</a></span></div>` : ''}
+
+    <h3>Befunde ${b.befunde.length ? `(${b.befunde.length})` : ''}</h3>
+    ${b.befunde.length ? b.befunde.slice(0, 40).map((f) => `
+      <div class="befund">
+        <span class="punkt punkt--${text(f.severity)}"></span>
+        <p>${text(f.text ?? f.titel ?? f.message ?? '')}
+          <br><em>${text(SCHWERE[f.severity] ?? f.severity ?? '')}${f.category ? ' · ' + text(f.category) : ''}</em></p>
+      </div>`).join('') : '<p class="hinweis">Keine Befunde erfasst.</p>'}
+
+    <h3>Korrektur an den Agenten</h3>
+    <textarea class="feld" id="fbText" placeholder="Was soll am Entwurf anders werden? Der Agent liest das beim nächsten Lauf."></textarea>
+    <div class="knopfreihe">
+      <button class="tat tat--haupt" data-tun="feedback">Feedback speichern</button>
+    </div>
+
+    <h3>Auftrag geben</h3>
+    <div class="knopfreihe">
+      <button class="tat" data-tun="auftrag" data-wert="entwurf_bauen">Entwurf bauen</button>
+      <button class="tat" data-tun="auftrag" data-wert="entwurf_neu_bauen">Neu bauen</button>
+      <button class="tat" data-tun="auftrag" data-wert="scan_stufe2">Vollbewertung</button>
+      <button class="tat" data-tun="auftrag" data-wert="mail_vorbereiten">Mail vorbereiten</button>
+    </div>
+
+    <h3>Status</h3>
+    <div class="knopfreihe">
+      <button class="tat" data-tun="status" data-wert="freigegeben">Freigegeben</button>
+      <button class="tat" data-tun="status" data-wert="versendet">Versendet</button>
+      <button class="tat" data-tun="status" data-wert="geantwortet">Hat geantwortet</button>
+      <button class="tat" data-tun="status" data-wert="kunde">Kunde</button>
+      <button class="tat" data-tun="status" data-wert="pausiert">Zurückstellen</button>
+      <button class="tat tat--warn" data-tun="status" data-wert="abgelehnt">Abgelehnt</button>
+    </div>
+    <div class="meldung" id="bMeldung" role="status"></div>
+
+    ${b.feedback?.length ? `<h3>Bisheriges Feedback</h3><ul class="verlauf">${
+      b.feedback.map((f) => `<li><b>Runde ${f.runde ?? '?'}</b> · ${datum(f.am)}<br>${text(f.text)}</li>`).join('')}</ul>` : ''}
+
+    ${b.auftraege?.length ? `<h3>Aufträge</h3><ul class="verlauf">${
+      b.auftraege.map((a) => `<li>${text(a.art)} · ${text(a.status)} · ${datum(a.angelegt_am)}${
+        a.fehler ? `<br><span style="color:var(--rot)">${text(a.fehler)}</span>` : ''}</li>`).join('')}</ul>` : ''}
+  `;
+}
+
+el('bRumpf').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-tun]');
+  if (!b || !offen) return;
+  const m = el('bMeldung');
+  const nutzlast = { id: offen.id, was: b.dataset.tun, wert: b.dataset.wert };
+  if (b.dataset.tun === 'feedback') {
+    nutzlast.anweisung = el('fbText').value.trim();
+    if (!nutzlast.anweisung) { m.className = 'meldung meldung--fehler'; m.textContent = 'Bitte erst etwas schreiben.'; return; }
+  }
+  if (b.dataset.tun === 'auftrag') nutzlast.anweisung = el('fbText')?.value.trim() || null;
+
+  b.disabled = true;
+  m.className = 'meldung'; m.textContent = 'Wird gespeichert …';
+  try {
+    const r = await hole('/api/aktion', { method:'POST', headers:{'Content-Type':'application/json'},
+                                          body: JSON.stringify(nutzlast) });
+    m.textContent = r.hinweis ?? 'Gespeichert.';
+    if (b.dataset.tun === 'feedback') el('fbText').value = '';
+    await oeffne(offen.id);
+    lade();
+  } catch (f) {
+    m.className = 'meldung meldung--fehler';
+    m.textContent = f.message;
+  } finally { b.disabled = false; }
+});
+
+/* ── Start ───────────────────────────────────────────────────── */
+hole('/api/stand').then(zeigeApp).catch(zeigeTor);
+</script>
+</body>
+</html>
