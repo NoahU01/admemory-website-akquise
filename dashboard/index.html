@@ -161,13 +161,36 @@ main{padding:1.7rem 1.9rem calc(2.5rem + var(--unten));min-width:0}
 .verlaufbar span:last-child{background:var(--accent)}
 
 /* ── Filterleiste ───────────────────────────────────────────────── */
-.filter{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:1.1rem}
-.filter select,.filter input{padding:.5rem .7rem;min-height:38px;border:1px solid var(--line);
-  border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;font-size:.84rem}
-.filter select:focus,.filter input:focus{outline:2px solid var(--accent);outline-offset:1px}
-.filter .zuruecksetzen{all:unset;cursor:pointer;color:var(--accent);font-size:.82rem;
-  padding:.5rem .3rem;min-height:38px;display:inline-flex;align-items:center;gap:.35rem}
-.treffermenge{color:var(--ink-3);font-size:.8rem;margin-left:auto}
+.filter{background:var(--panel);border-radius:var(--r);box-shadow:var(--shadow);
+  padding:.9rem 1.1rem;margin-bottom:1.1rem;display:flex;flex-wrap:wrap;gap:.9rem;align-items:flex-end}
+.fgruppe{display:flex;flex-direction:column;gap:.3rem;min-width:0}
+.fgruppe > label{font-size:.66rem;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--ink-3);font-weight:600}
+.filter select,.filter input{padding:.5rem .65rem;min-height:38px;border:1px solid var(--line);
+  border-radius:8px;background:var(--panel-2);color:var(--ink);font:inherit;font-size:.85rem;
+  appearance:none;-webkit-appearance:none}
+.filter select{padding-right:2rem;
+  /* Eigener Pfeil, damit er in beiden Farbmodi zur Schrift passt */
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23697586' stroke-width='1.8' stroke-linecap='round'><path d='M6 9l6 6l6-6'/></svg>");
+  background-repeat:no-repeat;background-position:right .5rem center;background-size:15px}
+.filter select:hover,.filter input:hover{border-color:var(--ink-3)}
+.filter select:focus,.filter input:focus{outline:2px solid var(--accent);outline-offset:1px;
+  border-color:var(--accent)}
+.fspanne{display:flex;align-items:center;gap:.35rem}
+.fspanne input{width:5.5rem}
+.fspanne span{color:var(--ink-3);font-size:.8rem}
+.zuruecksetzen{all:unset;cursor:pointer;color:var(--accent);font-size:.82rem;
+  padding:.5rem .55rem;min-height:38px;border-radius:8px;
+  display:inline-flex;align-items:center;gap:.4rem}
+.zuruecksetzen:hover{background:var(--accent-soft)}
+.treffermenge{color:var(--ink-3);font-size:.82rem;margin-left:auto;padding-bottom:.5rem;
+  font-variant-numeric:tabular-nums}
+@media(max-width:620px){
+  .filter{gap:.7rem}
+  .fgruppe{flex:1 1 44%}
+  .fgruppe select{width:100%}
+  .treffermenge{margin-left:0;flex:1 1 100%;padding-bottom:0}
+}
 
 /* ── Betriebskarten ─────────────────────────────────────────────── */
 .liste{display:grid;gap:.6rem;grid-template-columns:repeat(auto-fill,minmax(330px,1fr))}
@@ -367,18 +390,24 @@ const BUDGET  = { mittelstand:'Mittelstand', etabliert:'etabliert', klein:'klein
 const BRANCHE = { gastro:'Gastro', handwerk:'Handwerk', gesundheit:'Praxis', beratung:'Beratung',
                   handel:'Handel', dienstleistung:'Dienstleistung', autohaus:'Autohaus', industrie:'Industrie' };
 const SCHWERE = { high:'schwer', medium:'mittel', low:'leicht' };
+const PRUEFTIEFE = {
+  1: { label:'Schnellprüfung', hinweis:'ohne Design-Urteil und Technik — im Mittel 8 Punkte zu gut' },
+  2: { label:'Vollbewertung',  hinweis:'alle acht Kategorien, plus zwei Unterseiten' },
+};
 const VERBRAUCHSPHASE = { scan_stufe1:'Schnellprüfung', scan_stufe2:'Vollbewertung',
                           entwurf:'Entwürfe bauen', mail:'Mail-Entwürfe' };
 const RINGFARBEN = ['var(--s1)','var(--s2)','var(--s3)','var(--s4)','var(--s5)'];
 
 let seite = 'dashboard', daten = [], uebersicht = null, offen = null;
-let filter = { status:'', budget:'', branche:'', minScore:'', maxScore:'' };
+let filter = { status:'', stufe:'', budget:'', branche:'', minScore:'', maxScore:'' };
 
 const el = (id) => document.getElementById(id);
 const text = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const zahl = (n) => n == null ? '–' : n.toLocaleString('de-DE');
 const euro = (n) => n == null ? '–' : n.toLocaleString('de-DE') + ' €';
-const tsd  = (n) => n == null ? '–' : (n >= 10000 ? Math.round(n/1000) + ' Tsd.' : n.toLocaleString('de-DE')) + ' €';
+/* Beträge ausschreiben. '2777 Tsd. €' muss man erst im Kopf umrechnen —
+   2.777.000 € liest man einfach. */
+const tsd  = (n) => n == null ? '–' : n.toLocaleString('de-DE') + ' €';
 const datum = (s) => s ? new Date(s).toLocaleDateString('de-DE', { day:'2-digit', month:'2-digit', year:'2-digit' }) : '–';
 
 async function hole(pfad, opt) {
@@ -485,20 +514,23 @@ function zeichneDashboard(){
                                   .reduce((s, p) => s + p.anzahl, 0);
 
   const kpis = '<div class="grid g4">' +
-    kachel(zahl(inPipeline), 'In der Pipeline', 'leute', zahl(k.gesamt) + ' Betriebe gesamt') +
+    kachel(zahl(k.bewertet), 'Bewertet', 'leute',
+           'von ' + zahl(k.gesamt) + ' gesammelten Betrieben') +
+    kachel(zahl(k.voll), 'Vollbewertet', 'haken',
+           zahl(k.schnell) + ' erst schnellgeprüft') +
     kachel(zahl(wartetAufDich), 'Wartet auf dich', 'uhr',
-           k.offeneAuftraege ? k.offeneAuftraege + ' Aufträge beim Agenten' : 'Agent: nichts offen') +
+           k.offeneAuftraege ? k.offeneAuftraege + ' Aufträge beim Agenten'
+                             : (wartetAufDich ? 'ansehen und entscheiden' : 'gerade nichts')) +
     kachel(tsd(k.potenzialOffen), 'Offenes Potenzial', 'geld',
            u.neueSpalten === false ? 'ohne Auftragswerte — Migration 05 fehlt' : 'ohne Kunden und Absagen') +
-    kachel(k.umsatz ? tsd(k.umsatz) : '–', 'Umsatz', 'haken',
-           k.antwortrate != null ? k.antwortrate + ' % Antwortrate' : 'noch nichts versendet') +
     '</div>';
 
   const max = Math.max(...u.pipeline.map((p) => p.anzahl), 1);
   const pipeline = '<div class="card"><h2>' + ic('status') + 'Pipeline</h2>' +
-    '<p class="sub">Wo die Betriebe gerade stehen.</p>' +
+    '<p class="sub">Jede Zeile ist eine Station. Von oben nach unten nimmt die Arbeit zu.</p>' +
     u.pipeline.filter((p) => p.anzahl > 0).map((p) =>
-      '<div class="bar-row"><span class="flabel">' + text(p.label) + '</span>' +
+      '<div class="bar-row"><span class="flabel" title="' + text(p.hinweis ?? '') + '">' +
+        text(p.label) + '</span>' +
       '<span class="bar-track"><span class="bar-fill" style="width:' +
         Math.max(2, (p.anzahl / max) * 100).toFixed(1) + '%' +
         (['entwurf_gebaut','geantwortet'].includes(p.key) ? ';background:var(--warn)' : '') +
@@ -520,16 +552,24 @@ function zeichneDashboard(){
                               anzeige: Number(v.euro).toFixed(2).replace('.', ',') + ' €' })), gesamtEuro)) +
     '</div>';
 
-  const vl = u.verlauf ?? [];
-  const maxV = Math.max(...vl.map((d) => d.n), 1);
-  const verlauf = '<div class="card"><h2>' + ic('pfeilauf') + 'Bearbeitet</h2>' +
-    '<p class="sub">' + (vl.length ? 'Die letzten ' + vl.length + ' Tage mit Aktivität.' : 'Noch kein Verlauf.') + '</p>' +
-    (vl.length ? '<div class="verlaufbar">' + vl.map((d) =>
-      '<span style="height:' + Math.max(3, (d.n / maxV) * 100).toFixed(0) + '%" title="' +
-      d.tag + ': ' + d.n + '"></span>').join('') + '</div>' +
-      '<div class="bar-row" style="margin-top:.6rem;grid-template-columns:1fr auto">' +
-      '<span class="flabel">' + text(vl[0].tag) + ' bis ' + text(vl[vl.length-1].tag) + '</span>' +
-      '<span class="bar-val">' + zahl(vl.reduce((s,d)=>s+d.n,0)) + '</span></div>' : '') +
+  /* Das frühere Modul "Bearbeitet" zeigte Aktivität je Tag aus dem Scan-Datum.
+     Da alle Betriebe an zwei Tagen gescannt wurden, waren das zwei Balken ohne
+     Aussage. Solange es keine echte Bearbeitungshistorie gibt, zeigen wir
+     stattdessen, wie belastbar der Bestand ist — das ist die Frage, die vor
+     dem ersten Anschreiben zählt. */
+  const tiefe = '<div class="card"><h2>' + ic('befund') + 'Prüftiefe</h2>' +
+    '<p class="sub">Nur die Vollbewertung taugt für einen Pitch. Der Schnellprüfung fehlen ' +
+    'das Design-Urteil und die Technikmessung — zusammen ein Drittel der Gewichtung.</p>' +
+    [['Vollbewertung', k.voll, 'var(--good)'], ['Schnellprüfung', k.schnell, 'var(--warn)'],
+     ['Noch nicht bewertet', k.gesamt - k.bewertet, 'var(--ink-3)']]
+      .filter(([, n]) => n > 0).map(([l, n, farbe]) =>
+        '<div class="bar-row"><span class="flabel">' + l + '</span>' +
+        '<span class="bar-track"><span class="bar-fill" style="width:' +
+          Math.max(2, (n / Math.max(k.gesamt, 1)) * 100).toFixed(1) + '%;background:' + farbe + '"></span></span>' +
+        '<span class="bar-val">' + zahl(n) + '</span></div>').join('') +
+    (k.gesperrt ? '<p class="sub" style="margin:.9rem 0 0">' + zahl(k.gesperrt) +
+      (k.gesperrt === 1 ? ' Betrieb konnte' : ' Betriebe konnten') +
+      ' nicht vollständig gescannt werden — meist Bot-Schutz.</p>' : '') +
     '</div>';
 
   const versand = '<div class="card"><h2>' + ic('brief') + 'Versand</h2>' +
@@ -545,7 +585,7 @@ function zeichneDashboard(){
     '</div>';
 
   el('inhalt').innerHTML = kpis + '<div class="grid g2 mt">' + pipeline + verbrauch + '</div>' +
-                           '<div class="grid g2 mt">' + verlauf + versand + '</div>';
+                           '<div class="grid g2 mt">' + tiefe + versand + '</div>';
 }
 
 /* ── Datenbank ──────────────────────────────────────────────────── */
@@ -554,6 +594,7 @@ async function ladeDatenbank(){
   if (filter.status)  p.set('status', filter.status);
   if (filter.budget)  p.set('groesse', filter.budget);
   if (filter.branche) p.set('branche', filter.branche);
+  if (filter.stufe)   p.set('stufe', filter.stufe);
   const r = await hole('/api/liste?' + p);
   daten = r.betriebe;
   // Score-Grenzen filtert die Oberfläche, damit das Zurücksetzen ohne neue
@@ -567,24 +608,28 @@ async function ladeDatenbank(){
 }
 
 function auswahl(id, label, werte, gewaehlt){
-  return '<select id="' + id + '" aria-label="' + label + '"><option value="">' + label + ': alle</option>' +
-    werte.map(([v, t]) => '<option value="' + v + '"' + (v === gewaehlt ? ' selected' : '') + '>' +
-      text(t) + '</option>').join('') + '</select>';
+  return '<div class="fgruppe"><label for="' + id + '">' + text(label) + '</label>' +
+    '<select id="' + id + '"><option value="">alle</option>' +
+    werte.map(([v, t]) => '<option value="' + v + '"' + (String(v) === String(gewaehlt) ? ' selected' : '') + '>' +
+      text(t) + '</option>').join('') + '</select></div>';
 }
 
 function zeichneDatenbank(sichtbar, gesamt){
   const gesetzt = Object.values(filter).some((v) => v !== '');
   const leiste = '<div class="filter">' +
     auswahl('fStatus', 'Phase', Object.entries(PHASE), filter.status) +
+    auswahl('fStufe', 'Prüftiefe', [[2, 'Vollbewertung'], [1, 'Schnellprüfung']], filter.stufe) +
     auswahl('fBudget', 'Budget', Object.entries(BUDGET), filter.budget) +
     auswahl('fBranche', 'Branche', Object.entries(BRANCHE), filter.branche) +
-    '<input id="fMin" class="feld" style="width:112px" type="number" min="0" max="100" ' +
-      'placeholder="Score ab" value="' + text(filter.minScore) + '">' +
-    '<input id="fMax" class="feld" style="width:112px" type="number" min="0" max="100" ' +
-      'placeholder="Score bis" value="' + text(filter.maxScore) + '">' +
+    '<div class="fgruppe"><label for="fMin">Qualitäts-Score</label><span class="fspanne">' +
+      '<input id="fMin" type="number" min="0" max="100" placeholder="ab" value="' + text(filter.minScore) + '">' +
+      '<span>bis</span>' +
+      '<input id="fMax" type="number" min="0" max="100" placeholder="bis" value="' + text(filter.maxScore) + '">' +
+    '</span></div>' +
     (gesetzt ? '<button class="zuruecksetzen" id="fReset">' + ic('zurueck') + 'Zurücksetzen</button>' : '') +
     '<span class="treffermenge">' + zahl(sichtbar.length) +
-      (sichtbar.length !== gesamt ? ' von ' + zahl(gesamt) : '') + ' Betriebe</span>' +
+      (sichtbar.length !== gesamt ? ' von ' + zahl(gesamt) : '') +
+      (sichtbar.length === 1 ? ' Betrieb' : ' Betriebe') + '</span>' +
     '</div>';
 
   const karten = !sichtbar.length
@@ -614,10 +659,11 @@ function zeichneDatenbank(sichtbar, gesamt){
   const setze = (id, feld) => el(id)?.addEventListener('change', (e) => {
     filter[feld] = e.target.value; ladeDatenbank();
   });
-  setze('fStatus', 'status'); setze('fBudget', 'budget'); setze('fBranche', 'branche');
+  setze('fStatus', 'status'); setze('fStufe', 'stufe');
+  setze('fBudget', 'budget'); setze('fBranche', 'branche');
   setze('fMin', 'minScore');  setze('fMax', 'maxScore');
   el('fReset')?.addEventListener('click', () => {
-    filter = { status:'', budget:'', branche:'', minScore:'', maxScore:'' };
+    filter = { status:'', stufe:'', budget:'', branche:'', minScore:'', maxScore:'' };
     ladeDatenbank();
   });
 }

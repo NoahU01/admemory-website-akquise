@@ -32,6 +32,9 @@ export default async function handler(req, res) {
       if (p.get('minLead'))  q = q.gte('lead', Number(p.get('minLead')));
       if (p.get('suche'))    q = q.or(`name.ilike.%${p.get('suche')}%,website.ilike.%${p.get('suche')}%`);
       if (p.get('nurBewertet') === '1') q = q.not('qualitaet', 'is', null);
+      // Prüftiefe: 1 = Schnellprüfung, 2 = Vollbewertung. Danach sucht Noah,
+      // weil nur die Vollbewertung für einen Pitch belastbar ist.
+      if (p.get('stufe') && neueFelder) q = q.eq('scan_stufe', Number(p.get('stufe')));
       return q;
     };
 

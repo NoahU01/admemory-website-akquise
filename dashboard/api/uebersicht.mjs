@@ -21,12 +21,14 @@ export default async function handler(req, res) {
     const db = datenbank();
     const zaehle = async (bauen) => (await bauen(db.from('unternehmen').select('*', { count: 'exact', head: true }))).count ?? 0;
 
-    const [pipeline, gesamt, bewertet, gross, gesperrt] = await Promise.all([
+    const [pipeline, gesamt, bewertet, gross, gesperrt, schnell, voll] = await Promise.all([
       Promise.all(PHASEN.map(async (p) => ({ ...p, anzahl: await zaehle((q) => q.eq('status', p.key)) }))),
       zaehle((q) => q),
       zaehle((q) => q.not('quality_score', 'is', null)),
       zaehle((q) => q.in('groesse_stufe', ['mittelstand', 'etabliert']).not('quality_score', 'is', null)),
       zaehle((q) => q.eq('scan_unvollstaendig', true)),
+      zaehle((q) => q.eq('scan_stufe', 1).not('quality_score', 'is', null)),
+      zaehle((q) => q.eq('scan_stufe', 2).not('quality_score', 'is', null)),
     ]);
 
     /* Offenes Potenzial: nur was noch nicht gewonnen oder abgelehnt ist. Die
@@ -77,7 +79,7 @@ export default async function handler(req, res) {
     res.status(200).json({
       pipeline, verbrauch, verbrauchFehlt, auftraegeFehlt, neueSpalten,
       kennzahlen: {
-        gesamt, bewertet, gross, gesperrt, potenzialOffen, umsatz, versendet, geantwortet,
+        gesamt, bewertet, gross, gesperrt, schnell, voll, potenzialOffen, umsatz, versendet, geantwortet,
         antwortrate: versendet ? Math.round((geantwortet / versendet) * 100) : null,
         offeneAuftraege: auftraege.filter((x) => x.status !== 'fehler').length,
         fehlerAuftraege: auftraege.filter((x) => x.status === 'fehler').length,
