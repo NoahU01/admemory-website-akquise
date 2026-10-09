@@ -9,6 +9,7 @@
    Stufe 2 — Vollbewertung mit Design-Urteil und Lighthouse, ~50 s, ~11 ct:
      node scan.mjs <url>                        einzelne Seite
      node scan.mjs --stufe2 --top=10            die zehn besten aus Stufe 1
+     node scan.mjs --stufe2 --top=60 --gross    nur Betriebe ab Stufe 'etabliert'
 
    Weitere Schalter:  --gleichzeitig=4  --branche=handwerk                  */
 import 'dotenv/config';
@@ -17,6 +18,7 @@ import path from 'node:path';
 import { stufe1, stufe2, parallel } from './lib/stufen.mjs';
 import { printReport } from './lib/report.mjs';
 import { speichereScan, dbAktiv, db } from './lib/db.mjs';
+import { istKonzern } from './lib/sammler.mjs';
 
 const args = process.argv.slice(2);
 const flag = (n, d) => { const a = args.find((x) => x.startsWith(`--${n}=`)); return a ? a.split('=')[1] : d; };
@@ -46,9 +48,20 @@ if (args.includes('--aus-db') || args.includes('--alle') || args.includes('--top
      wären 36 nie gescannt worden, ohne jede Fehlermeldung. */
   let data = [], error = null;
   if (top) {
-    ({ data, error } = await db().from('unternehmen')
-      .select('website,lead_score,status,google_rating,google_reviews,standorte')
-      .eq('status', 'gescannt').order('lead_score', { ascending: false }).limit(top));
+    /* Mehr geholt als gebraucht, weil danach gefiltert wird: Konzernauftritte
+       (die Website gehört der Zentrale) und, mit --gross, alles unter Stufe
+       'etabliert'. Sonst füllen Kleinstbetriebe mit sehr schwachen Seiten die
+       Liste — die haben den höchsten Bedarf, aber 900 € Budget. */
+    const grossNur = args.includes('--gross');
+    const { data: roh, error: e } = await db().from('unternehmen')
+      .select('website,lead_score,status,google_rating,google_reviews,standorte,groesse_stufe')
+      .eq('status', 'gescannt')
+      .order('lead_score', { ascending: false }).limit(Math.min(1000, top * 6 + 100));
+    error = e;
+    data = (roh ?? [])
+      .filter((u) => u.website && !istKonzern(u.website))
+      .filter((u) => !grossNur || ['mittelstand', 'etabliert'].includes(u.groesse_stufe))
+      .slice(0, top);
   } else {
     const SEITE = 1000;
     for (let von = 0; ; von += SEITE) {
@@ -65,7 +78,7 @@ if (args.includes('--aus-db') || args.includes('--alle') || args.includes('--top
   // Sterne und Bewertungszahl gehen in den Lead-Wert ein — bisher lagen sie
   // ungenutzt in der Tabelle, weil der Bewerter sie nie zu sehen bekam.
   for (const u of data) if (u.website) externeSignale.set(normHost(u.website), { rating: u.google_rating, reviews: u.google_reviews, standorte: u.standorte });
-  console.log(`${urls.length} Betriebe aus der Datenbank geladen${top ? ` (beste ${top} nach Lead-Wert)` : alle ? " (neu + bereits gescannt)" : " (Status 'neu')"}`);
+  console.log(`${urls.length} Betriebe aus der Datenbank geladen${top ? ` (beste ${top} nach Lead-Wert${args.includes('--gross') ? ", ab Stufe 'etabliert'" : ''})` : alle ? " (neu + bereits gescannt)" : " (Status 'neu')"}`);
 }
 if (!urls.length) { console.error('Nichts zu tun. --list <datei>, --aus-db oder --top=N angeben.'); process.exit(1); }
 
