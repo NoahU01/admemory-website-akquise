@@ -4,139 +4,228 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Leads · AdMemory</title>
+<title>Lead-Dashboard · AdMemory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-  :root{
-    --grund:#fbfaf8; --karte:#fff; --rand:#e6e2db; --text:#1b1815; --leise:#6d665d;
-    --akzent:#1f6f4a; --akzent-hell:#e8f2ec;
-    --warm:#b4541f; --warm-hell:#fdf0e7;
-    --rot:#a32b22; --rot-hell:#fcebe9;
-    --radius:12px;
-    --oben:env(safe-area-inset-top,0px); --unten:env(safe-area-inset-bottom,0px);
-  }
-  @media (prefers-color-scheme: dark){
-    :root{ --grund:#15130f; --karte:#1e1b17; --rand:#332e27; --text:#f0ece5; --leise:#9a9186;
-           --akzent:#5fb98c; --akzent-hell:#1c2f26; --warm:#e0915e; --warm-hell:#2e2318;
-           --rot:#e8766c; --rot-hell:#2e1a18; }
-  }
-  *{box-sizing:border-box}
-  html{-webkit-text-size-adjust:100%}
-  body{margin:0;background:var(--grund);color:var(--text);
-       font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
-       padding-top:var(--oben);padding-bottom:var(--unten)}
-  [hidden]{display:none!important}
-  button{font:inherit;cursor:pointer}
-  a{color:var(--akzent)}
+/* Farben und Maße aus dem Analytics-Dashboard übernommen (Berry-Designsprache,
+   codedthemes, MIT). Gleiche Marken, gleiche Abstände, gleiche Seitenleiste —
+   beide Oberflächen sollen später zusammenwachsen, nicht nebeneinanderstehen. */
+:root{
+  --bg:#EEF2F6; --panel:#FFFFFF; --panel-2:#F8FAFC; --sunk:#EEF2F6;
+  --line:#E3E8EF; --line-soft:#EEF2F6;
+  --ink:#121926; --ink-2:#4B5565; --ink-3:#697586;
+  --accent:#673AB7; --accent-soft:#EDE7F6;
+  --good:#00A152; --warn:#B76E00; --bad:#F44336;
+  --bad-ink:#C62828; --good-ink:#00753A; --warn-ink:#9A5500;
+  --brand-1:#673AB7; --brand-2:#2196F3; --on-brand:#FFFFFF;
+  --nav:#FFFFFF; --nav-ink:#364152; --nav-ink-hell:#673AB7;
+  --nav-aktiv:#EDE7F6; --nav-linie:#EEF2F6;
+  --r:8px;
+  --shadow:0 2px 14px 0 rgba(32,40,45,.08);
+  --shadow-lift:0 4px 22px 0 rgba(32,40,45,.14);
+  --oben:env(safe-area-inset-top,0px); --unten:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1A223F; --panel:#111936; --panel-2:#212946; --sunk:#212946;
+  --line:#29314F; --line-soft:#212946;
+  --ink:#D7DCEC; --ink-2:#BDC8F0; --ink-3:#8492C4;
+  --accent:#B39DDB; --accent-soft:#29314F;
+  --good:#00C853; --warn:#FFC107; --bad:#F44336;
+  --bad-ink:#EF9A9A; --good-ink:#00C853; --warn-ink:#FFC107;
+  --nav:#111936; --nav-ink:#8492C4; --nav-ink-hell:#D7DCEC;
+  --nav-aktiv:#29314F; --nav-linie:#212946;
+  --shadow:0 2px 14px 0 rgba(0,0,0,.35);
+  --shadow-lift:0 4px 22px 0 rgba(0,0,0,.45);
+}}
 
-  /* ── Anmeldung ─────────────────────────────────────────────── */
-  #tor{position:fixed;inset:0;background:var(--grund);z-index:50;
-       display:grid;place-items:center;padding:24px}
-  #tor form{width:100%;max-width:300px;text-align:center}
-  #tor h1{font-size:19px;margin:0 0 4px}
-  #tor p{color:var(--leise);font-size:13px;margin:0 0 20px}
-  .feld{width:100%;padding:11px 13px;border:1px solid var(--rand);border-radius:10px;
-        background:var(--karte);color:var(--text);font:inherit}
-  .feld:focus{outline:2px solid var(--akzent);outline-offset:1px;border-color:var(--akzent)}
-  .knopf{width:100%;margin-top:10px;padding:13px;min-height:46px;border:0;border-radius:10px;
-         background:var(--akzent);color:#fff;font-weight:600}
-  .fehler{color:var(--rot);font-size:13px;margin-top:10px;min-height:19px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Roboto",system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.5;
+  -webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+button{font:inherit;cursor:pointer}
+a{color:var(--accent)}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
 
-  /* ── Kopf ──────────────────────────────────────────────────── */
-  header{position:sticky;top:var(--oben);z-index:20;background:var(--grund);
-         border-bottom:1px solid var(--rand)}
-  .kopfzeile{display:flex;align-items:center;gap:10px;padding:12px 16px 8px}
-  .kopfzeile h1{font-size:16px;margin:0;flex:1;letter-spacing:-.01em}
-  .zahl{color:var(--leise);font-size:12px;font-variant-numeric:tabular-nums}
-  .abmelden{background:none;border:0;color:var(--leise);font-size:12.5px;padding:10px 4px;min-height:38px}
+/* ── Anmeldung ──────────────────────────────────────────────────── */
+#tor{position:fixed;inset:0;background:var(--bg);z-index:60;display:grid;place-items:center;padding:24px}
+#tor .card{width:100%;max-width:330px;text-align:center}
+#tor h1{font-size:1.05rem;margin:0 0 .15rem;letter-spacing:-.015em}
+#tor p{color:var(--ink-3);font-size:.8rem;margin:0 0 1.3rem}
+.feld{width:100%;padding:.7rem .8rem;border:1px solid var(--line);border-radius:7px;
+  background:var(--panel-2);color:var(--ink);font:inherit}
+.feld:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.knopf{width:100%;margin-top:.6rem;padding:.75rem;min-height:44px;border:0;border-radius:7px;
+  background:linear-gradient(90deg,var(--brand-1),var(--brand-2));color:var(--on-brand);font-weight:600}
+.fehler{color:var(--bad-ink);font-size:.8rem;margin-top:.7rem;min-height:1.2rem}
 
-  .reiter{display:flex;gap:6px;overflow-x:auto;padding:0 16px 10px;
-          scrollbar-width:none;-webkit-overflow-scrolling:touch}
-  .reiter::-webkit-scrollbar{display:none}
-  .reiter button{white-space:nowrap;padding:9px 14px;min-height:38px;border:1px solid var(--rand);
-                 border-radius:999px;background:var(--karte);color:var(--leise);font-size:13px}
-  .reiter button[aria-selected=true]{background:var(--text);color:var(--grund);border-color:var(--text);font-weight:600}
-  .reiter .n{font-variant-numeric:tabular-nums;opacity:.65;margin-left:4px}
+/* ── Rahmen ─────────────────────────────────────────────────────── */
+.app{display:grid;grid-template-columns:252px 1fr;min-height:100vh}
+@media(max-width:900px){.app{grid-template-columns:1fr}}
 
-  /* ── Liste ─────────────────────────────────────────────────── */
-  main{padding:12px 16px 32px;max-width:860px;margin:0 auto}
-  .hinweis{color:var(--leise);font-size:13px;padding:28px 4px;text-align:center}
-  .karte{background:var(--karte);border:1px solid var(--rand);border-radius:var(--radius);
-         padding:12px 14px;margin-bottom:8px;display:block;width:100%;text-align:left;
-         color:inherit;border-left:3px solid var(--rand)}
-  .karte:focus-visible{outline:2px solid var(--akzent);outline-offset:2px}
-  .karte--pruefen{border-left-color:var(--warm)}
-  .karte--antwort{border-left-color:var(--akzent)}
-  .k-oben{display:flex;align-items:baseline;gap:8px}
-  .k-name{font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .k-lead{font-variant-numeric:tabular-nums;font-weight:700;font-size:15px}
-  .k-unten{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:7px;
-           color:var(--leise);font-size:12.5px}
-  .marke{padding:2px 7px;border-radius:999px;background:var(--grund);border:1px solid var(--rand);
-         font-size:11.5px;white-space:nowrap}
-  .marke--pruefen{background:var(--warm-hell);border-color:transparent;color:var(--warm);font-weight:600}
-  .marke--antwort{background:var(--akzent-hell);border-color:transparent;color:var(--akzent);font-weight:600}
-  .marke--schwer{background:var(--rot-hell);border-color:transparent;color:var(--rot)}
-  .trenner{color:var(--rand)}
+aside{background:var(--nav);color:var(--nav-ink);display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;overflow:auto;padding-top:var(--oben);
+  /* Ohne min-width:0 darf ein Rasterelement breiter werden als seine Spur —
+     die scrollbare Navigationsleiste schob die ganze Seite um 481 px auf. */
+  min-width:0}
+/* Am Telefon wird die Seitenleiste zur schmalen Leiste über dem Inhalt: als
+   Block umbrochen füllte sie den ganzen ersten Bildschirm, und die Liste lag
+   unter der Falz. Eine Arbeitsliste, die man erst wegscrollen muss, ist keine. */
+@media(max-width:900px){
+  aside{position:sticky;top:0;height:auto;z-index:30;box-shadow:var(--shadow);overflow:visible}
+  .brand{padding:calc(.7rem + var(--oben)) 1rem .5rem}
+  .brand .logo{width:22px;height:22px;font-size:.7rem}
+  .brand b{font-size:.86rem}
+  .navfuss{display:none}
+}
+.brand{display:flex;align-items:center;gap:.6rem;padding:1.3rem 1.15rem 1.05rem}
+.brand .logo{width:26px;height:26px;flex:0 0 auto;border-radius:7px;
+  background:linear-gradient(135deg,var(--brand-1),var(--brand-2));display:grid;place-items:center;
+  color:#fff;font-weight:700;font-size:.8rem}
+.brand b{font-size:.94rem;font-weight:600;letter-spacing:-.015em;color:var(--nav-ink-hell)}
+nav{display:flex;flex-direction:column;gap:2px;padding:.5rem .7rem}
+@media(max-width:900px){
+  nav{flex-direction:row;flex-wrap:nowrap;gap:.3rem;overflow-x:auto;padding:0 .7rem .6rem;
+      scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  nav::-webkit-scrollbar{display:none}
+  /* Die Gruppentitel tragen in einer Zeile nichts bei und kosten nur Platz —
+     die Reihenfolge der Einträge sagt dasselbe. */
+  .navgruppentitel{display:none}
+  nav button{flex:none;border:1px solid var(--line);border-radius:99px;padding:.5rem .8rem;min-height:38px}
+  nav button[aria-current="true"]{border-color:transparent}
+  nav button[aria-current="true"]::before{display:none}
+}
+.navgruppentitel{font-size:.7rem;font-weight:600;letter-spacing:.04em;color:var(--ink-3);
+  text-transform:uppercase;padding:.75rem .85rem .35rem}
+.navgruppentitel:not(:first-child){border-top:1px solid var(--nav-linie);margin-top:.5rem;padding-top:1rem}
+nav button{all:unset;cursor:pointer;padding:.6rem .75rem .6rem .85rem;border-radius:7px;font-size:.86rem;
+  color:var(--nav-ink);display:flex;align-items:center;gap:.5rem;min-height:40px;box-sizing:border-box;
+  transition:background .12s,color .12s;position:relative}
+nav button:hover{background:var(--nav-aktiv);color:var(--nav-ink-hell)}
+nav button[aria-current="true"]{background:var(--nav-aktiv);color:var(--nav-ink-hell);font-weight:500}
+nav button[aria-current="true"]::before{content:"";position:absolute;left:0;top:.45rem;bottom:.45rem;
+  width:3px;border-radius:0 2px 2px 0;background:linear-gradient(180deg,var(--brand-1),var(--brand-2))}
+nav button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.navtext{flex:1;min-width:0}
+.navzahl{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.68rem;font-weight:500;
+  min-width:1.15rem;text-align:center;padding:.05rem .3rem;border-radius:99px;
+  background:var(--sunk);color:var(--ink-3)}
+nav button[aria-current="true"] .navzahl{background:color-mix(in srgb,var(--brand-1) 16%,transparent);color:var(--nav-ink-hell)}
+.navpunkt{width:6px;height:6px;border-radius:50%;background:#FFD600;flex:none;
+  box-shadow:0 0 0 3px color-mix(in srgb,#FFD600 22%,transparent)}
+.navfuss{margin-top:auto;padding:1rem 1.15rem calc(1rem + var(--unten));font-size:.74rem;color:var(--ink-3);
+  border-top:1px solid var(--nav-linie)}
+.navfuss button{all:unset;cursor:pointer;color:var(--accent);font-size:.74rem;margin-top:.3rem;
+  min-height:32px;display:inline-flex;align-items:center}
 
-  /* ── Detailblatt ───────────────────────────────────────────── */
-  #blatt{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;
-         background:var(--grund)}
-  .b-kopf{position:sticky;top:0;display:flex;align-items:center;gap:10px;
-          padding:calc(12px + var(--oben)) 16px 12px;border-bottom:1px solid var(--rand);
-          background:var(--grund)}
-  .b-kopf h2{font-size:16px;margin:0;flex:1;min-width:0;overflow:hidden;
-             text-overflow:ellipsis;white-space:nowrap}
-  .zu{background:none;border:0;color:var(--leise);font-size:24px;line-height:1;
-      min-width:44px;min-height:44px;margin:-4px -8px -4px 0}
-  .b-rumpf{flex:1;overflow-y:auto;padding:14px 16px calc(28px + var(--unten));
-           max-width:860px;margin:0 auto;width:100%;-webkit-overflow-scrolling:touch}
-  .b-rumpf h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;
-              color:var(--leise);margin:22px 0 9px;font-weight:600}
-  .b-rumpf h3:first-child{margin-top:0}
+main{padding:1.6rem 1.8rem calc(2.5rem + var(--unten));min-width:0}
+@media(max-width:900px){main{padding:1.1rem 1rem 2rem}}
+.seitenkopf{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.15rem}
+.seitenkopf h1{font-size:1.35rem;font-weight:600;margin:0;letter-spacing:-.02em}
+.lede{color:var(--ink-3);font-size:.83rem;margin:.15rem 0 0}
 
-  .gitter{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:7px}
-  .wert{background:var(--karte);border:1px solid var(--rand);border-radius:9px;padding:8px 9px}
-  .wert b{display:block;font-size:18px;font-variant-numeric:tabular-nums;line-height:1.2}
-  .wert span{color:var(--leise);font-size:11px}
+/* ── Kacheln und Karten ─────────────────────────────────────────── */
+.grid{display:grid;gap:.8rem}
+.g4{grid-template-columns:repeat(auto-fit,minmax(168px,1fr))}
+.card{background:var(--panel);border:0;border-radius:var(--r);padding:1.35rem 1.45rem;
+  box-shadow:var(--shadow);transition:box-shadow .2s ease}
+.card.kpi{position:relative;overflow:hidden;padding:1.1rem 1.2rem}
+.card.kpi::before{content:"";position:absolute;inset:0 0 auto 0;height:2px;
+  background:linear-gradient(90deg,var(--brand-1),var(--brand-2));opacity:.55}
+.kpi .label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600}
+.kpi .value{font-size:1.75rem;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums;
+  margin-top:.1rem;line-height:1.1}
+.kpi .foot{font-size:.72rem;color:var(--ink-3);margin-top:.3rem}
 
-  .zeile{display:flex;justify-content:space-between;gap:12px;padding:7px 0;
-         border-bottom:1px solid var(--rand);font-size:14px}
-  .zeile:last-child{border-bottom:0}
-  .zeile span:first-child{color:var(--leise)}
-  .zeile span:last-child{text-align:right;font-variant-numeric:tabular-nums}
-  .zeile a{display:inline-block;padding:6px 0;min-height:32px}
+/* ── Trefferliste ───────────────────────────────────────────────── */
+.liste{display:flex;flex-direction:column;gap:.5rem;margin-top:1.15rem}
+.treffer{background:var(--panel);border:0;border-radius:var(--r);box-shadow:var(--shadow);
+  padding:.9rem 1.1rem;display:grid;grid-template-columns:1fr auto;gap:.3rem .9rem;
+  text-align:left;color:inherit;width:100%;transition:box-shadow .18s ease;position:relative;overflow:hidden}
+.treffer:hover{box-shadow:var(--shadow-lift)}
+.treffer:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.treffer::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent}
+.treffer.t-pruefen::before{background:var(--warn)}
+.treffer.t-antwort::before{background:var(--good)}
+.treffer.t-gesperrt::before{background:var(--bad)}
+.t-name{font-weight:600;font-size:.95rem;letter-spacing:-.01em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.t-wert{font-family:"IBM Plex Mono",monospace;font-size:1.05rem;font-weight:500;
+  text-align:right;align-self:center;grid-row:span 2}
+.t-zeile{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;color:var(--ink-3);font-size:.78rem}
+.t-zeile .punkt{color:var(--line)}
+.chip{font-size:.69rem;padding:.1rem .45rem;border-radius:99px;background:var(--sunk);color:var(--ink-2);
+  white-space:nowrap}
+.chip--warn{background:color-mix(in srgb,var(--warn) 14%,transparent);color:var(--warn-ink);font-weight:500}
+.chip--good{background:color-mix(in srgb,var(--good) 14%,transparent);color:var(--good-ink);font-weight:500}
+.chip--bad{background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad-ink);font-weight:500}
+.hint{background:var(--sunk);border:1px dashed var(--line);border-radius:var(--r);
+  padding:1.6rem 1rem;color:var(--ink-2);font-size:.84rem;text-align:center;margin-top:1.15rem}
 
-  .befund{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--rand);font-size:13.5px}
-  .befund:last-child{border-bottom:0}
-  .punkt{flex:none;width:7px;height:7px;border-radius:50%;margin-top:6px;background:var(--leise)}
-  .punkt--high{background:var(--rot)} .punkt--medium{background:var(--warm)}
-  .befund p{margin:0} .befund em{color:var(--leise);font-style:normal;font-size:12.5px}
+/* ── Detailblatt ────────────────────────────────────────────────── */
+#blatt{position:fixed;inset:0;z-index:50;background:rgba(18,25,38,.45);display:flex;justify-content:flex-end}
+.blattinhalt{background:var(--bg);width:min(560px,100%);height:100%;overflow-y:auto;
+  -webkit-overflow-scrolling:touch;box-shadow:var(--shadow-lift)}
+.b-kopf{position:sticky;top:0;z-index:2;background:var(--panel);box-shadow:var(--shadow);
+  padding:calc(1.1rem + var(--oben)) 1.3rem 1.1rem;display:flex;align-items:flex-start;gap:.8rem}
+.b-kopf h2{font-size:1.05rem;margin:0;letter-spacing:-.015em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zu{all:unset;cursor:pointer;color:var(--ink-3);font-size:1.4rem;line-height:1;
+  min-width:44px;min-height:44px;display:grid;place-items:center;margin:-.6rem -.6rem 0 0;border-radius:7px}
+.zu:hover{background:var(--sunk);color:var(--ink)}
+.b-rumpf{padding:1.1rem 1.3rem calc(2.5rem + var(--unten));display:flex;flex-direction:column;gap:.8rem}
+h3{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);
+  font-weight:600;margin:0 0 .7rem}
 
-  .knopfreihe{display:flex;flex-wrap:wrap;gap:7px}
-  .tat{padding:11px 14px;min-height:42px;border:1px solid var(--rand);border-radius:9px;
-       background:var(--karte);color:var(--text);font-size:13.5px;font-weight:500}
-  .tat--haupt{background:var(--akzent);border-color:var(--akzent);color:#fff}
-  .tat--warn{color:var(--rot);border-color:var(--rot)}
-  .tat:disabled{opacity:.45;cursor:default}
-  textarea.feld{min-height:84px;resize:vertical;margin-bottom:8px}
-  .meldung{font-size:13px;margin-top:9px;min-height:19px;color:var(--akzent)}
-  .meldung--fehler{color:var(--rot)}
+.werte{display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:.5rem}
+.wert{background:var(--panel-2);border-radius:7px;padding:.55rem .6rem}
+.wert b{display:block;font-family:"IBM Plex Mono",monospace;font-size:1.1rem;font-weight:500;line-height:1.2}
+.wert span{color:var(--ink-3);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em}
 
-  .verlauf{font-size:13px;color:var(--leise)}
-  .verlauf li{margin-bottom:7px}
+.zeile{display:flex;justify-content:space-between;gap:1rem;padding:.45rem 0;
+  border-bottom:1px solid var(--line-soft);font-size:.84rem}
+.zeile:last-child{border-bottom:0}
+.zeile > span:first-child{color:var(--ink-3)}
+.zeile > span:last-child{text-align:right}
+.zeile a{display:inline-block;padding:.25rem 0}
 
-  @media (min-width:700px){
-    .reiter{padding-bottom:12px}
-    main{padding-top:16px}
-  }
+.befund{display:grid;grid-template-columns:auto 1fr;gap:.6rem;padding:.55rem 0;
+  border-bottom:1px solid var(--line-soft);font-size:.83rem}
+.befund:last-child{border-bottom:0}
+.punktmarke{width:7px;height:7px;border-radius:50%;margin-top:.45rem;background:var(--ink-3)}
+.punktmarke.high{background:var(--bad)} .punktmarke.medium{background:var(--warn)}
+.befund p{margin:0}
+.befund em{color:var(--ink-3);font-style:normal;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em}
+
+.knopfreihe{display:flex;flex-wrap:wrap;gap:.45rem}
+.tat{all:unset;cursor:pointer;padding:.6rem .85rem;min-height:40px;box-sizing:border-box;
+  border:1px solid var(--line);border-radius:7px;background:var(--panel-2);color:var(--ink);
+  font-size:.82rem;font-weight:500;display:inline-flex;align-items:center}
+.tat:hover{border-color:var(--accent);color:var(--accent)}
+.tat:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.tat--haupt{background:linear-gradient(90deg,var(--brand-1),var(--brand-2));border-color:transparent;color:var(--on-brand)}
+.tat--haupt:hover{color:var(--on-brand);opacity:.92}
+.tat--warn{color:var(--bad-ink);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
+.tat--warn:hover{border-color:var(--bad);color:var(--bad-ink)}
+.tat[disabled]{opacity:.45;cursor:default}
+textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86rem}
+.meldung{font-size:.8rem;margin-top:.6rem;min-height:1.2rem;color:var(--good-ink)}
+.meldung--fehler{color:var(--bad-ink)}
+.meldung--warn{color:var(--warn-ink)}
+.verlauf{margin:0;padding-left:1.1rem;font-size:.82rem;color:var(--ink-2)}
+.verlauf li{margin-bottom:.5rem}
+.verlauf b{color:var(--ink)}
 </style>
 </head>
 <body>
 
 <div id="tor">
-  <form id="anmeldung">
-    <h1>Leads</h1>
-    <p>AdMemory · Akquise</p>
+  <form class="card" id="anmeldung">
+    <h1>Lead-Akquise</h1>
+    <p>AdMemory</p>
     <input class="feld" type="password" id="passwort" placeholder="Passwort"
            autocomplete="current-password" required>
     <button class="knopf" type="submit">Anmelden</button>
@@ -144,46 +233,75 @@
   </form>
 </div>
 
-<div id="app" hidden>
-  <header>
-    <div class="kopfzeile">
-      <h1>Leads</h1>
-      <span class="zahl" id="warteschlange"></span>
-      <button class="abmelden" id="abmelden">Abmelden</button>
+<div class="app" id="app" hidden>
+  <aside>
+    <div class="brand"><span class="logo">A</span><b>Lead-Akquise</b></div>
+    <nav id="nav"></nav>
+    <div class="navfuss">
+      <div id="agentstand">&mdash;</div>
+      <button id="abmelden">Abmelden</button>
     </div>
-    <div class="reiter" id="reiter" role="tablist"></div>
-  </header>
-  <main id="liste"><p class="hinweis">Lade …</p></main>
+  </aside>
+
+  <main>
+    <div class="seitenkopf">
+      <div>
+        <h1 id="titel">Lade &hellip;</h1>
+        <p class="lede" id="untertitel"></p>
+      </div>
+    </div>
+    <div class="grid g4" id="kennzahlen"></div>
+    <div id="liste"></div>
+  </main>
 </div>
 
 <div id="blatt" hidden>
-  <div class="b-kopf">
-    <h2 id="bName"></h2>
-    <button class="zu" id="bZu" aria-label="Schließen">&times;</button>
+  <div class="blattinhalt">
+    <div class="b-kopf">
+      <div style="flex:1;min-width:0">
+        <h2 id="bName"></h2>
+        <p class="lede" id="bUnter"></p>
+      </div>
+      <button class="zu" id="bZu" aria-label="Schließen">&times;</button>
+    </div>
+    <div class="b-rumpf" id="bRumpf"></div>
   </div>
-  <div class="b-rumpf" id="bRumpf"></div>
 </div>
 
 <script>
 const ANSICHTEN = [
-  { id:'pruefen',  label:'Entwurf prüfen', status:'entwurf_gebaut' },
-  { id:'antwort',  label:'Geantwortet',    status:'geantwortet' },
-  { id:'frei',     label:'Freigegeben',    status:'freigegeben' },
-  { id:'wartet',   label:'Beim Agenten',   status:'feedback_gegeben' },
-  { id:'leads',    label:'Beste Leads',    status:'gescannt', sortierung:'lead' },
-  { id:'versendet',label:'Versendet',      status:'versendet' },
-  { id:'alle',     label:'Alle',           status:null },
+  { gruppe:'Zu tun' },
+  { id:'pruefen', label:'Entwurf prüfen', status:'entwurf_gebaut',
+    titel:'Entwürfe prüfen', lede:'Der Agent hat gebaut — ansehen und Korrekturen geben.' },
+  { id:'antwort', label:'Geantwortet', status:'geantwortet',
+    titel:'Hat geantwortet', lede:'Diese Betriebe haben auf die Mail reagiert.' },
+  { id:'frei', label:'Freigegeben', status:'freigegeben',
+    titel:'Freigegeben', lede:'Entwurf steht, die Mail kann raus.' },
+  { id:'wartet', label:'Beim Agenten', status:'feedback_gegeben',
+    titel:'Beim Agenten', lede:'Feedback liegt vor, der nächste Lauf arbeitet es ein.' },
+
+  { gruppe:'Bestand' },
+  { id:'leads', label:'Beste Leads', status:'gescannt', sortierung:'lead',
+    titel:'Beste Leads', lede:'Bewertet, noch kein Entwurf. Nach Lead-Wert sortiert.' },
+  { id:'gross', label:'Ab etabliert', status:'gescannt', sortierung:'lead', groesse:'mittelstand,etabliert',
+    titel:'Größere Betriebe', lede:'Nur ab Stufe „etabliert“ — dort liegt das Budget.' },
+  { id:'versendet', label:'Versendet', status:'versendet',
+    titel:'Versendet', lede:'Mail ist raus, Antwort steht aus.' },
+  { id:'kunde', label:'Kunden', status:'kunde',
+    titel:'Kunden', lede:'Aus dem Pitch wurde ein Auftrag.' },
+  { id:'alle', label:'Alle', status:null,
+    titel:'Alle Betriebe', lede:'Der gesamte bewertete Bestand.' },
 ];
-const STUFE = { mittelstand:'Mittelstand', etabliert:'etabliert', klein:'klein', kleinst:'kleinst' };
+const STUFE   = { mittelstand:'Mittelstand', etabliert:'etabliert', klein:'klein', kleinst:'kleinst' };
 const BRANCHE = { gastro:'Gastro', handwerk:'Handwerk', gesundheit:'Praxis', beratung:'Beratung',
-                  handel:'Handel', dienstleistung:'Dienstleistung', autohaus:'Autohaus',
-                  industrie:'Industrie' };
+                  handel:'Handel', dienstleistung:'Dienstleistung', autohaus:'Autohaus', industrie:'Industrie' };
 const SCHWERE = { high:'schwer', medium:'mittel', low:'leicht' };
 
-let aktiv = null, daten = [], zaehler = {}, offen = null;
+let aktiv = null, daten = [], zaehler = {}, kennzahlen = {}, offen = null;
 
 const el = (id) => document.getElementById(id);
 const text = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const zahl = (n) => n == null ? '–' : n.toLocaleString('de-DE');
 const euro = (n) => n == null ? '–' : n.toLocaleString('de-DE') + ' €';
 const datum = (s) => s ? new Date(s).toLocaleDateString('de-DE', { day:'2-digit', month:'2-digit', year:'2-digit' }) : '–';
 
@@ -194,9 +312,9 @@ async function hole(pfad, opt) {
   return a.json();
 }
 
-/* ── Anmeldung ───────────────────────────────────────────────── */
+/* ── Anmeldung ──────────────────────────────────────────────────── */
 function zeigeTor(){ el('tor').hidden = false; el('app').hidden = true; el('blatt').hidden = true; }
-function zeigeApp(){ el('tor').hidden = true;  el('app').hidden = false; lade(); }
+function zeigeApp(){ el('tor').hidden = true;  el('app').hidden = false; starte(); }
 
 el('anmeldung').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -208,179 +326,193 @@ el('anmeldung').addEventListener('submit', async (e) => {
     zeigeApp();
   } catch (f) { el('torFehler').textContent = f.message; }
 });
-
 el('abmelden').addEventListener('click', async () => {
   await fetch('/api/anmelden', { method:'DELETE', credentials:'same-origin' });
   zeigeTor();
 });
 
-/* ── Liste ───────────────────────────────────────────────────── */
-function zeichneReiter(){
-  el('reiter').innerHTML = ANSICHTEN.map((a) => {
-    const n = a.status ? (zaehler[a.status] ?? 0) : Object.values(zaehler).reduce((s,x)=>s+x,0);
-    return `<button role="tab" aria-selected="${a.id===aktiv}" data-id="${a.id}">${a.label}` +
-           (n ? `<span class="n">${n}</span>` : '') + `</button>`;
+/* ── Navigation ─────────────────────────────────────────────────── */
+function zeichneNav(){
+  el('nav').innerHTML = ANSICHTEN.map((a) => {
+    if (a.gruppe) return '<div class="navgruppentitel">' + text(a.gruppe) + '</div>';
+    /* 'Ab etabliert' teilt sich den Status mit 'Beste Leads' — ohne Sonderfall
+       stünde dort dieselbe Zahl, obwohl die Ansicht enger gefasst ist. */
+    const n = a.id === 'gross' ? (kennzahlen.gross ?? 0)
+            : a.status ? (zaehler[a.status] ?? 0)
+            : (kennzahlen.bewertet ?? 0);
+    const dringend = (a.id === 'pruefen' || a.id === 'antwort') && n > 0;
+    return '<button data-id="' + a.id + '" aria-current="' + (a.id === aktiv) + '">' +
+           (dringend ? '<span class="navpunkt"></span>' : '') +
+           '<span class="navtext">' + text(a.label) + '</span>' +
+           (n ? '<span class="navzahl">' + n + '</span>' : '') + '</button>';
   }).join('');
+  if (window.matchMedia('(max-width:900px)').matches)
+    el('nav').querySelector('[aria-current="true"]')?.scrollIntoView({ inline:'center', block:'nearest' });
 }
-
-el('reiter').addEventListener('click', (e) => {
+el('nav').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-id]');
-  if (!b) return;
+  if (!b || b.dataset.id === aktiv) return;
   aktiv = b.dataset.id;
-  zeichneReiter();
-  lade();
+  zeichneNav(); lade();
 });
 
+/* ── Kennzahlen ─────────────────────────────────────────────────── */
+function zeichneKennzahlen(){
+  const k = kennzahlen;
+  const kachel = (wert, label, fuss) =>
+    '<div class="card kpi"><div class="label">' + text(label) + '</div>' +
+    '<div class="value">' + wert + '</div><div class="foot">' + text(fuss) + '</div></div>';
+  el('kennzahlen').innerHTML =
+    kachel(zahl(k.gesamt), 'Betriebe', zahl(k.bewertet) + ' bewertet') +
+    kachel(zahl(k.gross), 'Ab etabliert', 'dort liegt das Budget') +
+    kachel(zahl(zaehler.entwurf_gebaut ?? 0), 'Entwürfe offen', 'warten auf Durchsicht') +
+    kachel(k.potenzial ? Math.round(k.potenzial / 1000) + ' Tsd.' : '–', 'Potenzial',
+           'Summe der oberen Preisgrenzen');
+}
+
+/* ── Liste ──────────────────────────────────────────────────────── */
+async function starte(){
+  try { const z = await hole('/api/zaehler'); zaehler = z.nachStatus; kennzahlen = z.kennzahlen; } catch {}
+  /* Öffnen auf dem, was wartet: Ein Dashboard, das fest auf „Entwurf prüfen“
+     startet, begrüßt mit einer leeren Seite, solange nichts gebaut ist. */
+  aktiv = (ANSICHTEN.find((x) => (x.id === 'pruefen' || x.id === 'antwort') && zaehler[x.status])
+        ?? ANSICHTEN.find((x) => x.id === 'leads')).id;
+  zeichneNav(); zeichneKennzahlen(); lade(); ladeAgent();
+}
+
 async function lade(){
-  /* Beim ersten Aufruf den ersten Reiter nehmen, in dem etwas steht. Fest auf
-     'Entwurf prüfen' zu starten hieß: solange noch kein Entwurf gebaut ist,
-     begrüßt das Dashboard mit einer leeren Seite. */
-  if (!aktiv) {
-    try { zaehler = (await hole('/api/zaehler')).nachStatus; } catch {}
-    aktiv = (ANSICHTEN.find((x) => x.status && zaehler[x.status]) ?? ANSICHTEN.find((x) => x.id === 'leads')).id;
-    zeichneReiter();
-  }
   const a = ANSICHTEN.find((x) => x.id === aktiv);
-  el('liste').innerHTML = '<p class="hinweis">Lade …</p>';
+  el('titel').textContent = a.titel;
+  el('untertitel').textContent = a.lede;
+  el('liste').innerHTML = '<div class="hint">Lade …</div>';
   const p = new URLSearchParams({ nurBewertet:'1' });
   if (a.status) p.set('status', a.status);
   if (a.sortierung) p.set('sortierung', a.sortierung);
+  if (a.groesse) p.set('groesse', a.groesse);
   try {
     const r = await hole('/api/liste?' + p);
     daten = r.betriebe;
-    hole('/api/zaehler').then((z) => { zaehler = z.nachStatus; zeichneReiter(); }).catch(() => {});
-    zeichneReiter(); zeichneListe();
-    ladeWarteschlange();
-  } catch (f) { el('liste').innerHTML = `<p class="hinweis">${text(f.message)}</p>`; }
+    zeichneListe(r.anzahl);
+    hole('/api/zaehler').then((z) => { zaehler = z.nachStatus; kennzahlen = z.kennzahlen;
+      zeichneNav(); zeichneKennzahlen(); }).catch(() => {});
+  } catch (f) { el('liste').innerHTML = '<div class="hint">' + text(f.message) + '</div>'; }
 }
 
-function zeichneListe(){
-  if (!daten.length) {
-    el('liste').innerHTML = '<p class="hinweis">Hier ist gerade nichts zu tun.</p>';
-    return;
-  }
-  el('liste').innerHTML = daten.map((b) => {
-    const art = b.status === 'entwurf_gebaut' ? 'pruefen'
-              : b.status === 'geantwortet'    ? 'antwort' : '';
-    const marken = [];
-    if (b.status === 'entwurf_gebaut') marken.push('<span class="marke marke--pruefen">Entwurf da</span>');
-    if (b.status === 'geantwortet')    marken.push('<span class="marke marke--antwort">hat geantwortet</span>');
-    if (b.scan_stufe === 1)            marken.push('<span class="marke">nur Vorauswahl</span>');
-    if (b.befunde_schwer)              marken.push(`<span class="marke marke--schwer">${b.befunde_schwer} schwer</span>`);
-    return `<button class="karte ${art ? 'karte--' + art : ''}" data-id="${b.id}">
-      <span class="k-oben">
-        <span class="k-name">${text(b.name)}</span>
-        <span class="k-lead">${b.lead_score ?? '–'}</span>
-      </span>
-      <span class="k-unten">
-        <span>${text(BRANCHE[b.branche] ?? b.branche ?? '–')}</span>
-        <span class="trenner">·</span><span>${text(STUFE[b.groesse_stufe] ?? '–')}</span>
-        <span class="trenner">·</span><span>${euro(b.preis_bis)}</span>
-        ${marken.join('')}
-      </span>
-    </button>`;
+function zeichneListe(anzahl){
+  if (!daten.length) { el('liste').innerHTML = '<div class="hint">Hier ist gerade nichts zu tun.</div>'; return; }
+  const zeilen = daten.map((b) => {
+    const art = b.scan_unvollstaendig ? 't-gesperrt'
+              : b.status === 'entwurf_gebaut' ? 't-pruefen'
+              : b.status === 'geantwortet' ? 't-antwort' : '';
+    const chips = [];
+    if (b.status === 'entwurf_gebaut') chips.push('<span class="chip chip--warn">Entwurf da</span>');
+    if (b.status === 'geantwortet')    chips.push('<span class="chip chip--good">hat geantwortet</span>');
+    if (b.scan_unvollstaendig)         chips.push('<span class="chip chip--bad">Scan unvollständig</span>');
+    if (b.scan_stufe === 1)            chips.push('<span class="chip">nur Vorauswahl</span>');
+    if (b.befunde_schwer)              chips.push('<span class="chip chip--bad">' + b.befunde_schwer + ' schwer</span>');
+    return '<button class="treffer ' + art + '" data-id="' + b.id + '">' +
+      '<span class="t-name">' + text(b.name) + '</span>' +
+      '<span class="t-wert">' + (b.lead_score ?? '–') + '</span>' +
+      '<span class="t-zeile"><span>' + text(BRANCHE[b.branche] ?? b.branche ?? '–') + '</span>' +
+      '<span class="punkt">·</span><span>' + text(STUFE[b.groesse_stufe] ?? '–') + '</span>' +
+      '<span class="punkt">·</span><span>' + euro(b.preis_bis) + '</span>' +
+      chips.join('') + '</span></button>';
   }).join('');
+  el('liste').innerHTML = '<div class="liste">' + zeilen + '</div>' +
+    (anzahl > daten.length ? '<div class="hint">' + zahl(anzahl) + ' Treffer, die ersten ' + daten.length + ' gezeigt.</div>' : '');
 }
 
 el('liste').addEventListener('click', (e) => {
-  const k = e.target.closest('.karte[data-id]');
-  if (k) oeffne(k.dataset.id);
+  const t = e.target.closest('.treffer[data-id]');
+  if (t) oeffne(t.dataset.id);
 });
 
-async function ladeWarteschlange(){
+async function ladeAgent(){
   try {
-    const { auftraege, hinweis } = await hole('/api/warteschlange');
-    if (hinweis) { el('warteschlange').textContent = hinweis; return; }
-    const o = auftraege.filter((a) => a.status !== 'fehler').length;
-    const f = auftraege.filter((a) => a.status === 'fehler').length;
-    el('warteschlange').textContent =
-      (o ? `${o} beim Agenten` : '') + (f ? `${o ? ' · ' : ''}${f} Fehler` : '');
+    const r = await hole('/api/warteschlange');
+    if (r.hinweis) { el('agentstand').textContent = r.hinweis; return; }
+    const o = r.auftraege.filter((a) => a.status !== 'fehler').length;
+    const f = r.auftraege.filter((a) => a.status === 'fehler').length;
+    el('agentstand').textContent = (o || f)
+      ? [o ? o + ' beim Agenten' : '', f ? f + ' Fehler' : ''].filter(Boolean).join(' · ')
+      : 'Agent: nichts offen';
   } catch {}
 }
 
-/* ── Detailblatt ─────────────────────────────────────────────── */
+/* ── Detailblatt ────────────────────────────────────────────────── */
 async function oeffne(id){
   el('blatt').hidden = false;
-  el('bName').textContent = 'Lade …';
-  el('bRumpf').innerHTML = '';
+  el('bName').textContent = 'Lade …'; el('bUnter').textContent = ''; el('bRumpf').innerHTML = '';
   try { offen = await hole('/api/betrieb?id=' + encodeURIComponent(id)); zeichneBlatt(); }
-  catch (f) { el('bRumpf').innerHTML = `<p class="hinweis">${text(f.message)}</p>`; }
+  catch (f) { el('bRumpf').innerHTML = '<div class="hint">' + text(f.message) + '</div>'; }
 }
 function schliesse(){ el('blatt').hidden = true; offen = null; }
 el('bZu').addEventListener('click', schliesse);
+el('blatt').addEventListener('click', (e) => { if (e.target === el('blatt')) schliesse(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !el('blatt').hidden) schliesse(); });
 
 function zeichneBlatt(){
-  const b = offen;
-  el('bName').textContent = b.name;
+  const b = offen, k = b.kategorien || {};
   const host = (b.website || '').replace(/^https?:\/\//, '');
-  const k = b.kategorien || {};
-  const wert = (n, l) => `<div class="wert"><b>${n ?? '–'}</b><span>${l}</span></div>`;
+  el('bName').textContent = b.name;
+  el('bUnter').textContent = [BRANCHE[b.branche] ?? b.branche, b.stadt, STUFE[b.groesse_stufe]]
+    .filter(Boolean).join(' · ');
+  const w = (n, l) => '<div class="wert"><b>' + (n ?? '–') + '</b><span>' + l + '</span></div>';
+  const z = (l, v) => '<div class="zeile"><span>' + l + '</span><span>' + v + '</span></div>';
 
-  el('bRumpf').innerHTML = `
-    <h3>Bewertung</h3>
-    <div class="gitter">
-      ${wert(b.quality_score, 'Qualität')}
-      ${wert(b.lead_score, 'Lead')}
-      ${wert(k.impression, 'Eindruck')}
-      ${wert(k.mobile, 'Mobil')}
-      ${wert(k.content, 'Inhalt')}
-      ${wert(k.tech, 'Technik')}
-    </div>
-    ${b.scan_stufe === 1 ? '<p class="meldung">Nur Vorauswahl — Design-Urteil und Technik fehlen noch.</p>' : ''}
-    ${b.scan_unvollstaendig ? `<p class="meldung meldung--fehler">Scan unvollständig: ${text(b.scan_hinweis ?? '')}</p>` : ''}
+  el('bRumpf').innerHTML =
+    '<div class="card"><h3>Bewertung</h3><div class="werte">' +
+      w(b.quality_score, 'Qualität') + w(b.lead_score, 'Lead') + w(k.impression, 'Eindruck') +
+      w(k.mobile, 'Mobil') + w(k.content, 'Inhalt') + w(k.tech, 'Technik') + '</div>' +
+      (b.scan_unvollstaendig ? '<p class="meldung meldung--fehler">' + text(b.scan_hinweis ?? 'Scan unvollständig') + '</p>' : '') +
+      (b.scan_stufe === 1 ? '<p class="meldung meldung--warn">Nur Vorauswahl — Design-Urteil und Technik fehlen.</p>' : '') +
+    '</div>' +
 
-    <h3>Betrieb</h3>
-    <div class="zeile"><span>Website</span><span><a href="${text(b.website)}" target="_blank" rel="noopener noreferrer">${text(host)}</a></span></div>
-    <div class="zeile"><span>Branche</span><span>${text(BRANCHE[b.branche] ?? b.branche ?? '–')}</span></div>
-    <div class="zeile"><span>Ort</span><span>${text(b.stadt ?? '–')}</span></div>
-    <div class="zeile"><span>Größe</span><span>${text(STUFE[b.groesse_stufe] ?? '–')}${b.groesse_score != null ? ` (${b.groesse_score})` : ''}</span></div>
-    <div class="zeile"><span>Preisrahmen</span><span>${b.preis_von ? euro(b.preis_von) + ' – ' + euro(b.preis_bis) : '–'}</span></div>
-    <div class="zeile"><span>Google</span><span>${b.google_rating ?? '–'}★ · ${b.google_reviews ?? 0}</span></div>
-    <div class="zeile"><span>Letzter Scan</span><span>${datum(b.letzter_scan)}</span></div>
-    ${b.groesse_signale?.length ? `<div class="zeile"><span>Größensignale</span><span>${text(b.groesse_signale.join(', '))}</span></div>` : ''}
-    ${b.entwurf_url ? `<div class="zeile"><span>Entwurf</span><span><a href="${text(b.entwurf_url)}" target="_blank" rel="noopener noreferrer">ansehen</a></span></div>` : ''}
+    '<div class="card"><h3>Betrieb</h3>' +
+      z('Website', '<a href="' + text(b.website) + '" target="_blank" rel="noopener noreferrer">' + text(host) + '</a>') +
+      z('Preisrahmen', '<span class="mono">' + (b.preis_von ? euro(b.preis_von) + ' – ' + euro(b.preis_bis) : '–') + '</span>') +
+      z('Größe', text(STUFE[b.groesse_stufe] ?? '–') + (b.groesse_score != null ? ' <span class="mono">(' + b.groesse_score + ')</span>' : '')) +
+      z('Google', '<span class="mono">' + (b.google_rating ?? '–') + ' ★ · ' + zahl(b.google_reviews ?? 0) + '</span>') +
+      z('Letzter Scan', '<span class="mono">' + datum(b.letzter_scan) + '</span>') +
+      (b.groesse_signale?.length ? z('Größensignale', text(b.groesse_signale.join(', '))) : '') +
+      (b.entwurf_url ? z('Entwurf', '<a href="' + text(b.entwurf_url) + '" target="_blank" rel="noopener noreferrer">ansehen</a>') : '') +
+    '</div>' +
 
-    <h3>Befunde ${b.befunde.length ? `(${b.befunde.length})` : ''}</h3>
-    ${b.befunde.length ? b.befunde.slice(0, 40).map((f) => `
-      <div class="befund">
-        <span class="punkt punkt--${text(f.severity)}"></span>
-        <p>${text(f.text ?? f.titel ?? f.message ?? '')}
-          <br><em>${text(SCHWERE[f.severity] ?? f.severity ?? '')}${f.category ? ' · ' + text(f.category) : ''}</em></p>
-      </div>`).join('') : '<p class="hinweis">Keine Befunde erfasst.</p>'}
+    '<div class="card"><h3>Befunde' + (b.befunde.length ? ' (' + b.befunde.length + ')' : '') + '</h3>' +
+      (b.befunde.length ? b.befunde.slice(0, 40).map((f) =>
+        '<div class="befund"><span class="punktmarke ' + text(f.severity) + '"></span><p>' +
+        text(f.text ?? f.titel ?? f.message ?? '') + '<br><em>' +
+        text(SCHWERE[f.severity] ?? f.severity ?? '') + (f.category ? ' · ' + text(f.category) : '') +
+        '</em></p></div>').join('')
+        : '<p class="lede" style="margin:0">Keine Befunde erfasst.</p>') +
+    '</div>' +
 
-    <h3>Korrektur an den Agenten</h3>
-    <textarea class="feld" id="fbText" placeholder="Was soll am Entwurf anders werden? Der Agent liest das beim nächsten Lauf."></textarea>
-    <div class="knopfreihe">
-      <button class="tat tat--haupt" data-tun="feedback">Feedback speichern</button>
-    </div>
+    '<div class="card"><h3>Korrektur an den Agenten</h3>' +
+      '<textarea class="feld" id="fbText" placeholder="Was soll am Entwurf anders werden?"></textarea>' +
+      '<div class="knopfreihe"><button class="tat tat--haupt" data-tun="feedback">Feedback speichern</button></div>' +
+      '<h3 style="margin-top:1.3rem">Auftrag geben</h3><div class="knopfreihe">' +
+        '<button class="tat" data-tun="auftrag" data-wert="entwurf_bauen">Entwurf bauen</button>' +
+        '<button class="tat" data-tun="auftrag" data-wert="entwurf_neu_bauen">Neu bauen</button>' +
+        '<button class="tat" data-tun="auftrag" data-wert="scan_stufe2">Vollbewertung</button>' +
+        '<button class="tat" data-tun="auftrag" data-wert="mail_vorbereiten">Mail vorbereiten</button></div>' +
+      '<h3 style="margin-top:1.3rem">Status</h3><div class="knopfreihe">' +
+        '<button class="tat" data-tun="status" data-wert="freigegeben">Freigegeben</button>' +
+        '<button class="tat" data-tun="status" data-wert="versendet">Versendet</button>' +
+        '<button class="tat" data-tun="status" data-wert="geantwortet">Hat geantwortet</button>' +
+        '<button class="tat" data-tun="status" data-wert="kunde">Kunde</button>' +
+        '<button class="tat" data-tun="status" data-wert="pausiert">Zurückstellen</button>' +
+        '<button class="tat tat--warn" data-tun="status" data-wert="abgelehnt">Abgelehnt</button></div>' +
+      '<div class="meldung" id="bMeldung" role="status"></div>' +
+    '</div>' +
 
-    <h3>Auftrag geben</h3>
-    <div class="knopfreihe">
-      <button class="tat" data-tun="auftrag" data-wert="entwurf_bauen">Entwurf bauen</button>
-      <button class="tat" data-tun="auftrag" data-wert="entwurf_neu_bauen">Neu bauen</button>
-      <button class="tat" data-tun="auftrag" data-wert="scan_stufe2">Vollbewertung</button>
-      <button class="tat" data-tun="auftrag" data-wert="mail_vorbereiten">Mail vorbereiten</button>
-    </div>
+    (b.feedback?.length ? '<div class="card"><h3>Bisheriges Feedback</h3><ul class="verlauf">' +
+      b.feedback.map((f) => '<li><b>Runde ' + (f.runde ?? '?') + '</b> · ' + datum(f.am) + '<br>' + text(f.text) + '</li>').join('') +
+      '</ul></div>' : '') +
 
-    <h3>Status</h3>
-    <div class="knopfreihe">
-      <button class="tat" data-tun="status" data-wert="freigegeben">Freigegeben</button>
-      <button class="tat" data-tun="status" data-wert="versendet">Versendet</button>
-      <button class="tat" data-tun="status" data-wert="geantwortet">Hat geantwortet</button>
-      <button class="tat" data-tun="status" data-wert="kunde">Kunde</button>
-      <button class="tat" data-tun="status" data-wert="pausiert">Zurückstellen</button>
-      <button class="tat tat--warn" data-tun="status" data-wert="abgelehnt">Abgelehnt</button>
-    </div>
-    <div class="meldung" id="bMeldung" role="status"></div>
-
-    ${b.feedback?.length ? `<h3>Bisheriges Feedback</h3><ul class="verlauf">${
-      b.feedback.map((f) => `<li><b>Runde ${f.runde ?? '?'}</b> · ${datum(f.am)}<br>${text(f.text)}</li>`).join('')}</ul>` : ''}
-
-    ${b.auftraege?.length ? `<h3>Aufträge</h3><ul class="verlauf">${
-      b.auftraege.map((a) => `<li>${text(a.art)} · ${text(a.status)} · ${datum(a.angelegt_am)}${
-        a.fehler ? `<br><span style="color:var(--rot)">${text(a.fehler)}</span>` : ''}</li>`).join('')}</ul>` : ''}
-  `;
+    (b.auftraege?.length ? '<div class="card"><h3>Aufträge</h3><ul class="verlauf">' +
+      b.auftraege.map((a) => '<li><b>' + text(a.art) + '</b> · ' + text(a.status) + ' · ' + datum(a.angelegt_am) +
+        (a.fehler ? '<br><span style="color:var(--bad-ink)">' + text(a.fehler) + '</span>' : '') + '</li>').join('') +
+      '</ul></div>' : '');
 }
 
 el('bRumpf').addEventListener('click', async (e) => {
@@ -388,11 +520,12 @@ el('bRumpf').addEventListener('click', async (e) => {
   if (!b || !offen) return;
   const m = el('bMeldung');
   const nutzlast = { id: offen.id, was: b.dataset.tun, wert: b.dataset.wert };
+  const fb = el('fbText')?.value.trim() ?? '';
   if (b.dataset.tun === 'feedback') {
-    nutzlast.anweisung = el('fbText').value.trim();
-    if (!nutzlast.anweisung) { m.className = 'meldung meldung--fehler'; m.textContent = 'Bitte erst etwas schreiben.'; return; }
+    if (!fb) { m.className = 'meldung meldung--fehler'; m.textContent = 'Bitte erst etwas schreiben.'; return; }
+    nutzlast.anweisung = fb;
   }
-  if (b.dataset.tun === 'auftrag') nutzlast.anweisung = el('fbText')?.value.trim() || null;
+  if (b.dataset.tun === 'auftrag') nutzlast.anweisung = fb || null;
 
   b.disabled = true;
   m.className = 'meldung'; m.textContent = 'Wird gespeichert …';
@@ -400,16 +533,12 @@ el('bRumpf').addEventListener('click', async (e) => {
     const r = await hole('/api/aktion', { method:'POST', headers:{'Content-Type':'application/json'},
                                           body: JSON.stringify(nutzlast) });
     m.textContent = r.hinweis ?? 'Gespeichert.';
-    if (b.dataset.tun === 'feedback') el('fbText').value = '';
     await oeffne(offen.id);
-    lade();
-  } catch (f) {
-    m.className = 'meldung meldung--fehler';
-    m.textContent = f.message;
-  } finally { b.disabled = false; }
+    lade(); ladeAgent();
+  } catch (f) { m.className = 'meldung meldung--fehler'; m.textContent = f.message; }
+  finally { b.disabled = false; }
 });
 
-/* ── Start ───────────────────────────────────────────────────── */
 hole('/api/stand').then(zeigeApp).catch(zeigeTor);
 </script>
 </body>
