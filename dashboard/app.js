@@ -69,8 +69,15 @@ const datum = (s) => s ? new Date(s).toLocaleDateString('de-DE', { day:'2-digit'
 
 async function hole(pfad, opt) {
   const a = await fetch(pfad, { credentials:'same-origin', ...opt });
-  if (a.status === 401) { zeigeTor(); throw new Error('nicht angemeldet'); }
-  if (!a.ok) throw new Error((await a.json().catch(() => ({}))).fehler || 'Fehler');
+  /* Ein 401 von der Anmeldung heißt "Passwort falsch", ein 401 von allen
+     anderen Stellen heißt "Sitzung abgelaufen". Vorher wurde beides zu
+     "nicht angemeldet" — bei falschem Passwort stand da also eine Meldung,
+     die nicht sagt, was zu tun ist. */
+  if (a.status === 401 && !pfad.startsWith('/api/anmelden')) {
+    zeigeTor();
+    throw new Error('Sitzung abgelaufen — bitte neu anmelden.');
+  }
+  if (!a.ok) throw new Error((await a.json().catch(() => ({}))).fehler || `Fehler ${a.status}`);
   return a.json();
 }
 
