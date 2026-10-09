@@ -40,6 +40,20 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, runden: liste.length });
     }
 
+    if (was === 'wert') {
+      /* Der Preisrahmen ist aus der Betriebsgröße geschätzt. Sobald Noah eine
+         Zahl im Kopf hat oder ein Angebot geschrieben ist, gilt seine. */
+      const betrag = wert === null || wert === '' ? null : Number(wert);
+      if (betrag !== null && (!Number.isFinite(betrag) || betrag < 0 || betrag > 1_000_000))
+        return res.status(400).json({ fehler: 'Betrag nicht plausibel' });
+      const { error } = await db.from('unternehmen')
+        .update({ auftragswert: betrag === null ? null : Math.round(betrag) }).eq('id', id);
+      if (error && /column .*auftragswert/i.test(error.message))
+        return res.status(400).json({ fehler: 'Spalte fehlt — Migration 05 einspielen' });
+      if (error) throw new Error(error.message);
+      return res.status(200).json({ ok: true, auftragswert: betrag });
+    }
+
     if (was === 'auftrag') {
       if (!ARTEN.includes(wert)) return res.status(400).json({ fehler: 'unbekannte Auftragsart' });
       const { data, error } = await db.from('auftraege')

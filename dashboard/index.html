@@ -4,19 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Lead-Dashboard · AdMemory</title>
+<title>Lead-Akquise · AdMemory</title>
+<link rel="icon" href="/assets/logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Farben und Maße aus dem Analytics-Dashboard übernommen (Berry-Designsprache,
-   codedthemes, MIT). Gleiche Marken, gleiche Abstände, gleiche Seitenleiste —
-   beide Oberflächen sollen später zusammenwachsen, nicht nebeneinanderstehen. */
+/* Farben, Maße und Strichstil aus dem Analytics-Dashboard (Berry, codedthemes,
+   MIT). Beide Oberflächen sollen zusammenwachsen, nicht nebeneinanderstehen. */
 :root{
   --bg:#EEF2F6; --panel:#FFFFFF; --panel-2:#F8FAFC; --sunk:#EEF2F6;
   --line:#E3E8EF; --line-soft:#EEF2F6;
   --ink:#121926; --ink-2:#4B5565; --ink-3:#697586;
   --accent:#673AB7; --accent-soft:#EDE7F6;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4;
   --good:#00A152; --warn:#B76E00; --bad:#F44336;
   --bad-ink:#C62828; --good-ink:#00753A; --warn-ink:#9A5500;
   --brand-1:#673AB7; --brand-2:#2196F3; --on-brand:#FFFFFF;
@@ -32,6 +33,7 @@
   --line:#29314F; --line-soft:#212946;
   --ink:#D7DCEC; --ink-2:#BDC8F0; --ink-3:#8492C4;
   --accent:#B39DDB; --accent-soft:#29314F;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181;
   --good:#00C853; --warn:#FFC107; --bad:#F44336;
   --bad-ink:#EF9A9A; --good-ink:#00C853; --warn-ink:#FFC107;
   --nav:#111936; --nav-ink:#8492C4; --nav-ink-hell:#D7DCEC;
@@ -49,168 +51,207 @@ body{margin:0;background:var(--bg);color:var(--ink);
 button{font:inherit;cursor:pointer}
 a{color:var(--accent)}
 .mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+svg.ic{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;
+  stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 
 /* ── Anmeldung ──────────────────────────────────────────────────── */
 #tor{position:fixed;inset:0;background:var(--bg);z-index:60;display:grid;place-items:center;padding:24px}
 #tor .card{width:100%;max-width:330px;text-align:center}
+#tor img{width:40px;height:40px;margin-bottom:.9rem}
 #tor h1{font-size:1.05rem;margin:0 0 .15rem;letter-spacing:-.015em}
 #tor p{color:var(--ink-3);font-size:.8rem;margin:0 0 1.3rem}
 .feld{width:100%;padding:.7rem .8rem;border:1px solid var(--line);border-radius:7px;
   background:var(--panel-2);color:var(--ink);font:inherit}
 .feld:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
 .knopf{width:100%;margin-top:.6rem;padding:.75rem;min-height:44px;border:0;border-radius:7px;
-  background:linear-gradient(90deg,var(--brand-1),var(--brand-2));color:var(--on-brand);font-weight:600}
+  background:var(--accent);color:var(--on-brand);font-weight:600}
 .fehler{color:var(--bad-ink);font-size:.8rem;margin-top:.7rem;min-height:1.2rem}
 
 /* ── Rahmen ─────────────────────────────────────────────────────── */
 .app{display:grid;grid-template-columns:252px 1fr;min-height:100vh}
 @media(max-width:900px){.app{grid-template-columns:1fr}}
-
 aside{background:var(--nav);color:var(--nav-ink);display:flex;flex-direction:column;
-  position:sticky;top:0;height:100vh;overflow:auto;padding-top:var(--oben);
-  /* Ohne min-width:0 darf ein Rasterelement breiter werden als seine Spur —
-     die scrollbare Navigationsleiste schob die ganze Seite um 481 px auf. */
-  min-width:0}
-/* Am Telefon wird die Seitenleiste zur schmalen Leiste über dem Inhalt: als
-   Block umbrochen füllte sie den ganzen ersten Bildschirm, und die Liste lag
-   unter der Falz. Eine Arbeitsliste, die man erst wegscrollen muss, ist keine. */
+  position:sticky;top:0;height:100vh;overflow:auto;padding-top:var(--oben);min-width:0;
+  border-right:1px solid var(--nav-linie)}
+@media(max-width:900px){aside{height:auto;z-index:30;box-shadow:var(--shadow);
+  overflow:visible;border-right:0}}
+
+.marke{padding:1.3rem 1.15rem .9rem;font-size:1rem;font-weight:600;
+  letter-spacing:-.015em;color:var(--accent)}
+.konto{margin:0 1.15rem 1.1rem;border:1px solid var(--line);border-radius:10px;
+  padding:.65rem .75rem;display:flex;align-items:center;gap:.65rem}
+.konto img{width:34px;height:34px;border-radius:8px;flex:none}
+.konto .k-text{flex:1;min-width:0}
+.konto .k-label{font-size:.64rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3);font-weight:600}
+.konto .k-name{font-size:.92rem;font-weight:600;color:var(--accent);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.konto .ic{color:var(--ink-3);width:16px;height:16px}
+
+nav{display:flex;flex-direction:column;gap:2px;padding:0 .7rem}
 @media(max-width:900px){
-  aside{position:sticky;top:0;height:auto;z-index:30;box-shadow:var(--shadow);overflow:visible}
-  .brand{padding:calc(.7rem + var(--oben)) 1rem .5rem}
-  .brand .logo{width:22px;height:22px;font-size:.7rem}
-  .brand b{font-size:.86rem}
-  .navfuss{display:none}
-}
-.brand{display:flex;align-items:center;gap:.6rem;padding:1.3rem 1.15rem 1.05rem}
-.brand .logo{width:26px;height:26px;flex:0 0 auto;border-radius:7px;
-  background:linear-gradient(135deg,var(--brand-1),var(--brand-2));display:grid;place-items:center;
-  color:#fff;font-weight:700;font-size:.8rem}
-.brand b{font-size:.94rem;font-weight:600;letter-spacing:-.015em;color:var(--nav-ink-hell)}
-nav{display:flex;flex-direction:column;gap:2px;padding:.5rem .7rem}
-@media(max-width:900px){
-  nav{flex-direction:row;flex-wrap:nowrap;gap:.3rem;overflow-x:auto;padding:0 .7rem .6rem;
+  .marke{padding:calc(.8rem + var(--oben)) 1rem .3rem;font-size:.92rem}
+  .konto{margin:0 1rem .7rem;padding:.5rem .6rem}
+  .konto img{width:28px;height:28px}
+  nav{flex-direction:row;flex-wrap:nowrap;gap:.35rem;overflow-x:auto;padding:0 .7rem .7rem;
       scrollbar-width:none;-webkit-overflow-scrolling:touch}
   nav::-webkit-scrollbar{display:none}
-  /* Die Gruppentitel tragen in einer Zeile nichts bei und kosten nur Platz —
-     die Reihenfolge der Einträge sagt dasselbe. */
   .navgruppentitel{display:none}
-  nav button{flex:none;border:1px solid var(--line);border-radius:99px;padding:.5rem .8rem;min-height:38px}
-  nav button[aria-current="true"]{border-color:transparent}
+  nav button{flex:none;border:1px solid var(--line);border-radius:8px;min-height:40px}
   nav button[aria-current="true"]::before{display:none}
+  .navfuss{display:none}
 }
-.navgruppentitel{font-size:.7rem;font-weight:600;letter-spacing:.04em;color:var(--ink-3);
-  text-transform:uppercase;padding:.75rem .85rem .35rem}
-.navgruppentitel:not(:first-child){border-top:1px solid var(--nav-linie);margin-top:.5rem;padding-top:1rem}
-nav button{all:unset;cursor:pointer;padding:.6rem .75rem .6rem .85rem;border-radius:7px;font-size:.86rem;
-  color:var(--nav-ink);display:flex;align-items:center;gap:.5rem;min-height:40px;box-sizing:border-box;
+.navgruppentitel{font-size:.7rem;font-weight:600;letter-spacing:.05em;color:var(--ink-3);
+  text-transform:uppercase;padding:.85rem .85rem .4rem}
+.navgruppentitel:not(:first-of-type){border-top:1px solid var(--nav-linie);margin-top:.6rem;padding-top:1.1rem}
+nav button{all:unset;cursor:pointer;padding:.65rem .8rem;border-radius:8px;font-size:.92rem;
+  color:var(--nav-ink);display:flex;align-items:center;gap:.7rem;min-height:42px;box-sizing:border-box;
   transition:background .12s,color .12s;position:relative}
 nav button:hover{background:var(--nav-aktiv);color:var(--nav-ink-hell)}
 nav button[aria-current="true"]{background:var(--nav-aktiv);color:var(--nav-ink-hell);font-weight:500}
-nav button[aria-current="true"]::before{content:"";position:absolute;left:0;top:.45rem;bottom:.45rem;
-  width:3px;border-radius:0 2px 2px 0;background:linear-gradient(180deg,var(--brand-1),var(--brand-2))}
+nav button[aria-current="true"]::before{content:"";position:absolute;left:-.7rem;top:.5rem;bottom:.5rem;
+  width:3px;border-radius:0 2px 2px 0;background:var(--accent)}
 nav button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .navtext{flex:1;min-width:0}
-.navzahl{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.68rem;font-weight:500;
-  min-width:1.15rem;text-align:center;padding:.05rem .3rem;border-radius:99px;
-  background:var(--sunk);color:var(--ink-3)}
-nav button[aria-current="true"] .navzahl{background:color-mix(in srgb,var(--brand-1) 16%,transparent);color:var(--nav-ink-hell)}
-.navpunkt{width:6px;height:6px;border-radius:50%;background:#FFD600;flex:none;
-  box-shadow:0 0 0 3px color-mix(in srgb,#FFD600 22%,transparent)}
-.navfuss{margin-top:auto;padding:1rem 1.15rem calc(1rem + var(--unten));font-size:.74rem;color:var(--ink-3);
-  border-top:1px solid var(--nav-linie)}
-.navfuss button{all:unset;cursor:pointer;color:var(--accent);font-size:.74rem;margin-top:.3rem;
-  min-height:32px;display:inline-flex;align-items:center}
+.navzahl{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-3)}
+nav button[aria-current="true"] .navzahl{color:var(--nav-ink-hell)}
+.navfuss{margin-top:auto;padding:1rem 1.15rem calc(1rem + var(--unten));font-size:.74rem;
+  color:var(--ink-3);border-top:1px solid var(--nav-linie)}
+.navfuss button{all:unset;cursor:pointer;color:var(--accent);font-size:.74rem;
+  margin-top:.35rem;min-height:30px;display:inline-flex;align-items:center}
 
-main{padding:1.6rem 1.8rem calc(2.5rem + var(--unten));min-width:0}
+main{padding:1.7rem 1.9rem calc(2.5rem + var(--unten));min-width:0}
 @media(max-width:900px){main{padding:1.1rem 1rem 2rem}}
-.seitenkopf{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.15rem}
-.seitenkopf h1{font-size:1.35rem;font-weight:600;margin:0;letter-spacing:-.02em}
-.lede{color:var(--ink-3);font-size:.83rem;margin:.15rem 0 0}
+.seitenkopf{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.seitenkopf h1{font-size:1.4rem;font-weight:600;margin:0;letter-spacing:-.02em}
+.lede{color:var(--ink-3);font-size:.83rem;margin:.2rem 0 0}
 
-/* ── Kacheln und Karten ─────────────────────────────────────────── */
-.grid{display:grid;gap:.8rem}
-.g4{grid-template-columns:repeat(auto-fit,minmax(168px,1fr))}
+/* ── Karten ─────────────────────────────────────────────────────── */
+.grid{display:grid;gap:.85rem}
+.g4{grid-template-columns:repeat(auto-fit,minmax(176px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(310px,1fr))}
 .card{background:var(--panel);border:0;border-radius:var(--r);padding:1.35rem 1.45rem;
-  box-shadow:var(--shadow);transition:box-shadow .2s ease}
-.card.kpi{position:relative;overflow:hidden;padding:1.1rem 1.2rem}
-.card.kpi::before{content:"";position:absolute;inset:0 0 auto 0;height:2px;
-  background:linear-gradient(90deg,var(--brand-1),var(--brand-2));opacity:.55}
-.kpi .label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600}
-.kpi .value{font-size:1.75rem;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums;
-  margin-top:.1rem;line-height:1.1}
+  box-shadow:var(--shadow)}
+.card h2{font-size:.95rem;font-weight:600;margin:0 0 .15rem;letter-spacing:-.01em;
+  display:flex;align-items:center;gap:.5rem}
+.card .sub{color:var(--ink-3);font-size:.78rem;margin:0 0 1rem}
+.kpi{padding:1.15rem 1.25rem}
+.kpi .label{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);
+  font-weight:600;display:flex;align-items:center;gap:.4rem}
+.kpi .label .ic{width:15px;height:15px}
+.kpi .value{font-size:1.8rem;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums;
+  margin-top:.25rem;line-height:1.1}
 .kpi .foot{font-size:.72rem;color:var(--ink-3);margin-top:.3rem}
+.mt{margin-top:.85rem}
 
-/* ── Trefferliste ───────────────────────────────────────────────── */
-.liste{display:flex;flex-direction:column;gap:.5rem;margin-top:1.15rem}
-.treffer{background:var(--panel);border:0;border-radius:var(--r);box-shadow:var(--shadow);
-  padding:.9rem 1.1rem;display:grid;grid-template-columns:1fr auto;gap:.3rem .9rem;
-  text-align:left;color:inherit;width:100%;transition:box-shadow .18s ease;position:relative;overflow:hidden}
-.treffer:hover{box-shadow:var(--shadow-lift)}
+/* ── Balken und Ring ────────────────────────────────────────────── */
+.bar-row{display:grid;grid-template-columns:minmax(96px,132px) 1fr auto;gap:.6rem;
+  align-items:center;margin-bottom:.4rem;font-size:.82rem}
+.bar-track{display:block;background:var(--sunk);border-radius:5px;height:20px;overflow:hidden}
+.bar-fill{display:block;height:100%;border-radius:0 5px 5px 0;background:var(--accent)}
+.bar-val{font-family:"IBM Plex Mono",monospace;font-size:.76rem;color:var(--ink-2);
+  min-width:62px;text-align:right}
+.bar-row .flabel{color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ring{display:flex;align-items:center;gap:1.3rem;flex-wrap:wrap}
+.legende{font-size:.8rem;display:flex;flex-direction:column;gap:.35rem;min-width:140px}
+.legende span{display:flex;align-items:center;gap:.5rem}
+.legende i{width:9px;height:9px;border-radius:3px;flex:none}
+.legende b{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-weight:500;color:var(--ink-2)}
+.verlaufbar{display:flex;align-items:flex-end;gap:3px;height:70px;margin-top:.4rem}
+.verlaufbar span{flex:1;background:var(--accent-soft);border-radius:3px 3px 0 0;min-height:2px}
+.verlaufbar span:last-child{background:var(--accent)}
+
+/* ── Filterleiste ───────────────────────────────────────────────── */
+.filter{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:1.1rem}
+.filter select,.filter input{padding:.5rem .7rem;min-height:38px;border:1px solid var(--line);
+  border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;font-size:.84rem}
+.filter select:focus,.filter input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.filter .zuruecksetzen{all:unset;cursor:pointer;color:var(--accent);font-size:.82rem;
+  padding:.5rem .3rem;min-height:38px;display:inline-flex;align-items:center;gap:.35rem}
+.treffermenge{color:var(--ink-3);font-size:.8rem;margin-left:auto}
+
+/* ── Betriebskarten ─────────────────────────────────────────────── */
+.liste{display:grid;gap:.6rem;grid-template-columns:repeat(auto-fill,minmax(330px,1fr))}
+.treffer{all:unset;cursor:pointer;background:var(--panel);border-radius:10px;box-shadow:var(--shadow);
+  padding:1rem 1.15rem;display:block;box-sizing:border-box;transition:box-shadow .18s ease,transform .18s ease}
+.treffer:hover{box-shadow:var(--shadow-lift);transform:translateY(-1px)}
 .treffer:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.treffer::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent}
-.treffer.t-pruefen::before{background:var(--warn)}
-.treffer.t-antwort::before{background:var(--good)}
-.treffer.t-gesperrt::before{background:var(--bad)}
-.t-name{font-weight:600;font-size:.95rem;letter-spacing:-.01em;
+/* Alles in der Karte sind <span>, weil sie in einem <button> stehen — ein
+   <div> wäre dort nicht zulässig. Inline-Elemente kennen aber kein
+   overflow:hidden, der Name lief einfach weiter und schob die Seite um 595 px
+   auf. Deshalb hier die Anzeigeart ausdrücklich setzen. */
+.t-kopf{display:flex;align-items:flex-start;gap:.8rem}
+.t-titel{flex:1;min-width:0;display:block;overflow:hidden}
+.t-name{display:block;font-weight:600;font-size:.98rem;letter-spacing:-.01em;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.t-wert{font-family:"IBM Plex Mono",monospace;font-size:1.05rem;font-weight:500;
-  text-align:right;align-self:center;grid-row:span 2}
-.t-zeile{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;color:var(--ink-3);font-size:.78rem}
-.t-zeile .punkt{color:var(--line)}
-.chip{font-size:.69rem;padding:.1rem .45rem;border-radius:99px;background:var(--sunk);color:var(--ink-2);
-  white-space:nowrap}
-.chip--warn{background:color-mix(in srgb,var(--warn) 14%,transparent);color:var(--warn-ink);font-weight:500}
-.chip--good{background:color-mix(in srgb,var(--good) 14%,transparent);color:var(--good-ink);font-weight:500}
-.chip--bad{background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad-ink);font-weight:500}
+.t-url{display:block;color:var(--ink-3);font-size:.76rem;margin-top:.1rem;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.t-wert{text-align:right;flex:none;display:block}
+.t-wert b{display:block;font-family:"IBM Plex Mono",monospace;font-size:1.3rem;font-weight:500;line-height:1}
+.t-wert span{font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3)}
+.pillen{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.85rem;min-width:0}
+.pille{font-size:.72rem;padding:.25rem .55rem;border-radius:6px;background:var(--sunk);
+  color:var(--ink-2);white-space:nowrap;font-weight:500}
+.pille--phase{background:var(--accent-soft);color:var(--accent)}
+.pille--warn{background:color-mix(in srgb,var(--warn) 15%,transparent);color:var(--warn-ink)}
+.pille--good{background:color-mix(in srgb,var(--good) 15%,transparent);color:var(--good-ink)}
+.pille--bad{background:color-mix(in srgb,var(--bad) 13%,transparent);color:var(--bad-ink)}
 .hint{background:var(--sunk);border:1px dashed var(--line);border-radius:var(--r);
-  padding:1.6rem 1rem;color:var(--ink-2);font-size:.84rem;text-align:center;margin-top:1.15rem}
+  padding:1.8rem 1rem;color:var(--ink-2);font-size:.84rem;text-align:center}
 
 /* ── Detailblatt ────────────────────────────────────────────────── */
 #blatt{position:fixed;inset:0;z-index:50;background:rgba(18,25,38,.45);display:flex;justify-content:flex-end}
-.blattinhalt{background:var(--bg);width:min(560px,100%);height:100%;overflow-y:auto;
+.blattinhalt{background:var(--bg);width:min(580px,100%);height:100%;overflow-y:auto;
   -webkit-overflow-scrolling:touch;box-shadow:var(--shadow-lift)}
 .b-kopf{position:sticky;top:0;z-index:2;background:var(--panel);box-shadow:var(--shadow);
   padding:calc(1.1rem + var(--oben)) 1.3rem 1.1rem;display:flex;align-items:flex-start;gap:.8rem}
 .b-kopf h2{font-size:1.05rem;margin:0;letter-spacing:-.015em;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.zu{all:unset;cursor:pointer;color:var(--ink-3);font-size:1.4rem;line-height:1;
-  min-width:44px;min-height:44px;display:grid;place-items:center;margin:-.6rem -.6rem 0 0;border-radius:7px}
+.zu{all:unset;cursor:pointer;color:var(--ink-3);min-width:40px;min-height:40px;
+  display:grid;place-items:center;margin:-.4rem -.5rem 0 0;border-radius:8px}
 .zu:hover{background:var(--sunk);color:var(--ink)}
-.b-rumpf{padding:1.1rem 1.3rem calc(2.5rem + var(--unten));display:flex;flex-direction:column;gap:.8rem}
+.b-rumpf{padding:1.1rem 1.3rem calc(2.5rem + var(--unten));display:flex;flex-direction:column;gap:.75rem}
 h3{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);
-  font-weight:600;margin:0 0 .7rem}
+  font-weight:600;margin:0 0 .75rem;display:flex;align-items:center;gap:.45rem}
+h3 .ic{width:14px;height:14px}
 
-.werte{display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:.5rem}
-.wert{background:var(--panel-2);border-radius:7px;padding:.55rem .6rem}
-.wert b{display:block;font-family:"IBM Plex Mono",monospace;font-size:1.1rem;font-weight:500;line-height:1.2}
-.wert span{color:var(--ink-3);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em}
-
-.zeile{display:flex;justify-content:space-between;gap:1rem;padding:.45rem 0;
-  border-bottom:1px solid var(--line-soft);font-size:.84rem}
+.werte{display:grid;grid-template-columns:repeat(auto-fit,minmax(76px,1fr));gap:.5rem}
+.wert{background:var(--panel-2);border-radius:8px;padding:.6rem .65rem}
+.wert b{display:block;font-family:"IBM Plex Mono",monospace;font-size:1.15rem;font-weight:500;line-height:1.2}
+.wert span{color:var(--ink-3);font-size:.66rem;text-transform:uppercase;letter-spacing:.05em}
+.zeile{display:flex;justify-content:space-between;gap:1rem;padding:.5rem 0;
+  border-bottom:1px solid var(--line-soft);font-size:.85rem}
 .zeile:last-child{border-bottom:0}
 .zeile > span:first-child{color:var(--ink-3)}
 .zeile > span:last-child{text-align:right}
-.zeile a{display:inline-block;padding:.25rem 0}
 
-.befund{display:grid;grid-template-columns:auto 1fr;gap:.6rem;padding:.55rem 0;
-  border-bottom:1px solid var(--line-soft);font-size:.83rem}
-.befund:last-child{border-bottom:0}
+/* Ausklappbare Befunde: 29 Einträge am Stück sind eine Wand. */
+details.klapp{background:var(--panel);border-radius:var(--r);box-shadow:var(--shadow);padding:0}
+details.klapp > summary{list-style:none;cursor:pointer;padding:1.15rem 1.35rem;
+  display:flex;align-items:center;gap:.5rem;border-radius:inherit;
+  font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600}
+details.klapp > summary::-webkit-details-marker{display:none}
+details.klapp > summary .pfeil{margin-left:auto;transition:transform .18s ease}
+details.klapp[open] > summary .pfeil{transform:rotate(180deg)}
+details.klapp > div{padding:0 1.35rem 1.2rem}
+.befund{display:grid;grid-template-columns:auto 1fr;gap:.65rem;padding:.6rem 0;
+  border-top:1px solid var(--line-soft);font-size:.84rem}
 .punktmarke{width:7px;height:7px;border-radius:50%;margin-top:.45rem;background:var(--ink-3)}
 .punktmarke.high{background:var(--bad)} .punktmarke.medium{background:var(--warn)}
 .befund p{margin:0}
-.befund em{color:var(--ink-3);font-style:normal;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em}
+.befund em{color:var(--ink-3);font-style:normal;font-size:.71rem;text-transform:uppercase;letter-spacing:.05em}
 
 .knopfreihe{display:flex;flex-wrap:wrap;gap:.45rem}
-.tat{all:unset;cursor:pointer;padding:.6rem .85rem;min-height:40px;box-sizing:border-box;
-  border:1px solid var(--line);border-radius:7px;background:var(--panel-2);color:var(--ink);
-  font-size:.82rem;font-weight:500;display:inline-flex;align-items:center}
+.tat{all:unset;cursor:pointer;padding:.6rem .8rem;min-height:40px;box-sizing:border-box;
+  border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--ink);
+  font-size:.82rem;font-weight:500;display:inline-flex;align-items:center;gap:.45rem}
 .tat:hover{border-color:var(--accent);color:var(--accent)}
 .tat:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-.tat--haupt{background:linear-gradient(90deg,var(--brand-1),var(--brand-2));border-color:transparent;color:var(--on-brand)}
+.tat--haupt{background:var(--accent);border-color:var(--accent);color:var(--on-brand)}
 .tat--haupt:hover{color:var(--on-brand);opacity:.92}
 .tat--warn{color:var(--bad-ink);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
-.tat--warn:hover{border-color:var(--bad);color:var(--bad-ink)}
 .tat[disabled]{opacity:.45;cursor:default}
+.wertzeile{display:flex;gap:.5rem;align-items:center}
+.wertzeile input{flex:1;min-width:0}
 textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86rem}
 .meldung{font-size:.8rem;margin-top:.6rem;min-height:1.2rem;color:var(--good-ink)}
 .meldung--fehler{color:var(--bad-ink)}
@@ -224,6 +265,7 @@ textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86r
 
 <div id="tor">
   <form class="card" id="anmeldung">
+    <img src="/assets/logo.svg" alt="">
     <h1>Lead-Akquise</h1>
     <p>AdMemory</p>
     <input class="feld" type="password" id="passwort" placeholder="Passwort"
@@ -235,7 +277,14 @@ textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86r
 
 <div class="app" id="app" hidden>
   <aside>
-    <div class="brand"><span class="logo">A</span><b>Lead-Akquise</b></div>
+    <div class="marke">Lead-Akquise</div>
+    <div class="konto">
+      <img src="/assets/logo.svg" alt="">
+      <div class="k-text">
+        <div class="k-label">Konto</div>
+        <div class="k-name">AdMemory</div>
+      </div>
+    </div>
     <nav id="nav"></nav>
     <div class="navfuss">
       <div id="agentstand">&mdash;</div>
@@ -250,8 +299,7 @@ textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86r
         <p class="lede" id="untertitel"></p>
       </div>
     </div>
-    <div class="grid g4" id="kennzahlen"></div>
-    <div id="liste"></div>
+    <div id="inhalt"></div>
   </main>
 </div>
 
@@ -262,47 +310,75 @@ textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86r
         <h2 id="bName"></h2>
         <p class="lede" id="bUnter"></p>
       </div>
-      <button class="zu" id="bZu" aria-label="Schließen">&times;</button>
+      <button class="zu" id="bZu" aria-label="Schließen">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
     </div>
     <div class="b-rumpf" id="bRumpf"></div>
   </div>
 </div>
-
 <script>
-const ANSICHTEN = [
-  { gruppe:'Zu tun' },
-  { id:'pruefen', label:'Entwurf prüfen', status:'entwurf_gebaut',
-    titel:'Entwürfe prüfen', lede:'Der Agent hat gebaut — ansehen und Korrekturen geben.' },
-  { id:'antwort', label:'Geantwortet', status:'geantwortet',
-    titel:'Hat geantwortet', lede:'Diese Betriebe haben auf die Mail reagiert.' },
-  { id:'frei', label:'Freigegeben', status:'freigegeben',
-    titel:'Freigegeben', lede:'Entwurf steht, die Mail kann raus.' },
-  { id:'wartet', label:'Beim Agenten', status:'feedback_gegeben',
-    titel:'Beim Agenten', lede:'Feedback liegt vor, der nächste Lauf arbeitet es ein.' },
+/* Icons im Strichstil des Analytics-Dashboards: 24×24, nur Pfade, keine
+   Flächen, gleiche Strichstärke. Gemischte Stile lassen eine Oberfläche
+   zusammengesetzt wirken, auch wenn jedes Zeichen für sich gut ist. */
+const ICONS = {
+  dashboard: 'M4 5h7v7H4zM13 5h7v4h-7zM13 11h7v8h-7zM4 14h7v5H4z',
+  datenbank: 'M4 7c0-1.7 3.6-3 8-3s8 1.3 8 3s-3.6 3-8 3s-8-1.3-8-3M4 7v10c0 1.7 3.6 3 8 3s8-1.3 8-3V7M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3',
+  pfeilab:   'M6 9l6 6l6-6',
+  chevron:   'M9 6l6 6l-6 6',
+  schliessen:'M6 6l12 12M18 6L6 18',
+  befund:    'M12 9v4M12 17h.01M10.3 3.9L2.8 17a2 2 0 0 0 1.7 3h15a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0',
+  stift:     'M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z',
+  auftrag:   'M9 11l3 3l8-8M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9',
+  status:    'M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0-18 0M12 7v5l3 2',
+  betrieb:   'M3 20h18M5 20V8l7-4l7 4v12M10 20v-5h4v5',
+  geld:      'M12 3v18M16 7.5a3.5 3.5 0 0 0-3.5-2.5h-1a3 3 0 0 0 0 6h1a3 3 0 0 1 0 6h-1A3.5 3.5 0 0 1 8 16.5',
+  leute:     'M9 11a3.5 3.5 0 1 0 0-7a3.5 3.5 0 0 0 0 7M3 20v-1a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v1M16.5 4.5a3.5 3.5 0 0 1 0 6.9M21 20v-1a5 5 0 0 0-3.5-4.8',
+  brief:     'M3 7l9 6l9-6M3 7v10h18V7z',
+  pfeilauf:  'M7 17L17 7M9 7h8v8',
+  token:     'M12 3l8 4.5v9L12 21l-8-4.5v-9zM12 3v18M4 7.5l8 4.5l8-4.5',
+  haken:     'M20 6L9 17l-5-5',
+  uhr:       'M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0-18 0M12 7v5l3 2',
+  zurueck:   'M3 12a9 9 0 1 0 3-6.7M3 4v4h4',
+};
+const ic = (n, k = '') => '<svg class="ic ' + k + '" viewBox="0 0 24 24" aria-hidden="true"><path d="' + ICONS[n] + '"/></svg>';
 
-  { gruppe:'Bestand' },
-  { id:'leads', label:'Beste Leads', status:'gescannt', sortierung:'lead',
-    titel:'Beste Leads', lede:'Bewertet, noch kein Entwurf. Nach Lead-Wert sortiert.' },
-  { id:'gross', label:'Ab etabliert', status:'gescannt', sortierung:'lead', groesse:'mittelstand,etabliert',
-    titel:'Größere Betriebe', lede:'Nur ab Stufe „etabliert“ — dort liegt das Budget.' },
-  { id:'versendet', label:'Versendet', status:'versendet',
-    titel:'Versendet', lede:'Mail ist raus, Antwort steht aus.' },
-  { id:'kunde', label:'Kunden', status:'kunde',
-    titel:'Kunden', lede:'Aus dem Pitch wurde ein Auftrag.' },
-  { id:'alle', label:'Alle', status:null,
-    titel:'Alle Betriebe', lede:'Der gesamte bewertete Bestand.' },
+const SEITEN = [
+  { gruppe: 'Start' },
+  { id: 'dashboard', label: 'Dashboard', icon: 'dashboard',
+    titel: 'Dashboard', lede: 'Wo die Akquise gerade steht.' },
+  { gruppe: 'Bestand' },
+  { id: 'datenbank', label: 'Datenbank', icon: 'datenbank',
+    titel: 'Datenbank', lede: 'Alle erfassten Betriebe, filterbar.' },
 ];
-const STUFE   = { mittelstand:'Mittelstand', etabliert:'etabliert', klein:'klein', kleinst:'kleinst' };
+
+/* Begriffe, die in der Oberfläche auftauchen — bewusst ohne Fachjargon.
+   'etabliert' klang nach einer Phase und meinte die Betriebsgröße. */
+const PHASE = {
+  neu:'Gesammelt', gescannt:'Bewertet', entwurf_gebaut:'Wartet auf dich',
+  feedback_gegeben:'Feedback gegeben', freigegeben:'Freigegeben', versendet:'Versendet',
+  geantwortet:'Geantwortet', kunde:'Kunde', abgelehnt:'Abgelehnt', pausiert:'Zurückgestellt',
+};
+const PHASENFARBE = {
+  entwurf_gebaut:'pille--warn', geantwortet:'pille--good', kunde:'pille--good',
+  abgelehnt:'pille--bad',
+};
+const BUDGET  = { mittelstand:'Mittelstand', etabliert:'etabliert', klein:'klein', kleinst:'kleinst' };
 const BRANCHE = { gastro:'Gastro', handwerk:'Handwerk', gesundheit:'Praxis', beratung:'Beratung',
                   handel:'Handel', dienstleistung:'Dienstleistung', autohaus:'Autohaus', industrie:'Industrie' };
 const SCHWERE = { high:'schwer', medium:'mittel', low:'leicht' };
+const VERBRAUCHSPHASE = { scan_stufe1:'Schnellprüfung', scan_stufe2:'Vollbewertung',
+                          entwurf:'Entwürfe bauen', mail:'Mail-Entwürfe' };
+const RINGFARBEN = ['var(--s1)','var(--s2)','var(--s3)','var(--s4)','var(--s5)'];
 
-let aktiv = null, daten = [], zaehler = {}, kennzahlen = {}, offen = null;
+let seite = 'dashboard', daten = [], uebersicht = null, offen = null;
+let filter = { status:'', budget:'', branche:'', minScore:'', maxScore:'' };
 
 const el = (id) => document.getElementById(id);
 const text = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const zahl = (n) => n == null ? '–' : n.toLocaleString('de-DE');
 const euro = (n) => n == null ? '–' : n.toLocaleString('de-DE') + ' €';
+const tsd  = (n) => n == null ? '–' : (n >= 10000 ? Math.round(n/1000) + ' Tsd.' : n.toLocaleString('de-DE')) + ' €';
 const datum = (s) => s ? new Date(s).toLocaleDateString('de-DE', { day:'2-digit', month:'2-digit', year:'2-digit' }) : '–';
 
 async function hole(pfad, opt) {
@@ -314,7 +390,7 @@ async function hole(pfad, opt) {
 
 /* ── Anmeldung ──────────────────────────────────────────────────── */
 function zeigeTor(){ el('tor').hidden = false; el('app').hidden = true; el('blatt').hidden = true; }
-function zeigeApp(){ el('tor').hidden = true;  el('app').hidden = false; starte(); }
+function zeigeApp(){ el('tor').hidden = true;  el('app').hidden = false; zeichneNav(); lade(); }
 
 el('anmeldung').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -333,99 +409,32 @@ el('abmelden').addEventListener('click', async () => {
 
 /* ── Navigation ─────────────────────────────────────────────────── */
 function zeichneNav(){
-  el('nav').innerHTML = ANSICHTEN.map((a) => {
-    if (a.gruppe) return '<div class="navgruppentitel">' + text(a.gruppe) + '</div>';
-    /* 'Ab etabliert' teilt sich den Status mit 'Beste Leads' — ohne Sonderfall
-       stünde dort dieselbe Zahl, obwohl die Ansicht enger gefasst ist. */
-    const n = a.id === 'gross' ? (kennzahlen.gross ?? 0)
-            : a.status ? (zaehler[a.status] ?? 0)
-            : (kennzahlen.bewertet ?? 0);
-    const dringend = (a.id === 'pruefen' || a.id === 'antwort') && n > 0;
-    return '<button data-id="' + a.id + '" aria-current="' + (a.id === aktiv) + '">' +
-           (dringend ? '<span class="navpunkt"></span>' : '') +
-           '<span class="navtext">' + text(a.label) + '</span>' +
-           (n ? '<span class="navzahl">' + n + '</span>' : '') + '</button>';
+  el('nav').innerHTML = SEITEN.map((s) => {
+    if (s.gruppe) return '<div class="navgruppentitel">' + text(s.gruppe) + '</div>';
+    const n = s.id === 'datenbank' && uebersicht ? uebersicht.kennzahlen.gesamt : null;
+    return '<button data-id="' + s.id + '" aria-current="' + (s.id === seite) + '">' +
+           ic(s.icon) + '<span class="navtext">' + text(s.label) + '</span>' +
+           (n ? '<span class="navzahl">' + zahl(n) + '</span>' : '') + '</button>';
   }).join('');
-  if (window.matchMedia('(max-width:900px)').matches)
-    el('nav').querySelector('[aria-current="true"]')?.scrollIntoView({ inline:'center', block:'nearest' });
 }
 el('nav').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-id]');
-  if (!b || b.dataset.id === aktiv) return;
-  aktiv = b.dataset.id;
+  if (!b || b.dataset.id === seite) return;
+  seite = b.dataset.id;
   zeichneNav(); lade();
 });
 
-/* ── Kennzahlen ─────────────────────────────────────────────────── */
-function zeichneKennzahlen(){
-  const k = kennzahlen;
-  const kachel = (wert, label, fuss) =>
-    '<div class="card kpi"><div class="label">' + text(label) + '</div>' +
-    '<div class="value">' + wert + '</div><div class="foot">' + text(fuss) + '</div></div>';
-  el('kennzahlen').innerHTML =
-    kachel(zahl(k.gesamt), 'Betriebe', zahl(k.bewertet) + ' bewertet') +
-    kachel(zahl(k.gross), 'Ab etabliert', 'dort liegt das Budget') +
-    kachel(zahl(zaehler.entwurf_gebaut ?? 0), 'Entwürfe offen', 'warten auf Durchsicht') +
-    kachel(k.potenzial ? Math.round(k.potenzial / 1000) + ' Tsd.' : '–', 'Potenzial',
-           'Summe der oberen Preisgrenzen');
-}
-
-/* ── Liste ──────────────────────────────────────────────────────── */
-async function starte(){
-  try { const z = await hole('/api/zaehler'); zaehler = z.nachStatus; kennzahlen = z.kennzahlen; } catch {}
-  /* Öffnen auf dem, was wartet: Ein Dashboard, das fest auf „Entwurf prüfen“
-     startet, begrüßt mit einer leeren Seite, solange nichts gebaut ist. */
-  aktiv = (ANSICHTEN.find((x) => (x.id === 'pruefen' || x.id === 'antwort') && zaehler[x.status])
-        ?? ANSICHTEN.find((x) => x.id === 'leads')).id;
-  zeichneNav(); zeichneKennzahlen(); lade(); ladeAgent();
-}
-
 async function lade(){
-  const a = ANSICHTEN.find((x) => x.id === aktiv);
-  el('titel').textContent = a.titel;
-  el('untertitel').textContent = a.lede;
-  el('liste').innerHTML = '<div class="hint">Lade …</div>';
-  const p = new URLSearchParams({ nurBewertet:'1' });
-  if (a.status) p.set('status', a.status);
-  if (a.sortierung) p.set('sortierung', a.sortierung);
-  if (a.groesse) p.set('groesse', a.groesse);
+  const s = SEITEN.find((x) => x.id === seite);
+  el('titel').textContent = s.titel;
+  el('untertitel').textContent = s.lede;
+  el('inhalt').innerHTML = '<div class="hint">Lade …</div>';
   try {
-    const r = await hole('/api/liste?' + p);
-    daten = r.betriebe;
-    zeichneListe(r.anzahl);
-    hole('/api/zaehler').then((z) => { zaehler = z.nachStatus; kennzahlen = z.kennzahlen;
-      zeichneNav(); zeichneKennzahlen(); }).catch(() => {});
-  } catch (f) { el('liste').innerHTML = '<div class="hint">' + text(f.message) + '</div>'; }
+    if (seite === 'dashboard') { uebersicht = await hole('/api/uebersicht'); zeichneNav(); zeichneDashboard(); }
+    else await ladeDatenbank();
+    ladeAgent();
+  } catch (f) { el('inhalt').innerHTML = '<div class="hint">' + text(f.message) + '</div>'; }
 }
-
-function zeichneListe(anzahl){
-  if (!daten.length) { el('liste').innerHTML = '<div class="hint">Hier ist gerade nichts zu tun.</div>'; return; }
-  const zeilen = daten.map((b) => {
-    const art = b.scan_unvollstaendig ? 't-gesperrt'
-              : b.status === 'entwurf_gebaut' ? 't-pruefen'
-              : b.status === 'geantwortet' ? 't-antwort' : '';
-    const chips = [];
-    if (b.status === 'entwurf_gebaut') chips.push('<span class="chip chip--warn">Entwurf da</span>');
-    if (b.status === 'geantwortet')    chips.push('<span class="chip chip--good">hat geantwortet</span>');
-    if (b.scan_unvollstaendig)         chips.push('<span class="chip chip--bad">Scan unvollständig</span>');
-    if (b.scan_stufe === 1)            chips.push('<span class="chip">nur Vorauswahl</span>');
-    if (b.befunde_schwer)              chips.push('<span class="chip chip--bad">' + b.befunde_schwer + ' schwer</span>');
-    return '<button class="treffer ' + art + '" data-id="' + b.id + '">' +
-      '<span class="t-name">' + text(b.name) + '</span>' +
-      '<span class="t-wert">' + (b.lead_score ?? '–') + '</span>' +
-      '<span class="t-zeile"><span>' + text(BRANCHE[b.branche] ?? b.branche ?? '–') + '</span>' +
-      '<span class="punkt">·</span><span>' + text(STUFE[b.groesse_stufe] ?? '–') + '</span>' +
-      '<span class="punkt">·</span><span>' + euro(b.preis_bis) + '</span>' +
-      chips.join('') + '</span></button>';
-  }).join('');
-  el('liste').innerHTML = '<div class="liste">' + zeilen + '</div>' +
-    (anzahl > daten.length ? '<div class="hint">' + zahl(anzahl) + ' Treffer, die ersten ' + daten.length + ' gezeigt.</div>' : '');
-}
-
-el('liste').addEventListener('click', (e) => {
-  const t = e.target.closest('.treffer[data-id]');
-  if (t) oeffne(t.dataset.id);
-});
 
 async function ladeAgent(){
   try {
@@ -438,6 +447,185 @@ async function ladeAgent(){
       : 'Agent: nichts offen';
   } catch {}
 }
+
+/* ── Dashboard ──────────────────────────────────────────────────── */
+function kachel(wert, label, icon, fuss){
+  return '<div class="card kpi"><div class="label">' + ic(icon) + text(label) + '</div>' +
+         '<div class="value">' + wert + '</div>' +
+         '<div class="foot">' + text(fuss ?? '') + '</div></div>';
+}
+
+/* Ring als SVG: ein Kreis je Anteil, versetzt über stroke-dashoffset. Ohne
+   Fremdbibliothek, weil die Seite keine externen Skripte laden darf. */
+function ring(teile, gesamt){
+  if (!gesamt) return '<p class="lede">Noch nichts verbraucht.</p>';
+  const U = 2 * Math.PI * 42;
+  let offset = 0;
+  const kreise = teile.map((t, i) => {
+    const anteil = t.wert / gesamt;
+    const s = '<circle cx="56" cy="56" r="42" fill="none" stroke="' + RINGFARBEN[i % 5] +
+      '" stroke-width="15" stroke-dasharray="' + (anteil * U).toFixed(2) + ' ' + U.toFixed(2) +
+      '" stroke-dashoffset="' + (-offset * U).toFixed(2) + '" transform="rotate(-90 56 56)"/>';
+    offset += anteil;
+    return s;
+  }).join('');
+  const legende = teile.map((t, i) =>
+    '<span><i style="background:' + RINGFARBEN[i % 5] + '"></i>' + text(t.label) +
+    '<b>' + t.anzeige + '</b></span>').join('');
+  return '<div class="ring"><svg viewBox="0 0 112 112" width="112" height="112">' +
+         '<circle cx="56" cy="56" r="42" fill="none" stroke="var(--sunk)" stroke-width="15"/>' +
+         kreise + '</svg><div class="legende">' + legende + '</div></div>';
+}
+
+function zeichneDashboard(){
+  const u = uebersicht, k = u.kennzahlen;
+  const inPipeline = u.pipeline.filter((p) => !['kunde','abgelehnt','pausiert','neu'].includes(p.key))
+                               .reduce((s, p) => s + p.anzahl, 0);
+  const wartetAufDich = u.pipeline.filter((p) => ['entwurf_gebaut','geantwortet'].includes(p.key))
+                                  .reduce((s, p) => s + p.anzahl, 0);
+
+  const kpis = '<div class="grid g4">' +
+    kachel(zahl(inPipeline), 'In der Pipeline', 'leute', zahl(k.gesamt) + ' Betriebe gesamt') +
+    kachel(zahl(wartetAufDich), 'Wartet auf dich', 'uhr',
+           k.offeneAuftraege ? k.offeneAuftraege + ' Aufträge beim Agenten' : 'Agent: nichts offen') +
+    kachel(tsd(k.potenzialOffen), 'Offenes Potenzial', 'geld',
+           u.neueSpalten === false ? 'ohne Auftragswerte — Migration 05 fehlt' : 'ohne Kunden und Absagen') +
+    kachel(k.umsatz ? tsd(k.umsatz) : '–', 'Umsatz', 'haken',
+           k.antwortrate != null ? k.antwortrate + ' % Antwortrate' : 'noch nichts versendet') +
+    '</div>';
+
+  const max = Math.max(...u.pipeline.map((p) => p.anzahl), 1);
+  const pipeline = '<div class="card"><h2>' + ic('status') + 'Pipeline</h2>' +
+    '<p class="sub">Wo die Betriebe gerade stehen.</p>' +
+    u.pipeline.filter((p) => p.anzahl > 0).map((p) =>
+      '<div class="bar-row"><span class="flabel">' + text(p.label) + '</span>' +
+      '<span class="bar-track"><span class="bar-fill" style="width:' +
+        Math.max(2, (p.anzahl / max) * 100).toFixed(1) + '%' +
+        (['entwurf_gebaut','geantwortet'].includes(p.key) ? ';background:var(--warn)' : '') +
+        '"></span></span>' +
+      '<span class="bar-val">' + zahl(p.anzahl) + '</span></div>').join('') +
+    '</div>';
+
+  const vb = (u.verbrauch ?? []).filter((v) => Number(v.euro) > 0 || Number(v.tokens_ein) > 0);
+  const gesamtEuro = vb.reduce((s, v) => s + Number(v.euro ?? 0), 0);
+  const verbrauch = '<div class="card"><h2>' + ic('token') + 'Verbrauch</h2>' +
+    '<p class="sub">' + (u.verbrauchFehlt
+      ? 'Die Tabelle fehlt noch — Migration 05 einspielen.'
+      : gesamtEuro ? 'Bisher ' + gesamtEuro.toFixed(2).replace('.', ',') + ' € für ' +
+          zahl(vb.reduce((s, v) => s + Number(v.laeufe ?? 0), 0)) + ' Läufe.'
+        : 'Noch nichts erfasst. Wird ab dem nächsten Lauf mitgeschrieben.') + '</p>' +
+    (u.verbrauchFehlt || !vb.length ? ''
+      : ring(vb.map((v) => ({ label: VERBRAUCHSPHASE[v.phase] ?? v.phase,
+                              wert: Number(v.euro ?? 0),
+                              anzeige: Number(v.euro).toFixed(2).replace('.', ',') + ' €' })), gesamtEuro)) +
+    '</div>';
+
+  const vl = u.verlauf ?? [];
+  const maxV = Math.max(...vl.map((d) => d.n), 1);
+  const verlauf = '<div class="card"><h2>' + ic('pfeilauf') + 'Bearbeitet</h2>' +
+    '<p class="sub">' + (vl.length ? 'Die letzten ' + vl.length + ' Tage mit Aktivität.' : 'Noch kein Verlauf.') + '</p>' +
+    (vl.length ? '<div class="verlaufbar">' + vl.map((d) =>
+      '<span style="height:' + Math.max(3, (d.n / maxV) * 100).toFixed(0) + '%" title="' +
+      d.tag + ': ' + d.n + '"></span>').join('') + '</div>' +
+      '<div class="bar-row" style="margin-top:.6rem;grid-template-columns:1fr auto">' +
+      '<span class="flabel">' + text(vl[0].tag) + ' bis ' + text(vl[vl.length-1].tag) + '</span>' +
+      '<span class="bar-val">' + zahl(vl.reduce((s,d)=>s+d.n,0)) + '</span></div>' : '') +
+    '</div>';
+
+  const versand = '<div class="card"><h2>' + ic('brief') + 'Versand</h2>' +
+    '<p class="sub">Was rausging und was zurückkam.</p>' +
+    '<div class="zeile"><span>Versendet</span><span class="mono">' + zahl(k.versendet) + '</span></div>' +
+    '<div class="zeile"><span>Geantwortet</span><span class="mono">' + zahl(k.geantwortet) + '</span></div>' +
+    '<div class="zeile"><span>Antwortrate</span><span class="mono">' +
+      (k.antwortrate != null ? k.antwortrate + ' %' : '–') + '</span></div>' +
+    '<div class="zeile"><span>Daraus Kunden</span><span class="mono">' +
+      zahl(u.pipeline.find((p) => p.key === 'kunde')?.anzahl ?? 0) + '</span></div>' +
+    (k.gesperrt ? '<div class="zeile"><span>Unvollständig gescannt</span><span class="mono">' +
+      zahl(k.gesperrt) + '</span></div>' : '') +
+    '</div>';
+
+  el('inhalt').innerHTML = kpis + '<div class="grid g2 mt">' + pipeline + verbrauch + '</div>' +
+                           '<div class="grid g2 mt">' + verlauf + versand + '</div>';
+}
+
+/* ── Datenbank ──────────────────────────────────────────────────── */
+async function ladeDatenbank(){
+  const p = new URLSearchParams();
+  if (filter.status)  p.set('status', filter.status);
+  if (filter.budget)  p.set('groesse', filter.budget);
+  if (filter.branche) p.set('branche', filter.branche);
+  const r = await hole('/api/liste?' + p);
+  daten = r.betriebe;
+  // Score-Grenzen filtert die Oberfläche, damit das Zurücksetzen ohne neue
+  // Anfrage auskommt und das Schieben sich sofort auswirkt.
+  const von = filter.minScore === '' ? null : Number(filter.minScore);
+  const bis = filter.maxScore === '' ? null : Number(filter.maxScore);
+  const sichtbar = daten.filter((b) =>
+    (von == null || (b.quality_score ?? -1) >= von) &&
+    (bis == null || (b.quality_score ?? 999) <= bis));
+  zeichneDatenbank(sichtbar, r.anzahl);
+}
+
+function auswahl(id, label, werte, gewaehlt){
+  return '<select id="' + id + '" aria-label="' + label + '"><option value="">' + label + ': alle</option>' +
+    werte.map(([v, t]) => '<option value="' + v + '"' + (v === gewaehlt ? ' selected' : '') + '>' +
+      text(t) + '</option>').join('') + '</select>';
+}
+
+function zeichneDatenbank(sichtbar, gesamt){
+  const gesetzt = Object.values(filter).some((v) => v !== '');
+  const leiste = '<div class="filter">' +
+    auswahl('fStatus', 'Phase', Object.entries(PHASE), filter.status) +
+    auswahl('fBudget', 'Budget', Object.entries(BUDGET), filter.budget) +
+    auswahl('fBranche', 'Branche', Object.entries(BRANCHE), filter.branche) +
+    '<input id="fMin" class="feld" style="width:112px" type="number" min="0" max="100" ' +
+      'placeholder="Score ab" value="' + text(filter.minScore) + '">' +
+    '<input id="fMax" class="feld" style="width:112px" type="number" min="0" max="100" ' +
+      'placeholder="Score bis" value="' + text(filter.maxScore) + '">' +
+    (gesetzt ? '<button class="zuruecksetzen" id="fReset">' + ic('zurueck') + 'Zurücksetzen</button>' : '') +
+    '<span class="treffermenge">' + zahl(sichtbar.length) +
+      (sichtbar.length !== gesamt ? ' von ' + zahl(gesamt) : '') + ' Betriebe</span>' +
+    '</div>';
+
+  const karten = !sichtbar.length
+    ? '<div class="hint">Keine Betriebe mit diesen Filtern.</div>'
+    : '<div class="liste">' + sichtbar.map((b) => {
+        const host = (b.website ?? '').replace(/^https?:\/\//, '');
+        const pillen = [];
+        if (b.branche) pillen.push('<span class="pille">' + text(BRANCHE[b.branche] ?? b.branche) + '</span>');
+        pillen.push('<span class="pille ' + (PHASENFARBE[b.status] ?? 'pille--phase') + '">' +
+                    text(PHASE[b.status] ?? b.status) + '</span>');
+        const wert = b.auftragswert ?? b.preis_bis;
+        if (wert) pillen.push('<span class="pille">' + euro(wert) + '</span>');
+        if (b.scan_stufe === 1) pillen.push('<span class="pille">Schnellprüfung</span>');
+        if (b.scan_unvollstaendig) pillen.push('<span class="pille pille--bad">Scan unvollständig</span>');
+        if (b.befunde_schwer) pillen.push('<span class="pille pille--bad">' + b.befunde_schwer +
+          ' schwere Mängel</span>');
+        return '<button class="treffer" data-id="' + b.id + '">' +
+          '<span class="t-kopf"><span class="t-titel">' +
+            '<span class="t-name">' + text(b.name) + '</span>' +
+            '<span class="t-url">' + text(host) + '</span></span>' +
+          '<span class="t-wert"><b>' + (b.lead_score ?? '–') + '</b><span>Lead</span></span></span>' +
+          '<span class="pillen">' + pillen.join('') + '</span></button>';
+      }).join('') + '</div>';
+
+  el('inhalt').innerHTML = leiste + karten;
+
+  const setze = (id, feld) => el(id)?.addEventListener('change', (e) => {
+    filter[feld] = e.target.value; ladeDatenbank();
+  });
+  setze('fStatus', 'status'); setze('fBudget', 'budget'); setze('fBranche', 'branche');
+  setze('fMin', 'minScore');  setze('fMax', 'maxScore');
+  el('fReset')?.addEventListener('click', () => {
+    filter = { status:'', budget:'', branche:'', minScore:'', maxScore:'' };
+    ladeDatenbank();
+  });
+}
+
+el('inhalt').addEventListener('click', (e) => {
+  const t = e.target.closest('.treffer[data-id]');
+  if (t) oeffne(t.dataset.id);
+});
 
 /* ── Detailblatt ────────────────────────────────────────────────── */
 async function oeffne(id){
@@ -455,64 +643,80 @@ function zeichneBlatt(){
   const b = offen, k = b.kategorien || {};
   const host = (b.website || '').replace(/^https?:\/\//, '');
   el('bName').textContent = b.name;
-  el('bUnter').textContent = [BRANCHE[b.branche] ?? b.branche, b.stadt, STUFE[b.groesse_stufe]]
+  el('bUnter').textContent = [BRANCHE[b.branche] ?? b.branche, b.stadt, PHASE[b.status]]
     .filter(Boolean).join(' · ');
   const w = (n, l) => '<div class="wert"><b>' + (n ?? '–') + '</b><span>' + l + '</span></div>';
   const z = (l, v) => '<div class="zeile"><span>' + l + '</span><span>' + v + '</span></div>';
+  const knopf = (tun, wert, label, icon, klasse) =>
+    '<button class="tat ' + (klasse ?? '') + '" data-tun="' + tun + '"' +
+    (wert ? ' data-wert="' + wert + '"' : '') + '>' + (icon ? ic(icon) : '') + label + '</button>';
 
   el('bRumpf').innerHTML =
-    '<div class="card"><h3>Bewertung</h3><div class="werte">' +
+    '<div class="card"><h3>' + ic('dashboard') + 'Bewertung</h3><div class="werte">' +
       w(b.quality_score, 'Qualität') + w(b.lead_score, 'Lead') + w(k.impression, 'Eindruck') +
       w(k.mobile, 'Mobil') + w(k.content, 'Inhalt') + w(k.tech, 'Technik') + '</div>' +
       (b.scan_unvollstaendig ? '<p class="meldung meldung--fehler">' + text(b.scan_hinweis ?? 'Scan unvollständig') + '</p>' : '') +
-      (b.scan_stufe === 1 ? '<p class="meldung meldung--warn">Nur Vorauswahl — Design-Urteil und Technik fehlen.</p>' : '') +
+      (b.scan_stufe === 1 ? '<p class="meldung meldung--warn">Schnellprüfung — Design-Urteil und Technik fehlen, der Wert liegt im Mittel 8 Punkte zu hoch.</p>' : '') +
     '</div>' +
 
-    '<div class="card"><h3>Betrieb</h3>' +
+    '<div class="card"><h3>' + ic('betrieb') + 'Betrieb</h3>' +
       z('Website', '<a href="' + text(b.website) + '" target="_blank" rel="noopener noreferrer">' + text(host) + '</a>') +
-      z('Preisrahmen', '<span class="mono">' + (b.preis_von ? euro(b.preis_von) + ' – ' + euro(b.preis_bis) : '–') + '</span>') +
-      z('Größe', text(STUFE[b.groesse_stufe] ?? '–') + (b.groesse_score != null ? ' <span class="mono">(' + b.groesse_score + ')</span>' : '')) +
+      z('Budget-Einstufung', text(BUDGET[b.groesse_stufe] ?? '–') +
+        (b.groesse_score != null ? ' <span class="mono">(' + b.groesse_score + ')</span>' : '')) +
+      z('Preisrahmen, geschätzt', '<span class="mono">' +
+        (b.preis_von ? euro(b.preis_von) + ' – ' + euro(b.preis_bis) : '–') + '</span>') +
       z('Google', '<span class="mono">' + (b.google_rating ?? '–') + ' ★ · ' + zahl(b.google_reviews ?? 0) + '</span>') +
       z('Letzter Scan', '<span class="mono">' + datum(b.letzter_scan) + '</span>') +
       (b.groesse_signale?.length ? z('Größensignale', text(b.groesse_signale.join(', '))) : '') +
       (b.entwurf_url ? z('Entwurf', '<a href="' + text(b.entwurf_url) + '" target="_blank" rel="noopener noreferrer">ansehen</a>') : '') +
     '</div>' +
 
-    '<div class="card"><h3>Befunde' + (b.befunde.length ? ' (' + b.befunde.length + ')' : '') + '</h3>' +
-      (b.befunde.length ? b.befunde.slice(0, 40).map((f) =>
+    '<div class="card"><h3>' + ic('geld') + 'Auftragswert</h3>' +
+      '<p class="sub" style="margin:-.3rem 0 .7rem">Der Preisrahmen ist aus der Betriebsgröße geschätzt. Sobald du eine Zahl hast, gilt deine.</p>' +
+      '<div class="wertzeile"><input class="feld" id="wertFeld" type="number" min="0" step="50" ' +
+        'placeholder="' + (b.preis_bis ?? 'Betrag in Euro') + '" value="' + (b.auftragswert ?? '') + '">' +
+        knopf('wert', '', 'Setzen', 'haken', 'tat--haupt') + '</div>' +
+    '</div>' +
+
+    '<details class="klapp"' + ((b.befunde.length && b.befunde.length <= 6) ? ' open' : '') + '>' +
+      '<summary>' + ic('befund') + 'Befunde' + (b.befunde.length ? ' (' + b.befunde.length + ')' : '') +
+      ic('pfeilab', 'pfeil') + '</summary><div>' +
+      (b.befunde.length ? b.befunde.slice(0, 60).map((f) =>
         '<div class="befund"><span class="punktmarke ' + text(f.severity) + '"></span><p>' +
         text(f.text ?? f.titel ?? f.message ?? '') + '<br><em>' +
         text(SCHWERE[f.severity] ?? f.severity ?? '') + (f.category ? ' · ' + text(f.category) : '') +
         '</em></p></div>').join('')
         : '<p class="lede" style="margin:0">Keine Befunde erfasst.</p>') +
-    '</div>' +
+    '</div></details>' +
 
-    '<div class="card"><h3>Korrektur an den Agenten</h3>' +
+    '<div class="card"><h3>' + ic('stift') + 'Korrektur an den Agenten</h3>' +
       '<textarea class="feld" id="fbText" placeholder="Was soll am Entwurf anders werden?"></textarea>' +
-      '<div class="knopfreihe"><button class="tat tat--haupt" data-tun="feedback">Feedback speichern</button></div>' +
-      '<h3 style="margin-top:1.3rem">Auftrag geben</h3><div class="knopfreihe">' +
-        '<button class="tat" data-tun="auftrag" data-wert="entwurf_bauen">Entwurf bauen</button>' +
-        '<button class="tat" data-tun="auftrag" data-wert="entwurf_neu_bauen">Neu bauen</button>' +
-        '<button class="tat" data-tun="auftrag" data-wert="scan_stufe2">Vollbewertung</button>' +
-        '<button class="tat" data-tun="auftrag" data-wert="mail_vorbereiten">Mail vorbereiten</button></div>' +
-      '<h3 style="margin-top:1.3rem">Status</h3><div class="knopfreihe">' +
-        '<button class="tat" data-tun="status" data-wert="freigegeben">Freigegeben</button>' +
-        '<button class="tat" data-tun="status" data-wert="versendet">Versendet</button>' +
-        '<button class="tat" data-tun="status" data-wert="geantwortet">Hat geantwortet</button>' +
-        '<button class="tat" data-tun="status" data-wert="kunde">Kunde</button>' +
-        '<button class="tat" data-tun="status" data-wert="pausiert">Zurückstellen</button>' +
-        '<button class="tat tat--warn" data-tun="status" data-wert="abgelehnt">Abgelehnt</button></div>' +
+      '<div class="knopfreihe">' + knopf('feedback', '', 'Feedback speichern', 'haken', 'tat--haupt') + '</div>' +
+      '<h3 style="margin:1.4rem 0 .75rem">' + ic('auftrag') + 'Auftrag geben</h3><div class="knopfreihe">' +
+        knopf('auftrag', 'entwurf_bauen', 'Entwurf bauen') +
+        knopf('auftrag', 'entwurf_neu_bauen', 'Neu bauen') +
+        knopf('auftrag', 'scan_stufe2', 'Vollbewertung') +
+        knopf('auftrag', 'mail_vorbereiten', 'Mail vorbereiten') + '</div>' +
+      '<h3 style="margin:1.4rem 0 .75rem">' + ic('status') + 'Phase setzen</h3><div class="knopfreihe">' +
+        knopf('status', 'freigegeben', 'Freigegeben') +
+        knopf('status', 'versendet', 'Versendet') +
+        knopf('status', 'geantwortet', 'Geantwortet') +
+        knopf('status', 'kunde', 'Kunde') +
+        knopf('status', 'pausiert', 'Zurückstellen') +
+        knopf('status', 'abgelehnt', 'Abgelehnt', '', 'tat--warn') + '</div>' +
       '<div class="meldung" id="bMeldung" role="status"></div>' +
     '</div>' +
 
-    (b.feedback?.length ? '<div class="card"><h3>Bisheriges Feedback</h3><ul class="verlauf">' +
-      b.feedback.map((f) => '<li><b>Runde ' + (f.runde ?? '?') + '</b> · ' + datum(f.am) + '<br>' + text(f.text) + '</li>').join('') +
-      '</ul></div>' : '') +
+    (b.feedback?.length ? '<details class="klapp"><summary>' + ic('stift') + 'Bisheriges Feedback (' +
+      b.feedback.length + ')' + ic('pfeilab', 'pfeil') + '</summary><div><ul class="verlauf">' +
+      b.feedback.map((f) => '<li><b>Runde ' + (f.runde ?? '?') + '</b> · ' + datum(f.am) + '<br>' +
+        text(f.text) + '</li>').join('') + '</ul></div></details>' : '') +
 
-    (b.auftraege?.length ? '<div class="card"><h3>Aufträge</h3><ul class="verlauf">' +
+    (b.auftraege?.length ? '<details class="klapp"><summary>' + ic('auftrag') + 'Aufträge (' +
+      b.auftraege.length + ')' + ic('pfeilab', 'pfeil') + '</summary><div><ul class="verlauf">' +
       b.auftraege.map((a) => '<li><b>' + text(a.art) + '</b> · ' + text(a.status) + ' · ' + datum(a.angelegt_am) +
-        (a.fehler ? '<br><span style="color:var(--bad-ink)">' + text(a.fehler) + '</span>' : '') + '</li>').join('') +
-      '</ul></div>' : '');
+        (a.fehler ? '<br><span style="color:var(--bad-ink)">' + text(a.fehler) + '</span>' : '') +
+        '</li>').join('') + '</ul></div></details>' : '');
 }
 
 el('bRumpf').addEventListener('click', async (e) => {
@@ -526,6 +730,7 @@ el('bRumpf').addEventListener('click', async (e) => {
     nutzlast.anweisung = fb;
   }
   if (b.dataset.tun === 'auftrag') nutzlast.anweisung = fb || null;
+  if (b.dataset.tun === 'wert') nutzlast.wert = el('wertFeld')?.value ?? '';
 
   b.disabled = true;
   m.className = 'meldung'; m.textContent = 'Wird gespeichert …';
@@ -534,7 +739,8 @@ el('bRumpf').addEventListener('click', async (e) => {
                                           body: JSON.stringify(nutzlast) });
     m.textContent = r.hinweis ?? 'Gespeichert.';
     await oeffne(offen.id);
-    lade(); ladeAgent();
+    if (seite === 'datenbank') ladeDatenbank(); else lade();
+    ladeAgent();
   } catch (f) { m.className = 'meldung meldung--fehler'; m.textContent = f.message; }
   finally { b.disabled = false; }
 });
