@@ -15,11 +15,22 @@ export const esc = (s) => String(s ?? '').replace(/[&<>"]/g,
    solange die Bedingung falsch ist. Sonst scheitert `wenn(x, `${x.feld}`)`
    genau dann, wenn es nichts tun sollte. */
 const wenn = (b, s) => (b ? (typeof s === 'function' ? s() : s) : '');
+
+/* Ein Bild mit dem Seitenverhältnis seiner Quelle, wenn bekannt. Ohne Angabe
+   bleibt 16:9 — das passt für Fotos, aber nicht für Banner. */
+function bildKasten(src, alt, { verhaeltnis, zuerst = false } = {}) {
+  if (!src) return '';
+  const klasse = verhaeltnis ? 'bild bild--eigen' : 'bild bild--breit';
+  const stil = verhaeltnis ? ` style="--vh:${verhaeltnis}"` : '';
+  const laden = zuerst ? ' fetchpriority="high"' : ' loading="lazy" decoding="async"';
+  return `<div class="${klasse}"${stil}><img src="${esc(src)}" alt="${esc(alt)}"${laden}></div>`;
+}
 const schale = (inhalt) => `<div class="schale">${inhalt}</div>`;
 
 /* Kopfbereich. Bei einem Notdienst gehört die Nummer hierher und nicht in den
    Fußbereich — wer nachts auf der Autobahn steht, scrollt nicht. */
-export function hero({ ueber, titel, text, knoepfe = [], bild, bildAlt = '', tief = true }) {
+export function hero({ ueber, titel, text, knoepfe = [], bild, bildAlt = '',
+                       bildVerhaeltnis, tief = true }) {
   return `
 <header class="abschnitt ${tief ? 'abschnitt--tief' : ''}" id="start">
   ${schale(`<div class="raster raster--2" style="align-items:center">
@@ -29,8 +40,7 @@ export function hero({ ueber, titel, text, knoepfe = [], bild, bildAlt = '', tie
       ${wenn(text, `<p class="lead">${esc(text)}</p>`)}
       ${wenn(knoepfe.length, `<div class="knopfreihe">${knoepfe.map(knopf).join('')}</div>`)}
     </div>
-    ${wenn(bild, `<div class="bild bild--breit"><img src="${esc(bild)}" alt="${esc(bildAlt)}"
-         width="1200" height="675" fetchpriority="high"></div>`)}
+    ${bildKasten(bild, bildAlt, { verhaeltnis: bildVerhaeltnis, zuerst: true })}
   </div>`)}
 </header>`;
 }
@@ -84,7 +94,7 @@ export function zahlen({ eintraege, tief = true }) {
 }
 
 export function textBild({ ueber, titel, absaetze = [], punkte = [], bild, bildAlt = '',
-                           knoepfe = [], bildRechts = true, tief = false }) {
+                           bildVerhaeltnis, knoepfe = [], bildRechts = true, tief = false }) {
   const txt = `<div class="stapel-3">
       ${wenn(ueber, `<p class="ueber">${esc(ueber)}</p>`)}
       <h2>${esc(titel)}</h2>
@@ -92,8 +102,7 @@ export function textBild({ ueber, titel, absaetze = [], punkte = [], bild, bildA
       ${wenn(punkte.length, `<ul class="liste">${punkte.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>`)}
       ${wenn(knoepfe.length, `<div class="knopfreihe">${knoepfe.map(knopf).join('')}</div>`)}
     </div>`;
-  const img = wenn(bild, `<div class="bild bild--breit"><img src="${esc(bild)}" alt="${esc(bildAlt)}"
-      width="1000" height="563" loading="lazy"></div>`);
+  const img = bildKasten(bild, bildAlt, { verhaeltnis: bildVerhaeltnis });
   return `
 <section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
   ${schale(`<div class="raster raster--2" style="align-items:center">

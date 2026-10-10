@@ -18,8 +18,18 @@
 import fs from 'node:fs';
 import { seite, pruefeGeruest } from '../baukasten/seite.mjs';
 import { hero, notband, zahlen, leistungen, markenband, textBild, kontakt } from '../baukasten/bausteine.mjs';
+import { holeBilder } from '../baukasten/bilder.mjs';
+import { fileURLToPath } from 'node:url';
 
 const d = JSON.parse(fs.readFileSync(new URL('./daten.json', import.meta.url), 'utf8'));
+const hier = fileURLToPath(new URL('.', import.meta.url));
+
+/* Bilder holen, verkleinern und lokal ablegen. Verlinkt erschien der
+   Hauptinhalt mobil erst nach 4,3 Sekunden, und jeder Aufruf des Entwurfs
+   stand im Server-Protokoll des Betriebs. */
+console.log('Bilder:');
+const { pfade: B, herkunft } = await holeBilder(hier, d.bilder.wert, { log: (t) => console.log(t) });
+const vh = (n) => herkunft[Object.keys(herkunft).find((k) => k.startsWith(n))]?.verhaeltnis;
 /* Greift den belegten Wert heraus und meckert, wenn es keinen gibt — sonst
    steht am Ende stillschweigend "undefined" auf der Seite. */
 const w = (k) => {
@@ -65,7 +75,7 @@ const start = seite({
         { text: `Notdienst ${d.notruf.anzeige}`, href: `tel:${d.notruf.wert}`, art: 'wichtig' },
         { text: `Werkstatt ${d.telefon.anzeige}`, href: `tel:${d.telefon.wert}` },
       ],
-      bild: w('bilder').trucks,
+      bild: B.trucks, bildVerhaeltnis: vh('trucks'),
       bildAlt: 'Lastwagen der Roll Truck-Service Flotte',
     }),
 
@@ -79,7 +89,9 @@ const start = seite({
       { zahl: `${jahre} Jahre`, label: `Familienbetrieb seit ${d.gruendung.jahr}` },
       { zahl: '24/7',           label: 'Notdienst für Lkw und Pkw' },
       { zahl: w('abschleppStandorte').length, label: 'Abschlepp-Standorte' },
-      { zahl: d.google.bewertungen, label: 'Bewertungen bei Google' },
+      /* Die Sternebewertung fehlt in unseren Daten. Eine nackte Zahl ohne Note
+         sagt nichts — deshalb lieber ein Fakt, der belegt ist. */
+      { zahl: '1876', label: 'gegründet, bis heute in Familienhand' },
     ] }),
 
     leistungen({
@@ -107,7 +119,7 @@ const start = seite({
         'Eigene LNG-Tankstelle auf dem Firmengelände, seit 2020',
         'Bio-Lkw-Waschanlage in Crailsheim',
       ],
-      bild: w('bilder').team, bildAlt: 'Das Team von Roll Truck-Service',
+      bild: B.team, bildVerhaeltnis: vh('team'), bildAlt: 'Das Team von Roll Truck-Service',
       bildRechts: false,
     }),
 
@@ -120,7 +132,7 @@ const start = seite({
         { text: 'Stellenangebote', href: 'https://rolltruck.de/jobs/stellenangebote', neu: true },
         { text: 'Ausbildung', href: 'https://rolltruck.de/jobs/ausbildung', neu: true },
       ],
-      bild: w('bilder').werkstatt, bildAlt: 'Werkstatt von Roll Truck-Service',
+      bild: B.werkstatt, bildVerhaeltnis: vh('werkstatt'), bildAlt: 'Werkstatt von Roll Truck-Service',
       tief: false,
     }),
 
@@ -150,7 +162,7 @@ const notdienst = seite({
       text: 'Abschleppen und Bergung für Lkw und Pkw. Nachts, am Wochenende, an Feiertagen. '
           + 'Rufen Sie an — wir sagen Ihnen sofort, wann jemand bei Ihnen ist.',
       knoepfe: [{ text: `Jetzt anrufen: ${d.notruf.anzeige}`, href: `tel:${d.notruf.wert}`, art: 'wichtig' }],
-      bild: w('bilder').trucks, bildAlt: 'Bergungsfahrzeug von Roll Truck-Service',
+      bild: B.trucks, bildVerhaeltnis: vh('trucks'), bildAlt: 'Bergungsfahrzeug von Roll Truck-Service',
     }),
 
     leistungen({
@@ -168,7 +180,7 @@ const notdienst = seite({
       absaetze: [`Wir rücken von ${w('abschleppStandorte').join(', ')} aus — `
                + 'drei Standorte, von denen aus die Autobahnen in der Region schnell erreichbar sind.'],
       punkte: w('abschleppStandorte').map((o) => `Abschlepp-Standort ${o}`),
-      bild: w('bilder').lng, bildAlt: 'Betriebsgelände von Roll Truck-Service',
+      bild: B.lng, bildVerhaeltnis: vh('lng'), bildAlt: 'Betriebsgelände von Roll Truck-Service',
       bildRechts: false,
     }),
 

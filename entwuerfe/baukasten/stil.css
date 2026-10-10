@@ -103,6 +103,10 @@ a{color:inherit}
 .bild img{width:100%;height:100%;object-fit:cover}
 .bild--breit{aspect-ratio:16/9}
 .bild--quadrat{aspect-ratio:1}
+/* Hat das Quellbild ein ungewöhnliches Format, bekommt es seinen eigenen
+   Rahmen. Ein 1920×500-Banner in ein 16:9-Fenster gezwängt zeigt nur einen
+   schmalen Streifen — beim ersten Entwurf war der Abschleppwagen halb weg. */
+.bild--eigen{aspect-ratio:var(--vh,16/9)}
 
 .liste{list-style:none;margin:0;padding:0}
 .liste li{position:relative;padding-left:1.75rem;margin-bottom:.6rem}
@@ -144,7 +148,10 @@ a{color:inherit}
   .nav__in{flex-wrap:wrap;row-gap:0}
   .nav__marke{font-size:var(--t-s)}
   .nav__knopf{padding:.7rem .9rem;font-size:var(--t-xs)}
-  .nav__rest{order:-1;margin-left:auto}
+  /* order:-1 schob den Knopf vor den Firmennamen — die Kopfzeile stand
+     verdreht da. Die Reihenfolge im Markup ist richtig, sie braucht keine
+     Umsortierung, nur einen Umbruch. */
+  .nav__rest{margin-left:auto;order:0}
   .nav__links{order:1;flex:1 0 100%;display:flex;gap:.1rem;overflow-x:auto;
     padding-bottom:.35rem;margin-top:-.2rem;scrollbar-width:none}
   .nav__links::-webkit-scrollbar{display:none}

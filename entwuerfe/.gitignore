@@ -1,0 +1,6 @@
+# Bilder stammen aus fremden Auftritten und werden beim Bauen geholt.
+# Sie gehören nicht ins Repo: Urheberrecht ungeklärt, und bei hundert
+# Entwürfen am Tag würde das Repo in Wochen unbenutzbar groß.
+# herkunft.json bleibt drin, damit nachvollziehbar ist, was woher kam.
+*/bilder/*
+!*/bilder/herkunft.json
