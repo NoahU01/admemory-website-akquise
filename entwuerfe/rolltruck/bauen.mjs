@@ -17,7 +17,8 @@
 
 import fs from 'node:fs';
 import { seite, pruefeGeruest } from '../baukasten/seite.mjs';
-import { hero, notband, zahlen, leistungen, markenband, textBild, kontakt } from '../baukasten/bausteine.mjs';
+import { heroVoll, notband, zahlen, leistungen, logoband, siegel, textBild, kontakt,
+         ruflasche } from '../baukasten/bausteine.mjs';
 import { holeBilder } from '../baukasten/bilder.mjs';
 import { fileURLToPath } from 'node:url';
 
@@ -28,7 +29,14 @@ const hier = fileURLToPath(new URL('.', import.meta.url));
    Hauptinhalt mobil erst nach 4,3 Sekunden, und jeder Aufruf des Entwurfs
    stand im Server-Protokoll des Betriebs. */
 console.log('Bilder:');
-const { pfade: B, herkunft } = await holeBilder(hier, d.bilder.wert, { log: (t) => console.log(t) });
+const alleBilder = { ...d.bilder.wert,
+  ...Object.fromEntries(d.partnerLogos.wert.map((l) => [`partner_${l.name.replace(/\W+/g, '')}`, l.url])) };
+const { pfade: B, herkunft } = await holeBilder(hier, alleBilder, {
+  // Das Hero läuft randlos über die volle Fensterbreite
+  breiten: { trucks: 2000 },
+  log: (t) => console.log(t) });
+const partner = d.partnerLogos.wert.map((l) => ({ name: l.name, pfad: B[`partner_${l.name.replace(/\W+/g, '')}`] }))
+  .filter((l) => l.pfad);
 const vh = (n) => herkunft[Object.keys(herkunft).find((k) => k.startsWith(n))]?.verhaeltnis;
 /* Greift den belegten Wert heraus und meckert, wenn es keinen gibt — sonst
    steht am Ende stillschweigend "undefined" auf der Seite. */
@@ -40,10 +48,15 @@ const w = (k) => {
 };
 const jahre = new Date().getFullYear() - d.gruendung.jahr;
 
+/* Die Navigation bildet die des Originals ab, damit der Betrieb seine eigene
+   Seite wiedererkennt. Links auf nicht gebaute Seiten zeigen auf den
+   entsprechenden Abschnitt oder bleiben wirkungslos. */
 const NAV = [
-  { text: 'Leistungen', href: '#leistungen' },
-  { text: 'Betrieb',    href: '#betrieb' },
-  { text: 'Kontakt',    href: '#kontakt' },
+  { text: 'Roll Truck-Service', href: '#leistungen' },
+  { text: 'Jobs',               href: '#jobs' },
+  { text: '24h Notdienst',      href: '24h-notdienst.html' },
+  { text: 'Roll Firmengruppe',  href: '#betrieb' },
+  { text: 'Kontakt',            href: '#kontakt' },
 ];
 const NOTKNOPF = { text: `Notdienst ${d.notruf.anzeige}`, href: `tel:${d.notruf.wert}` };
 
@@ -60,23 +73,25 @@ const FUSS = `
 
 /* ── Startseite ──────────────────────────────────────────────────── */
 const start = seite({
-  titel: `${d.firma.wert} — Nutzfahrzeug-Werkstatt und 24h-Notdienst in Crailsheim`,
+  titel: `${d.firma.wert}: Nutzfahrzeug-Werkstatt und 24h-Notdienst in Crailsheim`,
   beschreibung: `Werkstatt für alle Nutzfahrzeugmarken in Crailsheim: Kundendienst, Reifen, `
     + `Ersatzteile, Prüfservice und LNG-Tankstelle. Abschleppen und Bergung rund um die Uhr `
     + `unter ${d.notruf.anzeige}.`,
   betrieb: d.betrieb, nav: NAV, navKnopf: NOTKNOPF, fuss: FUSS,
+  logo: B.logo, logoWeiss: B.logoWeiss,
+  vorInhalt: ruflasche({ titel: 'Notdienst rund um die Uhr', nummer: d.notruf.wert,
+                         nummerText: d.notruf.anzeige }),
   inhalt: [
-    hero({
-      ueber: `Crailsheim · seit ${d.gruendung.jahr}`,
+    heroVoll({
+      ueber: d.kerngeschaeft.wert,
       titel: 'Wenn der Lkw steht, zählt jede Stunde.',
-      text: 'Werkstatt für alle Nutzfahrzeugmarken — und ein Notdienst, der rund um die Uhr '
-          + 'ausrückt. Abschleppen und Bergung von Crailsheim, Wörnitz und Burgoberbach aus.',
+      text: `Werkstatt für alle Nutzfahrzeugmarken in Crailsheim. Der Notdienst rückt rund `
+          + `um die Uhr aus, von Crailsheim, Wörnitz und Burgoberbach.`,
       knoepfe: [
         { text: `Notdienst ${d.notruf.anzeige}`, href: `tel:${d.notruf.wert}`, art: 'wichtig' },
         { text: `Werkstatt ${d.telefon.anzeige}`, href: `tel:${d.telefon.wert}` },
       ],
-      bild: B.trucks, bildVerhaeltnis: vh('trucks'),
-      bildAlt: 'Lastwagen der Roll Truck-Service Flotte',
+      bild: B.trucks, bildAlt: 'Lastwagen und Bergungsfahrzeug von Roll Truck-Service',
     }),
 
     notband({
@@ -98,11 +113,27 @@ const start = seite({
       ueber: 'Leistungen',
       titel: 'Alles für das Nutzfahrzeug an einem Ort',
       text: 'Von der planbaren Wartung bis zur Bergung mitten in der Nacht.',
-      eintraege: w('leistungen'),
+      eintraege: w('leistungen').map((e) => ({ ...e,
+        icon: { '24h-Notdienst':'notruf', 'Kundendienst aller Marken':'werkzeug',
+                'Reifenservice':'reifen', 'Ersatzteile und Zubehör':'teile',
+                'Prüfservice':'pruefung', 'Vermietung':'miete',
+                'LNG-Tankstelle':'tankstelle', 'Waschstraße':'wasser',
+                'Ölspurbeseitigung':'oel', 'Reisemobile':'wohnmobil' }[e.titel],
+        wichtig: e.titel === '24h-Notdienst' })),
       spalten: 3,
     }),
 
-    markenband({ titel: 'Vertragspartner und Stützpunkt', marken: w('marken') }),
+    logoband({ ueber: 'Vertragspartner', titel: 'Mit denen wir arbeiten', logos: partner,
+               nachsatz: 'Dazu Vertragswerkstatt für Volvo Trucks und Iveco, '
+                       + 'DAF Vertragspartner und PEMA Stützpunkt.' }),
+
+    siegel({ ueber: 'Ausgezeichnet', titel: 'Werkstatt des Jahres 24/25',
+             text: 'Verliehen durch autoservice praxis. Seit 1876 in Familienhand, '
+                 + 'seit 1994 als Roll Truck-Service GmbH.',
+             bilder: [{ name: 'Werkstatt des Jahres 2024', pfad: B.werkstatt24 },
+                      { name: 'Werkstatt des Jahres 2025', pfad: B.werkstatt25 },
+                      { name: '150 Jahre Roll', pfad: B.siegel150 }].filter((x) => x.pfad),
+             tief: true }),
 
     textBild({
       ueber: 'Der Betrieb',
@@ -151,34 +182,37 @@ const start = seite({
 
 /* ── Unterseite: 24h-Notdienst ───────────────────────────────────── */
 const notdienst = seite({
-  titel: `24-Stunden-Notdienst für Lkw — ${d.firma.wert}`,
+  titel: `24-Stunden-Notdienst für Lkw bei ${d.firma.wert}`,
   beschreibung: `Abschleppen und Bergung rund um die Uhr von Crailsheim, Wörnitz und `
     + `Burgoberbach aus. Notdienst ${d.notruf.anzeige}, auch nachts und am Wochenende.`,
   betrieb: d.betrieb, nav: NAV, navKnopf: NOTKNOPF, fuss: FUSS,
+  logo: B.logo, logoWeiss: B.logoWeiss,
+  vorInhalt: ruflasche({ titel: 'Notdienst rund um die Uhr', nummer: d.notruf.wert,
+                         nummerText: d.notruf.anzeige }),
   inhalt: [
-    hero({
+    heroVoll({
       ueber: 'Rund um die Uhr',
       titel: `Notdienst: ${d.notruf.anzeige}`,
       text: 'Abschleppen und Bergung für Lkw und Pkw. Nachts, am Wochenende, an Feiertagen. '
-          + 'Rufen Sie an — wir sagen Ihnen sofort, wann jemand bei Ihnen ist.',
+          + 'Rufen Sie an, wir sagen Ihnen sofort, wann jemand bei Ihnen ist.',
       knoepfe: [{ text: `Jetzt anrufen: ${d.notruf.anzeige}`, href: `tel:${d.notruf.wert}`, art: 'wichtig' }],
-      bild: B.trucks, bildVerhaeltnis: vh('trucks'), bildAlt: 'Bergungsfahrzeug von Roll Truck-Service',
+      bild: B.trucks, bildAlt: 'Bergungsfahrzeug von Roll Truck-Service',
     }),
 
     leistungen({
       ueber: 'Im Notfall', titel: 'Was wir übernehmen', spalten: 2,
       eintraege: [
-        { titel: 'Abschleppen', text: 'Lkw und Nutzfahrzeuge, seit 2024 auch Pkw.' },
-        { titel: 'Bergung', text: 'Nach Unfall oder Abkommen von der Fahrbahn.' },
-        { titel: 'Ölspurbeseitigung', text: 'Schnelle Hilfe bei Leckagen auf der Straße.' },
-        { titel: 'Pannenhilfe vor Ort', text: 'Wenn sich die Fahrt mit einer Reparatur retten lässt.' },
+        { titel: 'Abschleppen', icon: 'notruf', wichtig: true, text: 'Lkw und Nutzfahrzeuge, seit 2024 auch Pkw.' },
+        { titel: 'Bergung', icon: 'werkzeug', text: 'Nach Unfall oder Abkommen von der Fahrbahn.' },
+        { titel: 'Ölspurbeseitigung', icon: 'oel', text: 'Schnelle Hilfe bei Leckagen auf der Straße.' },
+        { titel: 'Pannenhilfe vor Ort', icon: 'uhr', text: 'Wenn sich die Fahrt mit einer Reparatur retten lässt.' },
       ],
     }),
 
     textBild({
       ueber: 'Standorte', titel: 'Drei Stützpunkte an A6 und A7',
-      absaetze: [`Wir rücken von ${w('abschleppStandorte').join(', ')} aus — `
-               + 'drei Standorte, von denen aus die Autobahnen in der Region schnell erreichbar sind.'],
+      absaetze: [`Wir rücken von ${w('abschleppStandorte').join(', ')} aus. `
+               + 'Von dort sind die Autobahnen in der Region schnell erreichbar.'],
       punkte: w('abschleppStandorte').map((o) => `Abschlepp-Standort ${o}`),
       bild: B.lng, bildVerhaeltnis: vh('lng'), bildAlt: 'Betriebsgelände von Roll Truck-Service',
       bildRechts: false,

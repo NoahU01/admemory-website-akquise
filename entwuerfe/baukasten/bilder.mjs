@@ -28,7 +28,11 @@ const sipsDa = (() => {
   try { execFileSync('sips', ['--version'], { stdio: 'ignore' }); return true; } catch { return false; }
 })();
 
-export async function holeBilder(ordner, bilder, { maxBreite = MAX_BREITE, log = () => {} } = {}) {
+/* breiten: je Bild eine eigene Obergrenze. Ein randloses Hero zeigt das Bild
+   über die volle Fensterbreite und braucht deshalb mehr Pixel als ein Bild in
+   einer halben Spalte. Mit einer Grenze für alle wurde das Hero hochgerechnet
+   und unscharf. */
+export async function holeBilder(ordner, bilder, { maxBreite = MAX_BREITE, breiten = {}, log = () => {} } = {}) {
   const ziel = path.join(ordner, 'bilder');
   fs.mkdirSync(ziel, { recursive: true });
   const herkunft = {};
@@ -50,13 +54,26 @@ export async function holeBilder(ordner, bilder, { maxBreite = MAX_BREITE, log =
        als der Encoder der Quelle. Deshalb wird in eine Kopie gerechnet, mehrere
        Qualitätsstufen probiert und nur übernommen, was wirklich kleiner ist. */
     const vorher = fs.statSync(voll).size;
+
+    /* Logos und Grafiken nicht anfassen. sips würde nach JPEG wandeln und
+       damit die Transparenz zerstören — ein Markenlogo bekäme einen weißen
+       Kasten. SVG ist ohnehin schon klein und verlustfrei. */
+    const grafik = endung === '.svg' || endung === '.png' || /logo|siegel|jahre|auszeich/i.test(name);
+    if (grafik) {
+      pfade[name] = `bilder/${datei}`;
+      herkunft[datei] = { quelle: url, geholt: new Date().toISOString().slice(0, 10),
+                          bytes: vorher, unveraendert: true };
+      log(`  ${name.padEnd(14)} ${(vorher / 1024).toFixed(0)} kB  (Grafik, unverändert)`);
+      continue;
+    }
+
     if (sipsDa) {
       let bestes = null, bestGroesse = vorher;
       for (const q of [60, 45, 35]) {
         const probe = voll + `.p${q}`;
         try {
           fs.copyFileSync(voll, probe);
-          execFileSync('sips', ['-Z', String(maxBreite), '-s', 'format', 'jpeg',
+          execFileSync('sips', ['-Z', String(breiten[name] ?? maxBreite), '-s', 'format', 'jpeg',
                                 '-s', 'formatOptions', String(q), probe], { stdio: 'ignore' });
           const g = fs.statSync(probe).size;
           if (g < bestGroesse) { if (bestes) fs.unlinkSync(bestes); bestes = probe; bestGroesse = g; }

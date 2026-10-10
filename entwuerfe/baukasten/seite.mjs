@@ -12,8 +12,9 @@ import { esc } from './bausteine.mjs';
    es dann. Deshalb nimmt sie wahlweise eine Funktion entgegen. */
 const wenn = (b, s) => (b ? (typeof s === 'function' ? s() : s) : '');
 
-export function seite({ titel, beschreibung, akzent = '#b4121a', basis = '',
-                        nav = [], navKnopf, inhalt, fuss, betrieb, jahr = new Date().getFullYear() }) {
+export function seite({ titel, beschreibung, akzent = '#b4121a', basis = '', logo, logoWeiss,
+                        nav = [], navKnopf, inhalt, vorInhalt = '', fuss, betrieb,
+                        jahr = new Date().getFullYear() }) {
   return `<!doctype html>
 <html lang="de">
 <head>
@@ -35,7 +36,9 @@ ${wenn(beschreibung, `<meta name="description" content="${esc(beschreibung)}">`)
 
 <nav class="nav kein-druck">
   <div class="schale nav__in">
-    <a class="nav__marke" href="${basis}index.html">${esc(betrieb)}</a>
+    <a class="nav__marke" href="${basis}index.html">${logo
+      ? `<img class="nav__logo" src="${esc(basis)}${esc(logo)}" alt="${esc(betrieb)}">`
+      : esc(betrieb)}</a>
     <div class="nav__links">
       ${nav.map((n) => `<a class="nav__link" href="${esc(n.href)}">${esc(n.text)}</a>`).join('')}
     </div>
@@ -45,17 +48,20 @@ ${wenn(beschreibung, `<meta name="description" content="${esc(beschreibung)}">`)
   </div>
 </nav>
 
+${vorInhalt}
 <main id="inhalt">
 ${inhalt}
 </main>
 
-<footer class="abschnitt--eng" style="background:var(--tief);color:var(--text-auf-tief);
-        padding-block:var(--a-4) calc(var(--a-4) + var(--unten))">
+<footer class="abschnitt--eng auf-dunkel"
+        style="padding-block:var(--a-4) calc(var(--a-4) + var(--unten))">
   <div class="schale">
+    ${wenn(logoWeiss, () => `<img src="${esc(basis)}${esc(logoWeiss)}" alt="${esc(betrieb)}"
+       style="height:2.4rem;width:auto;margin-bottom:var(--a-3)">`)}
     <div class="raster raster--3">${fuss}</div>
     <hr class="trenner" style="border-color:var(--linie-tief);margin-block:var(--a-3)">
-    <p class="klein" style="color:#8b97a6">
-      ${esc(betrieb)} · ${jahr} — Entwurfsfassung, nicht für Suchmaschinen freigegeben.
+    <p class="klein">
+      ${esc(betrieb)} · ${jahr} · Entwurfsfassung, nicht für Suchmaschinen freigegeben.
     </p>
   </div>
 </footer>
@@ -73,5 +79,17 @@ export function pruefeGeruest(html) {
   if (!/<meta name="description" content="[^"]{40,}"/.test(html)) fehlt.push('Beschreibung fehlt oder ist zu kurz');
   if ((html.match(/<h1/g) || []).length !== 1) fehlt.push('genau eine h1 erwartet');
   if (/<img(?![^>]*\balt=)/i.test(html)) fehlt.push('Bild ohne Alternativtext');
+  /* Gedankenstriche lesen sich nach maschinell erzeugtem Text. Geprüft wird
+     nur der sichtbare Inhalt, nicht Kommentare oder Attribute. */
+  const sichtbar = html.replace(/<(script|style)[\s\S]*?<\/\1>/gi, '')
+                       .replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, ' ');
+  /* Zahlenbereiche wie "6:00 – 20:00" sind korrekte Typografie, kein
+     Maschinentext. Nur der Gedankenstrich als Einschub zwischen Wörtern ist
+     gemeint. */
+  const einschub = sichtbar.replace(/\d\s*[–—-]\s*\d/g, '');
+  if (/\s(—|--|–)\s/.test(einschub)) {
+    const stelle = /(.{0,40})\s(?:—|--|–)\s(.{0,40})/.exec(einschub);
+    fehlt.push(`Gedankenstrich im Text: "…${(stelle?.[1] ?? '').trim()} — ${(stelle?.[2] ?? '').trim()}…"`);
+  }
   return fehlt;
 }

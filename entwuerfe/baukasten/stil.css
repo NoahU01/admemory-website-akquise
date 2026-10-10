@@ -22,6 +22,7 @@
   --text:#11161d; --text-2:#4a5565; --text-auf-tief:#eef1f5;
   --linie:#e3e7ec; --linie-tief:#2a3340;
   --akzent:#b4121a; --akzent-text:#ffffff; --akzent-hell:#fdeced;
+  --akzent-schrift:#b4121a;
 
   --radius:10px; --radius-s:6px;
   --schatten:0 1px 3px rgba(17,22,29,.08), 0 8px 24px -12px rgba(17,22,29,.18);
@@ -40,8 +41,8 @@ body{margin:0;background:var(--grund);color:var(--text);
 img{max-width:100%;height:auto;display:block}
 
 h1,h2,h3{margin:0;line-height:1.15;letter-spacing:-.022em;font-weight:700;text-wrap:balance}
-h1{font-size:clamp(2rem,5.5vw,var(--t-3xl))}
-h2{font-size:clamp(1.5rem,3.6vw,var(--t-2xl))}
+h1{font-size:clamp(2.25rem,6.2vw,4rem)}
+h2{font-size:clamp(1.7rem,4vw,2.75rem)}
 h3{font-size:var(--t-l)}
 p{margin:0;max-width:var(--breite-text);text-wrap:pretty}
 a{color:inherit}
@@ -52,17 +53,32 @@ a{color:inherit}
 .abschnitt{padding-block:clamp(var(--a-4),5.5vw,var(--a-5))}
 .abschnitt + .abschnitt:not(.abschnitt--tief):not(.abschnitt--gedaempft){padding-top:0}
 .abschnitt--eng{padding-block:clamp(var(--a-3),4vw,var(--a-4))}
-.abschnitt--tief{background:var(--tief);color:var(--text-auf-tief)}
+/* Dunkle Umgebung: definiert die Textfarben um, statt jede Klasse einzeln zu
+   überschreiben. Vorher stand im Fußbereich fast schwarzer Text auf schwarzem
+   Grund — Kontrast 2,4:1 —, weil '.klein' eine Farbe für helle Flächen nahm
+   und der Fußbereich die dunkle Umgebung nicht angemeldet hatte. Jedes
+   dunkle Element trägt jetzt '.auf-dunkel', und alles darin stimmt von selbst. */
+.auf-dunkel{background:var(--tief);color:var(--text-auf-tief);
+  --text:var(--text-auf-tief); --text-2:#b9c3d0; --linie:var(--linie-tief);
+  --grund:#18202b; --gedaempft:#18202b; --akzent-hell:#2a1416; --akzent-schrift:#ff8e8e}
+.auf-dunkel h1,.auf-dunkel h2,.auf-dunkel h3{color:#fff}
+/* Das dunkle Markenrot kommt auf dunklem Grund nur auf 2,6:1. Für Schrift
+   braucht es eine hellere Fassung; als Fläche bleibt --akzent richtig. */
+.abschnitt--tief{background:var(--tief);color:var(--text-auf-tief);
+  --text:var(--text-auf-tief); --text-2:#b9c3d0; --linie:var(--linie-tief);
+  --grund:#18202b; --gedaempft:#18202b; --akzent-schrift:#ff8e8e}
 .abschnitt--tief h1,.abschnitt--tief h2,.abschnitt--tief h3{color:#fff}
 .abschnitt--gedaempft{background:var(--gedaempft)}
 
 .stapel>*+*{margin-top:var(--a-2)}
 .stapel-3>*+*{margin-top:var(--a-3)}
+/* Vorzeile und Überschrift sind eine Einheit, kein Abstand von einer vollen
+   Stufe dazwischen. */
 .ueber{font-size:var(--t-xs);font-weight:600;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--akzent);margin-bottom:var(--a-1)}
-.abschnitt--tief .ueber{color:#ff8e8e}
-.lead{font-size:var(--t-l);color:var(--text-2);line-height:1.5}
-.abschnitt--tief .lead{color:#b9c3d0}
+  color:var(--akzent-schrift);margin-bottom:.35rem}
+.ueber + h1,.ueber + h2{margin-top:0}
+.stapel-3 > .ueber + *{margin-top:.35rem}
+.lead{font-size:var(--t-m);color:var(--text);opacity:.88;line-height:1.6;max-width:56ch}
 .klein{font-size:var(--t-s);color:var(--text-2)}
 
 /* Knöpfe: Mindestgröße 48 px, damit sie auf dem Handy sicher zu treffen sind.
@@ -89,15 +105,12 @@ a{color:inherit}
 
 .karte{background:var(--grund);border:1px solid var(--linie);border-radius:var(--radius);
   padding:var(--a-3);height:100%}
-.abschnitt--tief .karte{background:#18202b;border-color:var(--linie-tief)}
 .karte--klickbar{text-decoration:none;transition:border-color .15s,box-shadow .15s}
 .karte--klickbar:hover{border-color:var(--akzent);box-shadow:var(--schatten)}
 .karte h3{margin-bottom:var(--a-1)}
 
-.zahl{font-size:var(--t-2xl);font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--akzent)}
-.abschnitt--tief .zahl{color:#ff8e8e}
+.zahl{font-size:var(--t-2xl);font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--akzent-schrift)}
 .zahl-label{font-size:var(--t-s);color:var(--text-2);margin-top:.35rem}
-.abschnitt--tief .zahl-label{color:#b9c3d0}
 
 .bild{border-radius:var(--radius);overflow:hidden;background:var(--gedaempft)}
 .bild img{width:100%;height:100%;object-fit:cover}
@@ -119,10 +132,8 @@ a{color:inherit}
 .marken{display:flex;flex-wrap:wrap;gap:var(--a-1) var(--a-2);align-items:center}
 .marke{font-size:var(--t-s);font-weight:600;padding:.4rem .85rem;border-radius:999px;
   border:1px solid var(--linie);color:var(--text-2)}
-.abschnitt--tief .marke{border-color:var(--linie-tief);color:#b9c3d0}
 
 .trenner{border:0;border-top:1px solid var(--linie);margin-block:var(--a-4)}
-.abschnitt--tief .trenner{border-color:var(--linie-tief)}
 
 @media print{.kein-druck{display:none}}
 
@@ -136,7 +147,9 @@ a{color:inherit}
 .nav__in{display:flex;align-items:center;gap:var(--a-2);min-height:64px;padding-block:.5rem}
 .nav__marke{font-weight:700;text-decoration:none;letter-spacing:-.02em;
   font-size:var(--t-m);white-space:nowrap;flex:none}
-.nav__rest{margin-left:auto;display:flex;align-items:center;gap:.25rem}
+.nav__rest{display:flex;align-items:center;gap:.25rem}
+/* Die Punkte stehen rechts, nicht gleich hinter dem Logo. */
+.nav__links{margin-left:auto;display:flex;align-items:center;gap:.25rem}
 .nav__link{text-decoration:none;font-size:var(--t-s);font-weight:500;color:var(--text-2);
   padding:.65rem .75rem;min-height:44px;display:inline-flex;align-items:center;white-space:nowrap}
 .nav__link:hover{color:var(--text)}
@@ -147,14 +160,112 @@ a{color:inherit}
 @media(max-width:760px){
   .nav__in{flex-wrap:wrap;row-gap:0}
   .nav__marke{font-size:var(--t-s)}
-  .nav__knopf{padding:.7rem .9rem;font-size:var(--t-xs)}
+  /* Die Leiste am unteren Rand zeigt dieselbe Nummer. Zweimal derselbe Knopf
+     im Blick wirkt redundant. */
+  .nav__knopf{display:none}
   /* order:-1 schob den Knopf vor den Firmennamen — die Kopfzeile stand
      verdreht da. Die Reihenfolge im Markup ist richtig, sie braucht keine
      Umsortierung, nur einen Umbruch. */
   .nav__rest{margin-left:auto;order:0}
   .nav__links{order:1;flex:1 0 100%;display:flex;gap:.1rem;overflow-x:auto;
-    padding-bottom:.35rem;margin-top:-.2rem;scrollbar-width:none}
+    padding-bottom:.35rem;margin-top:-.2rem;scrollbar-width:none;
+    /* Weicher Auslauf am rechten Rand: zeigt, dass die Zeile weitergeht,
+       statt den letzten Punkt hart abzuschneiden. */
+    -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);
+    mask-image:linear-gradient(90deg,#000 88%,transparent)}
   .nav__links::-webkit-scrollbar{display:none}
   .nav__link{flex:none;padding:.55rem .6rem;min-height:40px;font-size:var(--t-xs)}
 }
-@media(min-width:761px){.nav__links{display:contents}}
+
+
+/* ── Hero-Varianten ───────────────────────────────────────────────
+   Eine geteilte Hälfte-Text-Hälfte-Bild-Anordnung ist der sicherste, aber
+   auch der blasseste Aufbau. Je nach Bildmaterial trägt ein großflächiges
+   Bild deutlich weiter. */
+
+/* Bild über die volle Breite, Text darüber. Braucht ein Bild, das auch
+   abgedunkelt noch etwas zeigt. */
+/* Hintergrundfarbe als Rückfall: Lädt das Bild nicht, stünde weißer Text auf
+   weißem Grund und die Seite wäre leer. Genau dieser Fall ist uns bei einer
+   fremden Seite begegnet, deren Stylesheet fehlte. */
+.hero-voll{background:var(--tief);color:#fff;
+  position:relative;isolation:isolate;min-height:min(78vh,640px);
+  display:flex;align-items:flex-end;padding-block:var(--a-6) var(--a-5);overflow:hidden}
+.hero-voll__bild{position:absolute;inset:0;z-index:-2}
+.hero-voll__bild img{width:100%;height:100%;object-fit:cover}
+.hero-voll::after{content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,rgba(10,14,20,.42) 0%,rgba(10,14,20,.72) 55%,rgba(10,14,20,.93) 100%)}
+.hero-voll .ueber{color:#ffb4b4}
+.hero-voll h1{max-width:18ch}
+.hero-voll .lead{max-width:52ch}
+
+/* Bild als breites Band unter dem Text, randlos bis zum Seitenrand. */
+.hero-band__bild{margin-top:var(--a-4);border-radius:var(--radius);overflow:hidden;
+  max-height:min(52vh,460px)}
+.hero-band__bild img{width:100%;height:100%;object-fit:cover}
+
+/* ── Sticky-Lasche am Rand ────────────────────────────────────────
+   Für Betriebe, bei denen ein Anruf das Ziel ist: Notdienst, Rückruf,
+   Termin. Fährt mit, macht auf sich aufmerksam, klappt beim Überfahren auf.
+   Am Telefon wird daraus eine Leiste am unteren Rand, weil dort niemand
+   eine Lasche am Rand trifft. */
+.ruflasche{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:50;
+  display:flex;align-items:center;gap:.7rem;text-decoration:none;
+  background:var(--akzent);color:#fff;padding:1rem .9rem;
+  border-radius:var(--radius) 0 0 var(--radius);box-shadow:0 6px 26px -8px rgba(0,0,0,.55);
+  max-width:3.4rem;overflow:hidden;white-space:nowrap;
+  transition:max-width .28s cubic-bezier(.4,0,.2,1),padding-right .28s}
+.ruflasche:hover,.ruflasche:focus-visible{max-width:22rem;padding-right:1.3rem}
+.ruflasche__zeichen{flex:none;width:1.6rem;height:1.6rem;display:grid;place-items:center}
+.ruflasche__zeichen svg{width:1.4rem;height:1.4rem;stroke:currentColor;fill:none;stroke-width:1.8}
+/* Eingeklappt nur das Zeichen. Vorher ragte der angeschnittene Text an den
+   Fensterrand und sah aus, als stünde die Lasche halb draußen. */
+.ruflasche__text{display:flex;flex-direction:column;line-height:1.25;
+  opacity:0;transition:opacity .2s .05s}
+.ruflasche:hover .ruflasche__text,.ruflasche:focus-visible .ruflasche__text{opacity:1}
+.ruflasche__text b{font-size:var(--t-s)}
+.ruflasche__text span{font-size:var(--t-xs);opacity:.9}
+/* Der Puls macht auf die Lasche aufmerksam, ohne zu blinken. */
+.ruflasche::before{content:"";position:absolute;inset:0;border-radius:inherit;
+  box-shadow:0 0 0 0 color-mix(in srgb,var(--akzent) 70%,transparent);
+  animation:puls 2.6s ease-out infinite}
+@keyframes puls{70%{box-shadow:0 0 0 14px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@media(prefers-reduced-motion:reduce){.ruflasche::before{animation:none}}
+@media(max-width:760px){
+  .ruflasche{top:auto;bottom:0;right:0;left:0;transform:none;max-width:none;
+    border-radius:0;justify-content:center;padding:.9rem 1rem calc(.9rem + var(--unten));
+    box-shadow:0 -4px 20px -8px rgba(0,0,0,.5)}
+  .ruflasche:hover{max-width:none}
+  /* Am Telefon gibt es kein Überfahren: Die Leiste zeigt ihren Text immer,
+     sonst steht dort nur ein Zeichen ohne Nummer. */
+  .ruflasche__text{flex-direction:row;gap:.5rem;align-items:baseline;opacity:1}
+}
+
+/* ── Karten mit Icon und Hover ────────────────────────────────── */
+.karte--klickbar:hover{transform:translateY(-3px)}
+.karte{transition:border-color .18s,box-shadow .18s,transform .18s}
+.karte__icon{width:2.5rem;height:2.5rem;border-radius:var(--radius-s);display:grid;place-items:center;
+  background:var(--akzent-hell);color:var(--akzent);margin-bottom:var(--a-2)}
+.karte__icon svg{width:1.35rem;height:1.35rem;stroke:currentColor;fill:none;
+  stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+/* Eine Karte darf herausstechen, damit das Raster nicht gleichförmig wirkt. */
+.karte--wichtig{background:var(--akzent);border-color:var(--akzent);color:#fff;
+  --text:#fff; --text-2:rgba(255,255,255,.88)}
+.karte--wichtig h3{color:#fff}
+.karte--wichtig .karte__icon{background:rgba(255,255,255,.18);color:#fff}
+.karte--wichtig:hover{border-color:#fff}
+
+/* ── Logoband ─────────────────────────────────────────────────── */
+.logoband{display:flex;flex-wrap:wrap;align-items:center;gap:var(--a-3) var(--a-4)}
+.logoband img{height:2.6rem;width:auto;object-fit:contain;
+  filter:grayscale(1);opacity:.62;transition:filter .2s,opacity .2s}
+.logoband img:hover{filter:none;opacity:1}
+.auf-dunkel .logoband img,.abschnitt--tief .logoband img{filter:grayscale(1) invert(1) brightness(1.6);opacity:.75}
+
+/* ── Siegel ───────────────────────────────────────────────────── */
+.siegel{display:flex;flex-wrap:wrap;gap:var(--a-3);align-items:center}
+.siegel img{height:5.5rem;width:auto;object-fit:contain}
+
+/* ── Kopflogo ─────────────────────────────────────────────────── */
+.nav__logo{height:2.1rem;width:auto;object-fit:contain;flex:none}
+@media(max-width:760px){.nav__logo{height:1.7rem}}

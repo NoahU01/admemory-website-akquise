@@ -1,34 +1,88 @@
 {
  "trucks.jpg": {
-  "quelle": "https://rolltruck.de/v_images/web/slider-trucks-01-2022.jpg",
+  "quelle": "https://rolltruck.de/v_images/original/slider-trucks-01-2022.jpg",
   "geholt": "2026-10-10",
-  "bytes": 47120,
-  "breite": 1200,
-  "hoehe": 312,
-  "verhaeltnis": "1200/312"
+  "bytes": 115849,
+  "breite": 2000,
+  "hoehe": 521,
+  "verhaeltnis": "2000/521"
  },
  "team.jpg": {
-  "quelle": "https://rolltruck.de/v_images/web/slider-startseite-teambild-neu.jpg",
+  "quelle": "https://rolltruck.de/v_images/original/slider-startseite-teambild-neu.jpg",
   "geholt": "2026-10-10",
-  "bytes": 44460,
+  "bytes": 44296,
   "breite": 1200,
   "hoehe": 312,
   "verhaeltnis": "1200/312"
  },
  "lng.jpg": {
-  "quelle": "https://rolltruck.de/v_images/web/slider_lng.jpg",
+  "quelle": "https://rolltruck.de/v_images/original/slider_lng.jpg",
   "geholt": "2026-10-10",
-  "bytes": 34520,
+  "bytes": 34208,
   "breite": 1200,
   "hoehe": 312,
   "verhaeltnis": "1200/312"
  },
  "werkstatt.jpg": {
-  "quelle": "https://rolltruck.de/v_images/web/slider-startseite-1.jpg",
+  "quelle": "https://rolltruck.de/v_images/original/slider-startseite-1.jpg",
   "geholt": "2026-10-10",
-  "bytes": 46608,
+  "bytes": 46649,
   "breite": 1200,
   "hoehe": 312,
   "verhaeltnis": "1200/312"
+ },
+ "logo.png": {
+  "quelle": "https://rolltruck.de/assets/images/logo.png",
+  "geholt": "2026-10-10",
+  "bytes": 8398,
+  "unveraendert": true
+ },
+ "logoWeiss.png": {
+  "quelle": "https://rolltruck.de/assets/images/truckservice-logo-white.png",
+  "geholt": "2026-10-10",
+  "bytes": 22913,
+  "unveraendert": true
+ },
+ "siegel150.svg": {
+  "quelle": "https://rolltruck.de/assets/images/150-jahre-roll.svg",
+  "geholt": "2026-10-10",
+  "bytes": 4688,
+  "unveraendert": true
+ },
+ "werkstatt24.svg": {
+  "quelle": "https://rolltruck.de/assets/images/werkstatt-des-jahres-2024.svg",
+  "geholt": "2026-10-10",
+  "bytes": 25188,
+  "unveraendert": true
+ },
+ "werkstatt25.svg": {
+  "quelle": "https://rolltruck.de/assets/images/werkstatt-des-jahres-2025.svg",
+  "geholt": "2026-10-10",
+  "bytes": 23350,
+  "unveraendert": true
+ },
+ "partner_SchmitzCargobull.png": {
+  "quelle": "https://rolltruck.de/assets/images/logo-schmitz-cargobull.png",
+  "geholt": "2026-10-10",
+  "bytes": 80933,
+  "unveraendert": true
+ },
+ "partner_Verglst.png": {
+  "quelle": "https://rolltruck.de/assets/images/logo-vergoelst.png",
+  "geholt": "2026-10-10",
+  "bytes": 43311,
+  "unveraendert": true
+ },
+ "partner_Krone.png": {
+  "quelle": "https://rolltruck.de/assets/images/logo-krone.png",
+  "geholt": "2026-10-10",
+  "bytes": 36545,
+  "unveraendert": true
+ },
+ "partner_TV.png": {
+  "quelle": "https://rolltruck.de/assets/images/logos-tuev.png",
+  "geholt": "2026-10-10",
+  "bytes": 47553,
+  "unveraendert": true
  }
 }
