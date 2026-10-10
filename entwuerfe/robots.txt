@@ -1,0 +1,12 @@
+# Entwurfsfassungen. Diese Seiten sollen NICHT in Suchmaschinen erscheinen.
+#
+# Das Crawlen ist bewusst erlaubt: Nur wenn eine Suchmaschine die Seite abrufen
+# darf, liest sie den noindex-Hinweis aus Meta-Tag und HTTP-Header - und nimmt
+# sie daraufhin gar nicht erst auf. Ein pauschales "Disallow: /" wuerde genau
+# das verhindern; die URL koennte dann trotzdem im Index landen, nur ohne
+# Inhalt.
+
+User-agent: *
+Allow: /
+
+# Keine Sitemap - es soll nichts gefunden werden.

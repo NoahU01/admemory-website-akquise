@@ -1,0 +1,61 @@
+{
+  "_hinweis": "Jede Angabe hier hat eine Quelle. Was keine hat, darf nicht auf die Seite. Beim Acanto-Entwurf war 'seit 2016' erfunden und fiel erst beim Nachprüfen auf.",
+  "betrieb": "Roll Truck-Service",
+  "firma": { "wert": "Roll Truckservice GmbH", "quelle": "rolltruck.de/impressum" },
+  "anschrift": { "wert": ["Roll Truckservice GmbH", "Ludwig-Erhard-Straße 102", "74564 Crailsheim"],
+                 "quelle": "rolltruck.de/impressum" },
+  "hrb": { "wert": "HRB 671090", "quelle": "rolltruck.de/impressum" },
+  "telefon": { "wert": "+497951297930", "anzeige": "07951 29793-0", "quelle": "rolltruck.de, tel:-Link" },
+  "notruf":  { "wert": "+4979516048",   "anzeige": "07951 6048",
+               "quelle": "rolltruck.de/24h-notdienst: '24h Notservice: +49-7951 6048'" },
+  "email":   { "wert": "info@rolltruck.de", "quelle": "rolltruck.de" },
+  "zeiten":  { "wert": [{ "tag": "Montag bis Freitag", "zeit": "6:00 – 20:00 Uhr" },
+                        { "tag": "Samstag", "zeit": "7:00 – 13:00 Uhr" },
+                        { "tag": "Notdienst", "zeit": "rund um die Uhr" }],
+               "quelle": "rolltruck.de/24h-notdienst: 'Mo-Fr: 6:00-20:00 Uhr, Sa: 7:00-13:00 Uhr'" },
+  "google":  { "bewertungen": 301, "quelle": "Google Places, Stand 09.10.2026" },
+
+  "gruendung": { "jahr": 1876, "wert": "Gründung der Güterbeförderung durch Martin Schmidt, Urgroßvater des heutigen Inhabers Heinrich Roll",
+                 "quelle": "rolltruck.de/roll-firmengruppe/geschichte" },
+  "gmbhSeit":  { "jahr": 1994, "wert": "Roll Truck-Service GmbH wird gegründet",
+                 "quelle": "rolltruck.de/roll-firmengruppe/geschichte" },
+  "auszeichnung": { "wert": "Werkstatt des Jahres 24/25, verliehen durch autoservice praxis",
+                    "jahr": 2024, "quelle": "rolltruck.de/roll-firmengruppe/geschichte: 'Ernennung zur Werkstatt des Jahres 24/25 durch autoservice'" },
+
+  "marken": { "wert": ["Volvo Trucks", "Iveco", "DAF", "Schmitz Cargobull", "Vergölst", "PEMA"],
+              "quelle": "rolltruck.de/roll-firmengruppe/geschichte: Vertragswerkstatt 2000 (Volvo, Iveco), DAF Vertragspartner 2003, PEMA Stützpunkt 2015, Vergölst Reifenpartner 2016, Schmitz Cargobull Partner 2017" },
+
+  "abschleppStandorte": { "wert": ["Crailsheim", "Wörnitz", "Burgoberbach"],
+                          "quelle": "rolltruck.de/roll-firmengruppe/geschichte: Niederlassung Wörnitz 2019, Burgoberbach 2022" },
+
+  "leistungen": { "quelle": "Navigation auf rolltruck.de",
+    "wert": [
+      { "titel": "24h-Notdienst", "text": "Abschleppen und Bergung rund um die Uhr, für Lkw und seit 2024 auch für Pkw.", "href": "https://rolltruck.de/24h-notdienst" },
+      { "titel": "Kundendienst aller Marken", "text": "Wartung und Reparatur für alle Nutzfahrzeugmarken.", "href": "https://rolltruck.de/roll-truck-service/kundendienst-aller-marken" },
+      { "titel": "Reifenservice", "text": "Reifen aller Marken für Nutzfahrzeuge.", "href": "https://rolltruck.de/roll-truck-service/reifenservice" },
+      { "titel": "Ersatzteile und Zubehör", "text": "Teile aus dem eigenen Lager.", "href": "https://rolltruck.de/roll-truck-service/ersatzteile-und-zubehoer" },
+      { "titel": "Prüfservice", "text": "Wiederkehrende Prüfungen am Fahrzeug.", "href": "https://rolltruck.de/roll-truck-service/pruefservice" },
+      { "titel": "Vermietung", "text": "Fahrzeuge zur Miete.", "href": "https://rolltruck.de/roll-truck-service/vermietung" },
+      { "titel": "LNG-Tankstelle", "text": "Seit 2020 auf dem eigenen Firmengelände in Crailsheim.", "href": "https://rolltruck.de/roll-truck-service/lng-tankstelle" },
+      { "titel": "Waschstraße", "text": "Bio-Lkw-Waschanlage in Crailsheim.", "href": "https://rolltruck.de/roll-truck-service/waschstrasse" },
+      { "titel": "Ölspurbeseitigung", "text": "Schnelle Hilfe bei Leckagen, seit 2018 im Angebot.", "href": "https://rolltruck.de/roll-truck-service/oelspurbeseitigung" },
+      { "titel": "Reisemobile", "text": "Wartung und Reparatur für Wohnmobile.", "href": "https://rolltruck.de/roll-truck-service/reisemobile-wartung-und-reparatur" }
+    ] },
+
+  "jobs": { "wert": ["Technischer Mitarbeiter Kfz/Nfz", "Ausbildungsplätze"],
+            "quelle": "rolltruck.de Startseite: 'Technischer Mitarbeiter KFZ/NFZ gesucht', 'Azubis gesucht!', 'Vom Azubi zum Meister'" },
+
+  "bilder": { "quelle": "rolltruck.de, übernommen aus dem bestehenden Auftritt",
+    "wert": {
+      "trucks":  "https://rolltruck.de/v_images/web/slider-trucks-01-2022.jpg",
+      "team":    "https://rolltruck.de/v_images/web/slider-startseite-teambild-neu.jpg",
+      "lng":     "https://rolltruck.de/v_images/web/slider_lng.jpg",
+      "werkstatt": "https://rolltruck.de/v_images/web/slider-startseite-1.jpg"
+    } },
+
+  "_nichtVerwendet": {
+    "geschaeftsfuehrer": "Ronny Pflug seit 2014 laut Geschichte-Seite — im Impressum nicht gefunden, deshalb nicht auf der Seite genannt",
+    "mitarbeiterzahl": "nirgends angegeben",
+    "sterne": "Google-Sternebewertung war beim Sammeln leer, nur die Anzahl liegt vor"
+  }
+}
