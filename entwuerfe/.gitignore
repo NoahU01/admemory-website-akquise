@@ -1,6 +1,7 @@
-# Bilder stammen aus fremden Auftritten und werden beim Bauen geholt.
-# Sie gehören nicht ins Repo: Urheberrecht ungeklärt, und bei hundert
-# Entwürfen am Tag würde das Repo in Wochen unbenutzbar groß.
-# herkunft.json bleibt drin, damit nachvollziehbar ist, was woher kam.
-*/bilder/*
-!*/bilder/herkunft.json
+# Bilder liegen bewusst MIT im Repo: Vercel deployt aus genau diesem Repo,
+# ausgeschlossene Dateien fehlen also auf der ausgelieferten Seite.
+#
+# Das wird bei hundert Entwürfen am Tag zum Problem — rund 180 kB je Entwurf,
+# also etwa 0,5 GB im Monat, und Git verträgt häufig wechselnde Binärdateien
+# schlecht. Ab dann gehören sie in einen Objektspeicher (Vercel Blob oder
+# Supabase Storage) und werden über absolute Adressen eingebunden.
