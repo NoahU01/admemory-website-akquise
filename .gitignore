@@ -6,3 +6,6 @@ results/
 # Niemals Zugangsdaten, auch keine Sicherungskopien
 .env.*
 !.env.example
+
+# Vercel-Verknüpfung und das OIDC-Token daraus
+.vercel/
