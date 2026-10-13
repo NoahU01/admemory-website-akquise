@@ -3,6 +3,7 @@
    langer Überschrift, mit zu wenigen und mit zu vielen Logos. */
 import fs from 'node:fs';
 import { seite } from '../baukasten/seite.mjs';
+import { bsp } from '../baukasten/katalog.mjs';
 import { vertrauenDuo, vertrauenStreu, siegel, ERSCHEINEN_SKRIPT } from '../baukasten/bausteine.mjs';
 
 const P = '../rolltruck/bilder/';
@@ -32,7 +33,8 @@ const html = seite({
   betrieb: 'Baukasten', nav: [], fuss: '<div><p class="klein">Interne Prüfseite</p></div>',
   inhalt: [
     marke('Duo · echter Fall Roll Truckservice · Bewertungszahl ohne Note'),
-    vertrauenDuo({
+
+    bsp('vertrauenDuo', vertrauenDuo({
       ueber: 'Nutzfahrzeug-Werkstatt in Crailsheim',
       titel: 'Zweimal in Folge Werkstatt des Jahres.',
       text: 'Die Auszeichnung vergibt eine Fachjury an Betriebe, die bei Erreichbarkeit, '
@@ -42,7 +44,7 @@ const html = seite({
       bild: P + 'werkstatt.jpg', bildAlt: 'Blick in die Werkstatthalle von Roll Truckservice',
       bildTitel: 'Zwölf Hebebühnen, eigener Abschleppdienst, Notdienst rund um die Uhr.',
       anzahl: 301, quelle: 'Google',
-    }),
+    })),
 
     marke('Duo · mit Note 4,7 · halber Stern wird aus der Note gerechnet'),
     vertrauenDuo({
@@ -67,14 +69,15 @@ const html = seite({
     vertrauenDuo({ titel: 'Werkstatt des Jahres.', kacheln: [auszeichnungen[0]], bild: P + 'lng.jpg', bildAlt: 'LNG-Zapfsäule' }),
 
     marke('Streu · sieben Logos · erste Wahl'),
-    vertrauenStreu({
+
+    bsp('vertrauenStreu', vertrauenStreu({
       ueber: 'Vertragspartner', titel: 'Alles aus einer Hand.',
       text: 'Wir sind Vertragswerkstatt für Volvo Trucks und Iveco, DAF Vertragspartner, '
         + 'PEMA Stützpunkt und Servicepartner von Schmitz Cargobull, Krone und Vergölst. '
         + 'Ein Ansprechpartner für Zugmaschine, Auflieger und Reifen.',
       logos: [...partner, ...auszeichnungen],
       nachsatz: 'Dazu Prüfstützpunkt für die Hauptuntersuchung nach § 29 StVZO.',
-    }),
+    })),
 
     marke('Streu · Grenzfall: zwei Logos'),
     vertrauenStreu({ ueber: 'Partner', titel: 'Zwei Marken, ein Stützpunkt.',

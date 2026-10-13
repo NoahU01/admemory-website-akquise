@@ -2,6 +2,7 @@
    Roll Truckservice und mit zu wenigen beziehungsweise zu vielen Einträgen. */
 import fs from 'node:fs';
 import { seite } from '../baukasten/seite.mjs';
+import { bsp } from '../baukasten/katalog.mjs';
 import { leistungen, leistungenBento } from '../baukasten/bausteine.mjs';
 
 const echt = [
@@ -29,9 +30,10 @@ const html = seite({
   betrieb: 'Baukasten', nav: [], fuss: '<div><p class="klein">Interne Prüfseite</p></div>',
   inhalt: [
     marke('Bento · neun Leistungen · mittige Kopfzeile'),
-    leistungenBento({ ueber: 'Leistungen', mittig: true, titel: 'Alles für das Nutzfahrzeug an einem Ort',
+
+    bsp('leistungenBento', leistungenBento({ ueber: 'Leistungen', mittig: true, titel: 'Alles für das Nutzfahrzeug an einem Ort',
       text: 'Von der planbaren Wartung bis zur Bergung mitten in der Nacht. Vertragswerkstatt für sechs Marken, mit eigenem Lager und eigener Mannschaft.',
-      eintraege: echt }),
+      eintraege: echt })),
 
     marke('Bento · nur drei Leistungen'),
     leistungenBento({ ueber: 'Leistungen', titel: 'Drei Einträge', eintraege: wenige }),
@@ -43,10 +45,11 @@ const html = seite({
     leistungenBento({ titel: 'Sieben Einträge', eintraege: echt.slice(0, 7) }),
 
     marke('Raster · mittige Kopfzeile, Icon im Kreis'),
-    leistungen({ ueber: 'Leistungen', mittig: true, iconStil: 'kreis',
+
+    bsp('leistungen', leistungen({ ueber: 'Leistungen', mittig: true, iconStil: 'kreis',
       titel: 'Alles für das Nutzfahrzeug an einem Ort',
       text: 'Von der planbaren Wartung bis zur Bergung mitten in der Nacht.',
-      eintraege: echt.slice(1, 7) }),
+      eintraege: echt.slice(1, 7) })),
 
     marke('Raster · elf Einträge, linksbündig, Icon im Kasten'),
     leistungen({ ueber: 'Leistungen', titel: 'Elf Einträge', eintraege: viele }),

@@ -3,6 +3,7 @@
    bei irgendeinem Betrieb — nur merkt es dann niemand. */
 import fs from 'node:fs';
 import { seite } from '../baukasten/seite.mjs';
+import { bsp } from '../baukasten/katalog.mjs';
 import { verlaufSeitlich, verlaufWaagerecht, verlaufSchmal } from '../baukasten/bausteine.mjs';
 
 /* Zwei bis drei Sätze je Eintrag. Ein einzelner kurzer Satz lässt die Karte
@@ -30,28 +31,28 @@ const html = seite({
   beschreibung: 'Interne Prüfseite: Jede Verlaufsvariante mit echten Daten, mit Überlänge und mit nur einem Eintrag.',
   betrieb: 'Baukasten', nav: [], fuss: '<div><p class="klein">Interne Prüfseite</p></div>',
   inhalt: [
-    teil('V1 · echte Daten', verlaufSeitlich({ ueber: 'Der Betrieb', titel: 'Seit 1876 in Familienhand',
+    bsp('verlaufSeitlich', teil('V1 · echte Daten', verlaufSeitlich({ ueber: 'Der Betrieb', titel: 'Seit 1876 in Familienhand',
       text: 'Aus der Güterbeförderung wurde über fünf Generationen eine Firmengruppe. Die Werkstatt ist seit 1994 eigenständig.',
-      schritte: echt })),
+      schritte: echt }))),
     teil('V1 · Überlänge und leerer Text', verlaufSeitlich({ ueber: 'Härtefall',
       titel: 'Eine ungewöhnlich lange Überschrift, die über mehrere Zeilen läuft',
       text: 'Kurz.', schritte: lang })),
     teil('V1 · nur ein Eintrag', verlaufSeitlich({ titel: 'Nur eine Station', schritte: eines })),
 
-    teil('V2 · echte Daten', verlaufWaagerecht({ ueber: 'Historie', titel: 'Fünf Stationen',
-      text: 'Von der Güterbeförderung zur Vertragswerkstatt.', stationen: echt })),
+    bsp('verlaufWaagerecht', teil('V2 · echte Daten', verlaufWaagerecht({ ueber: 'Historie', titel: 'Fünf Stationen',
+      text: 'Von der Güterbeförderung zur Vertragswerkstatt.', stationen: echt }))),
     teil('V2 · neun Stationen', verlaufWaagerecht({ titel: 'Zu viele Stationen', stationen: viele })),
     teil('V2 · laufender Vorgang', verlaufWaagerecht({ titel: 'Erst zur Hälfte erreicht',
       stationen: echt.slice(0, 4), bisHier: 2 })),
 
-    teil('V3 · echte Daten', verlaufSchmal({ plakette: 'So läuft es ab', titel: 'Vom Anruf bis zur Abfahrt',
+    bsp('verlaufSchmal', teil('V3 · echte Daten', verlaufSchmal({ plakette: 'So läuft es ab', titel: 'Vom Anruf bis zur Abfahrt',
       text: 'Vier Schritte, die bei jedem Einsatz gleich sind.',
       schritte: [
         { icon: 'notruf', titel: 'Sie rufen an', text: 'Rund um die Uhr, auch am Wochenende.' },
         { icon: 'uhr', titel: 'Wir nennen eine Zeit', text: 'Sie wissen sofort, wann jemand bei Ihnen ist.' },
         { icon: 'werkzeug', titel: 'Vor Ort', text: 'Reparatur, wenn es geht. Abschleppen, wenn nötig.' },
         { icon: 'haken', titel: 'In der Werkstatt', text: 'Instandsetzung durch die eigene Mannschaft.' },
-      ] })),
+      ] }))),
     teil('V3 · Überlänge', verlaufSchmal({ titel: 'Mit sehr langen Texten', schritte: lang })),
   ].join('\n'),
 });

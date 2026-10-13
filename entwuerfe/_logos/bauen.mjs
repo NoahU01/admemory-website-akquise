@@ -3,6 +3,7 @@
    von den alten Seiten. */
 import fs from 'node:fs';
 import { seite } from '../baukasten/seite.mjs';
+import { bsp } from '../baukasten/katalog.mjs';
 import { logowandGitter, logowandKarten, logowandLauf, ERSCHEINEN_SKRIPT } from '../baukasten/bausteine.mjs';
 
 const P = '../rolltruck/bilder/';
@@ -25,21 +26,24 @@ const html = seite({
   betrieb: 'Baukasten', nav: [], fuss: '<div><p class="klein">Interne Prüfseite</p></div>',
   inhalt: [
     marke('Karten · vier Logos · erste Wahl'),
-    logowandKarten({ ueber: 'Vertragspartner', titelLeise: 'Wir arbeiten mit', titel: 'diesen Marken.',
-      logos: vier, nachsatz: 'Dazu Vertragswerkstatt für Volvo Trucks und Iveco, DAF Vertragspartner und PEMA Stützpunkt.' }),
+
+    bsp('logowandKarten', logowandKarten({ ueber: 'Vertragspartner', titelLeise: 'Wir arbeiten mit', titel: 'diesen Marken.',
+      logos: vier, nachsatz: 'Dazu Vertragswerkstatt für Volvo Trucks und Iveco, DAF Vertragspartner und PEMA Stützpunkt.' })),
 
     marke('Karten · zwei Logos'),
     logowandKarten({ ueber: 'Vertragspartner', logos: zwei }),
 
     marke('Gitter · acht Logos · erscheinen beim Hereinscrollen'),
-    logowandGitter({ ueber: 'Vertragspartner und Stützpunkt', titelLeise: 'Seit über zwanzig Jahren',
-      titel: 'an unserer Seite.', logos: acht }),
+
+    bsp('logowandGitter', logowandGitter({ ueber: 'Vertragspartner und Stützpunkt', titelLeise: 'Seit über zwanzig Jahren',
+      titel: 'an unserer Seite.', logos: acht })),
 
     marke('Gitter · auf dunklem Grund'),
     logowandGitter({ ueber: 'Vertragspartner', logos: vier, tief: true }),
 
     marke('Laufband · vier Logos, wiederholt sich bis es trägt'),
-    logowandLauf({ ueber: 'Vertragspartner', logos: vier }),
+
+    bsp('logowandLauf', logowandLauf({ ueber: 'Vertragspartner', logos: vier })),
 
     marke('Laufband · acht Logos, dunkel'),
     logowandLauf({ ueber: 'Vertragspartner', logos: acht, tief: true, dauer: 46 }),

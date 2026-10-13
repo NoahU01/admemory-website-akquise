@@ -20,6 +20,7 @@ const ICONS = {
   haken:     'M20 6L9 17l-5-5',
   uhr:       'M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0-18 0M12 7v5l3 2',
   zurueck:   'M3 12a9 9 0 1 0 3-6.7M3 4v4h4',
+  baustein:  'M4 8l8-4l8 4l-8 4zM4 8v8l8 4l8-4V8M12 12v8',
 };
 const ic = (n, k = '') => '<svg class="ic ' + k + '" viewBox="0 0 24 24" aria-hidden="true"><path d="' + ICONS[n] + '"/></svg>';
 
@@ -31,6 +32,27 @@ const SEITEN = [
   { id: 'datenbank', label: 'Datenbank', icon: 'datenbank',
     titel: 'Datenbank', lede: 'Alle erfassten Betriebe, filterbar.' },
 ];
+
+/* Die Bibliothek wird beim ersten Aufruf nachgeladen und dann in die
+   Navigation eingehängt — eine Gruppe mit einem Unterpunkt je Modulart.
+   Quelle ist bibliothek.json, die der Baukasten selbst schreibt. */
+let bibliothek = null;
+
+async function ladeBibliothek(){
+  if (bibliothek) return bibliothek;
+  const r = await fetch('/bibliothek.json', { cache: 'no-cache' });
+  if (!r.ok) throw new Error('Bibliothek nicht gefunden (' + r.status + ').');
+  bibliothek = await r.json();
+  /* Nur einhängen, was noch nicht drin steht — zeichneNav läuft mehrfach. */
+  if (!SEITEN.some((x) => x.id && x.id.startsWith('bib:'))) {
+    SEITEN.push({ gruppe: 'Bibliothek' });
+    for (const g of bibliothek.gruppen) {
+      SEITEN.push({ id: 'bib:' + g.id, label: g.name, icon: 'baustein',
+        titel: g.name, lede: g.zweck });
+    }
+  }
+  return bibliothek;
+}
 
 /* Begriffe, die in der Oberfläche auftauchen — bewusst ohne Fachjargon.
    'etabliert' klang nach einer Phase und meinte die Betriebsgröße. */
@@ -83,7 +105,12 @@ async function hole(pfad, opt) {
 
 /* ── Anmeldung ──────────────────────────────────────────────────── */
 function zeigeTor(){ el('tor').hidden = false; el('app').hidden = true; el('blatt').hidden = true; }
-function zeigeApp(){ el('tor').hidden = true;  el('app').hidden = false; zeichneNav(); lade(); }
+function zeigeApp(){
+  el('tor').hidden = true; el('app').hidden = false; zeichneNav(); lade();
+  /* Ohne diesen Aufruf stünde der Reiter erst da, nachdem man ihn
+     angeklickt hat — und anklicken kann man ihn dann nicht. */
+  ladeBibliothek().then(zeichneNav).catch(() => {});
+}
 
 el('anmeldung').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -104,7 +131,11 @@ el('abmelden').addEventListener('click', async () => {
 function zeichneNav(){
   el('nav').innerHTML = SEITEN.map((s) => {
     if (s.gruppe) return '<div class="navgruppentitel">' + text(s.gruppe) + '</div>';
-    const n = s.id === 'datenbank' && uebersicht ? uebersicht.kennzahlen.gesamt : null;
+    let n = s.id === 'datenbank' && uebersicht ? uebersicht.kennzahlen.gesamt : null;
+    if (s.id && s.id.startsWith('bib:') && bibliothek) {
+      const g = bibliothek.gruppen.find((x) => 'bib:' + x.id === s.id);
+      n = g ? g.bausteine.length : null;
+    }
     return '<button data-id="' + s.id + '" aria-current="' + (s.id === seite) + '">' +
            ic(s.icon) + '<span class="navtext">' + text(s.label) + '</span>' +
            (n ? '<span class="navzahl">' + zahl(n) + '</span>' : '') + '</button>';
@@ -117,16 +148,38 @@ el('nav').addEventListener('click', (e) => {
   zeichneNav(); lade();
 });
 
+/* Wer weiterklickt, während noch geladen wird, bekam bisher die alte
+   Antwort über die neue Seite gelegt: Der Dashboard-Abruf lief noch, und
+   als er zurückkam, überschrieb er die inzwischen geöffnete Bibliothek.
+   Jeder Ladevorgang merkt sich deshalb, für welche Seite er gedacht war. */
+let ladelauf = 0;
+
 async function lade(){
-  const s = SEITEN.find((x) => x.id === seite);
+  const lauf = ++ladelauf;
+  const fuer = seite;
+  const veraltet = () => lauf !== ladelauf || seite !== fuer;
+  const s = SEITEN.find((x) => x.id === seite) || { titel: 'Lade …', lede: '' };
   el('titel').textContent = s.titel;
   el('untertitel').textContent = s.lede;
   el('inhalt').innerHTML = '<div class="hint">Lade …</div>';
   try {
-    if (seite === 'dashboard') { uebersicht = await hole('/api/uebersicht'); zeichneNav(); zeichneDashboard(); }
-    else await ladeDatenbank();
+    if (seite.startsWith('bib:')) {
+      await ladeBibliothek();
+      if (veraltet()) return;
+      zeichneNav(); zeichneBibliothek();
+    } else if (seite === 'dashboard') {
+      const u = await hole('/api/uebersicht');
+      if (veraltet()) return;
+      uebersicht = u; zeichneNav(); zeichneDashboard();
+    } else {
+      await ladeDatenbank(veraltet);
+      if (veraltet()) return;
+    }
     ladeAgent();
-  } catch (f) { el('inhalt').innerHTML = '<div class="hint">' + text(f.message) + '</div>'; }
+  } catch (f) {
+    if (veraltet()) return;
+    el('inhalt').innerHTML = '<div class="hint">' + text(f.message) + '</div>';
+  }
 }
 
 async function ladeAgent(){
@@ -257,13 +310,14 @@ function zeichneDashboard(){
 }
 
 /* ── Datenbank ──────────────────────────────────────────────────── */
-async function ladeDatenbank(){
+async function ladeDatenbank(veraltet = () => false){
   const p = new URLSearchParams();
   if (filter.status)  p.set('status', filter.status);
   if (filter.budget)  p.set('groesse', filter.budget);
   if (filter.branche) p.set('branche', filter.branche);
   if (filter.stufe)   p.set('stufe', filter.stufe);
   const r = await hole('/api/liste?' + p);
+  if (veraltet()) return;
   daten = r.betriebe;
   // Score-Grenzen filtert die Oberfläche, damit das Zurücksetzen ohne neue
   // Anfrage auskommt und das Schieben sich sofort auswirkt.
@@ -461,3 +515,39 @@ el('bRumpf').addEventListener('click', async (e) => {
 });
 
 hole('/api/stand').then(zeigeApp).catch(zeigeTor);
+
+
+/* ── Bibliothek ─────────────────────────────────────────────────────
+   Zeigt je Modulart die Fassungen mit Bild, wann man sie nimmt und wo
+   die Grenzen liegen. Die Bilder entstehen aus den Prüfseiten des
+   Baukastens, nicht aus einer zweiten Beschreibung. */
+function zeichneBibliothek(){
+  const g = bibliothek.gruppen.find((x) => 'bib:' + x.id === seite);
+  if (!g) { el('inhalt').innerHTML = '<div class="hint">Diese Modulart gibt es nicht.</div>'; return; }
+  const basis = 'https://entwuerfe.admemory.de/' + g.seite + '/';
+
+  el('inhalt').innerHTML =
+    '<p class="bibkopf">Stand ' + text(bibliothek.stand) +
+    '. Die Prüfseiten zeigen zusätzlich die Härtefälle: Überlänge, fehlende ' +
+    'Bilder, zu wenige und zu viele Einträge.</p>' +
+    '<div class="bibliste">' + g.bausteine.map((b) =>
+      '<article class="bib">' +
+        (b.bild
+          ? '<a class="bib__bild" href="' + basis + '" target="_blank" rel="noopener">' +
+            '<img src="/' + text(b.bild) + '" alt="Beispiel für ' + text(b.name) + '" loading="lazy"></a>'
+          : '') +
+        '<div class="bib__text">' +
+          '<div class="bib__kopf"><h3>' + text(b.name) + '</h3>' +
+            '<span class="bib__id">' + text(b.id) + '</span>' +
+            (b.erste ? '<span class="pille pille--good">erste Wahl</span>' : '') +
+          '</div>' +
+          '<div class="bib__zeile"><b>Wann</b><span>' + text(b.wann) + '</span></div>' +
+          '<div class="bib__zeile"><b>Grenzen</b><span>' + text(b.grenzen) + '</span></div>' +
+          '<div class="bib__fuss">' +
+            '<a href="' + basis + '" target="_blank" rel="noopener">' +
+              ic('pfeilauf') + 'Prüfseite öffnen</a>' +
+          '</div>' +
+        '</div>' +
+      '</article>').join('') +
+    '</div>';
+}

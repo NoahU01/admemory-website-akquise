@@ -282,6 +282,27 @@ textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86r
 .verlauf{margin:0;padding-left:1.1rem;font-size:.82rem;color:var(--ink-2)}
 .verlauf li{margin-bottom:.5rem}
 .verlauf b{color:var(--ink)}
+
+/* ── Bibliothek ─────────────────────────────────────────────────── */
+.bibkopf{margin:0 0 1.2rem;color:var(--ink-2);font-size:.86rem;max-width:62ch}
+.bibliste{display:grid;gap:1.1rem}
+@media(min-width:1100px){.bibliste{grid-template-columns:repeat(2,1fr)}}
+.bib{background:var(--panel);border-radius:var(--r);overflow:hidden;
+  display:flex;flex-direction:column;box-shadow:var(--schatten,0 1px 2px rgba(17,22,29,.05))}
+.bib__bild{display:block;width:100%;background:var(--sunk);border-bottom:1px solid var(--line)}
+.bib__bild img{display:block;width:100%;height:auto}
+.bib__text{padding:1.1rem 1.25rem 1.25rem}
+.bib__kopf{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.1rem}
+.bib__kopf h3{font-size:.95rem;font-weight:600;margin:0;letter-spacing:-.01em;
+  text-transform:none;color:var(--ink)}  /* h3 ist global eine Großbuchstaben-Marke */
+.bib__id{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-3)}
+.bib__zeile{display:flex;gap:.5rem;margin-top:.7rem;font-size:.8rem;color:var(--ink-2);line-height:1.5}
+.bib__zeile b{color:var(--ink);font-weight:600;flex:none;min-width:4.2rem}
+.bib__fuss{margin-top:.95rem;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.bib__fuss a{color:var(--accent);font-size:.78rem;text-decoration:none;
+  display:inline-flex;align-items:center;gap:.3rem}
+.bib__fuss a:hover{text-decoration:underline}
+.bib__fuss .ic{width:14px;height:14px}
 </style>
 </head>
 <body>

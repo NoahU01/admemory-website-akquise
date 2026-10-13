@@ -56,8 +56,12 @@ const server = http.createServer(async (req, res) => {
   const datei = path.join(hier, pfad === '/' ? 'index.html' : pfad.replace(/^\/+/, ''));
   if (!datei.startsWith(hier) || !fs.existsSync(datei) || fs.statSync(datei).isDirectory())
     return res.writeHead(404).end('nicht gefunden');
+  /* Fehlt ein Typ, liefert der Server text/plain, und nosniff lässt das Bild
+     dann nicht durch — der Test schlüge fehl, obwohl Vercel es richtig macht. */
   const typ = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',
-                '.svg': 'image/svg+xml', '.png': 'image/png' }[path.extname(datei)] || 'text/plain';
+                '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg',
+                '.jpeg': 'image/jpeg', '.json': 'application/json',
+                '.woff2': 'font/woff2' }[path.extname(datei)] || 'text/plain';
   res.writeHead(200, { ...KOPFZEILEN, 'Content-Type': typ, 'Cache-Control': 'no-store' });
   fs.createReadStream(datei).pipe(res);
 });

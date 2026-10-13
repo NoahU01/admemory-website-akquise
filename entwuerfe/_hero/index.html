@@ -32,7 +32,7 @@
 
 <main id="inhalt">
 <div class="schale" style="padding-block:var(--a-3)"><p class="ueber">heroMitte · mit Partnerlogos</p></div>
-
+<div data-bsp="heroMitte">
 <header class="hero-mitte" id="start">
   <div class="hero-mitte__bild"><img src="../rolltruck/bilder/trucks.jpg" alt="Lastwagen von Roll Truck-Service" fetchpriority="high"></div>
   <div class="schale"><div class="hero-mitte__in">
@@ -46,7 +46,7 @@
     <div class="logoband" style="justify-content:center;margin-top:var(--a-2)">
       <img src="../rolltruck/bilder/partner_SchmitzCargobull.png" alt="Schmitz Cargobull" loading="lazy"><img src="../rolltruck/bilder/partner_Verglst.png" alt="Vergölst" loading="lazy"><img src="../rolltruck/bilder/partner_Krone.png" alt="Krone" loading="lazy"></div>
   </div></div>
-</header>
+</header></div>
 <div class="schale" style="padding-block:var(--a-3)"><p class="ueber">heroMitte · Überlänge, ohne Logos</p></div>
 
 <header class="hero-mitte" id="start">
@@ -63,7 +63,7 @@
   </div></div>
 </header>
 <div class="schale" style="padding-block:var(--a-3)"><p class="ueber">heroGeteilt · mit Merkmalen</p></div>
-
+<div data-bsp="heroGeteilt">
 <header class="hero-geteilt" id="start">
   <div class="hero-geteilt__bild"><img src="../rolltruck/bilder/trucks.jpg" alt="Lastwagen von Roll Truck-Service" fetchpriority="high"></div>
   <div class="schale"><div class="hero-geteilt__in stapel-3">
@@ -73,7 +73,7 @@
     <ul class="merkmale"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 1 9 9M12 7a5 5 0 0 1 5 5M8.5 4.5l2 3.5l-2 1.5a11 11 0 0 0 6 6l1.5-2l3.5 2l-1 3a2 2 0 0 1-2 1.3A16 16 0 0 1 4.2 7.5A2 2 0 0 1 5.5 5.5z"/></svg><span>Notdienst rund um die Uhr</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 1 5 5l-9 9a2.1 2.1 0 0 1-3-3l9-9M9 9L4.5 4.5M7 11L2.5 6.5"/></svg><span>Vertragswerkstatt für sechs Marken</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M5 20V8l7-4l7 4v12M10 20v-5h4v5"/></svg><span>Drei Abschlepp-Standorte an A6 und A7</span></li></ul>
     <div class="knopfreihe"><a class="knopf knopf--wichtig" href="#leistungen">Unsere Leistungen</a><a class="knopf knopf--rand" href="#kontakt">Kontakt</a></div>
   </div></div>
-</header>
+</header></div>
 <div class="schale" style="padding-block:var(--a-3)"><p class="ueber">heroTiefe · Bild wandert beim Scrollen</p></div>
 
 <header class="hero-tiefe" id="start" data-tiefe>
@@ -107,18 +107,31 @@
   schieben();
 })();
 </script>
+<div class="schale" style="padding-block:var(--a-3)"><p class="ueber">heroVoll · Bild über die volle Breite</p></div>
+<div data-bsp="heroVoll">
+<header class="hero-voll" id="start">
+  <div class="hero-voll__bild"><img src="../rolltruck/bilder/trucks.jpg" alt="Lastwagen von Roll Truck-Service" fetchpriority="high"></div>
+  <div class="schale"><div class="stapel-3" style="color:#fff">
+    <p class="ueber" style="color:#ffb4b4">Werkstatt &amp; Notdienst für Nutzfahrzeuge</p>
+    <h1>Rund um die Uhr erreichbar.</h1>
+    <p class="lead" style="color:#e6ebf2;opacity:1">Drei Abschlepp-Standorte an A6 und A7. Wer nachts um zwei liegen bleibt, erreicht hier jemanden, der ausrückt.</p>
+    <div class="knopfreihe"><a class="knopf knopf--wichtig" href="tel:+4979514400">Notdienst anrufen</a><a class="knopf knopf--rand" href="#leistungen">Unsere Leistungen</a></div>
+  </div></div>
+</header></div>
+<div class="schale" style="padding-block:var(--a-3)"><p class="ueber">heroBand · schmales Band für Unterseiten</p></div>
+<div data-bsp="heroBand">
+<header class="abschnitt abschnitt--tief" id="start">
+  <div class="schale"><div class="stapel-3" style="max-width:62ch">
+      <p class="ueber">Leistungen</p>
+      <h1>Werkstatt für alle Nutzfahrzeugmarken</h1>
+      <p class="lead">Wartung, Reparatur, Hauptuntersuchung und Reifendienst unter einem Dach.</p>
+      <div class="knopfreihe"><a class="knopf knopf--rand" href="#kontakt">Termin anfragen</a></div>
+    </div>
+    <div class="hero-band__bild"><img src="../rolltruck/bilder/werkstatt.jpg" alt="Werkstatthalle"
+       fetchpriority="high"></div></div>
+</header></div>
 </main>
 
-<footer class="abschnitt--eng auf-dunkel"
-        style="padding-block:var(--a-4) calc(var(--a-4) + var(--unten))">
-  <div class="schale">
-    
-    <div class="raster raster--3"><div><p class="klein">Interne Prüfseite</p></div></div>
-    <hr class="trenner" style="border-color:var(--linie-tief);margin-block:var(--a-3)">
-    <p class="klein">
-      Baukasten · 2026 · Entwurfsfassung, nicht für Suchmaschinen freigegeben.
-    </p>
-  </div>
-</footer>
+<div><p class="klein">Interne Prüfseite</p></div>
 </body>
 </html>

@@ -3,7 +3,8 @@
    bekommen: Panoramabanner, keine Hochformate, mittlere Qualität. */
 import fs from 'node:fs';
 import { seite } from '../baukasten/seite.mjs';
-import { heroMitte, heroGeteilt, heroTiefe, TIEFE_SKRIPT } from '../baukasten/bausteine.mjs';
+import { bsp } from '../baukasten/katalog.mjs';
+import { heroMitte, heroGeteilt, heroVoll, heroBand, heroTiefe, TIEFE_SKRIPT } from '../baukasten/bausteine.mjs';
 
 const B = {
   trucks: '../rolltruck/bilder/trucks.jpg',
@@ -23,7 +24,8 @@ const html = seite({
   betrieb: 'Baukasten', nav: [], fuss: '<div><p class="klein">Interne Prüfseite</p></div>',
   inhalt: [
     marke('heroMitte · mit Partnerlogos'),
-    heroMitte({
+
+    bsp('heroMitte', heroMitte({
       ueber: 'Werkstatt & Notdienst für Nutzfahrzeuge',
       titel: 'Wenn der Lkw steht, zählt jede Stunde.',
       text: 'Werkstatt für alle Nutzfahrzeugmarken in Crailsheim. Der Notdienst rückt rund um die Uhr aus, von Crailsheim, Wörnitz und Burgoberbach.',
@@ -31,7 +33,7 @@ const html = seite({
       knoepfe: [{ text: 'Kontakt', href: '#kontakt' }],
       bild: B.trucks, bildAlt: 'Lastwagen von Roll Truck-Service',
       marken: partner,
-    }),
+    })),
 
     marke('heroMitte · Überlänge, ohne Logos'),
     heroMitte({
@@ -43,7 +45,8 @@ const html = seite({
     }),
 
     marke('heroGeteilt · mit Merkmalen'),
-    heroGeteilt({
+
+    bsp('heroGeteilt', heroGeteilt({
       plakette: 'Seit 1876',
       titel: 'Alles für das Nutzfahrzeug an einem Ort',
       text: 'Von der planbaren Wartung bis zur Bergung mitten in der Nacht. Vertragswerkstatt für sechs Marken, mit eigenem Lager und eigener Mannschaft.',
@@ -57,7 +60,7 @@ const html = seite({
         { text: 'Kontakt', href: '#kontakt' },
       ],
       bild: B.trucks, bildAlt: 'Lastwagen von Roll Truck-Service',
-    }),
+    })),
 
     marke('heroTiefe · Bild wandert beim Scrollen'),
     heroTiefe({
@@ -69,6 +72,28 @@ const html = seite({
     }),
     '<div class="abschnitt"><div class="schale"><p class="lead">Scrollbereich, damit die Tiefenwirkung sichtbar wird.</p></div></div>',
     TIEFE_SKRIPT,
+    marke('heroVoll · Bild über die volle Breite'),
+    bsp('heroVoll', heroVoll({
+      ueber: 'Werkstatt & Notdienst für Nutzfahrzeuge',
+      titel: 'Rund um die Uhr erreichbar.',
+      text: 'Drei Abschlepp-Standorte an A6 und A7. Wer nachts um zwei liegen bleibt, '
+        + 'erreicht hier jemanden, der ausrückt.',
+      knoepfe: [
+        { text: 'Notdienst anrufen', href: 'tel:+4979514400', art: 'wichtig' },
+        { text: 'Unsere Leistungen', href: '#leistungen' },
+      ],
+      bild: B.trucks, bildAlt: 'Lastwagen von Roll Truck-Service',
+    })),
+
+    marke('heroBand · schmales Band für Unterseiten'),
+    bsp('heroBand', heroBand({
+      ueber: 'Leistungen',
+      titel: 'Werkstatt für alle Nutzfahrzeugmarken',
+      text: 'Wartung, Reparatur, Hauptuntersuchung und Reifendienst unter einem Dach.',
+      knoepfe: [{ text: 'Termin anfragen', href: '#kontakt' }],
+      bild: B.werkstatt, bildAlt: 'Werkstatthalle',
+    })),
+
   ].join('\n'),
 });
 fs.writeFileSync(new URL('./index.html', import.meta.url), html);
