@@ -608,3 +608,69 @@ a{color:inherit}
   display:grid;place-items:center;transition:border-color .15s,background .15s}
 .fuss__sozial a:hover{border-color:var(--akzent);background:var(--akzent-hell)}
 .fuss__sozial svg{width:1.05rem;height:1.05rem;stroke:currentColor;fill:none;stroke-width:1.6}
+
+/* ══ Vertrauen ═══════════════════════════════════════════════════ */
+
+.vertrauen{display:grid;gap:var(--a-3)}
+@media(min-width:900px){.vertrauen{grid-template-columns:1.6fr 1fr;align-items:stretch}}
+
+/* Weiche Karte mit Logokacheln. Die Kacheln laufen zum Rand hin aus, damit
+   die Fläche nicht wie ein abgezählter Kasten wirkt. */
+.vertrauen__karte{background:var(--gedaempft);border:1px solid var(--linie);
+  border-radius:14px;padding:var(--a-3);display:flex;flex-direction:column;
+  gap:var(--a-3);justify-content:space-between;min-height:19rem}
+/* Keine Maske über den Kacheln: hier stehen Auszeichnungen, die müssen
+   sichtbar bleiben. Das Auslaufen übernehmen die leeren Füllkacheln. */
+.vertrauen__kacheln{display:grid;grid-template-columns:repeat(var(--spalten,4),1fr);
+  gap:.55rem;max-width:26rem}
+.vertrauen__kachel{aspect-ratio:4/3;border-radius:11px;border:1px solid var(--linie);
+  background:var(--grund);display:grid;place-items:center;padding:.5rem}
+.vertrauen__kachel--leer{background:color-mix(in srgb,var(--linie) 32%,transparent);
+  border-color:transparent;opacity:.55}
+.vertrauen__kachel img{max-width:100%;max-height:100%;object-fit:contain}
+.vertrauen__text{max-width:34rem}
+@media(max-width:560px){.vertrauen__kacheln{grid-template-columns:repeat(min(var(--spalten,4),3),1fr)}}
+
+/* Bildkarte mit Überlagerung: Foto, darauf Aussage und Bewertung. */
+.vertrauen__bild{position:relative;border-radius:14px;overflow:hidden;min-height:19rem;
+  display:flex;align-items:flex-end;isolation:isolate;background:var(--tief)}
+.vertrauen__bild img.hintergrund{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;z-index:-2}
+.vertrauen__bild::after{content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,rgba(10,14,20,.18),rgba(10,14,20,.82))}
+.vertrauen__bildText{padding:var(--a-3);color:#fff;width:100%}
+.vertrauen__bildText h3{color:#fff;font-size:clamp(1.15rem,2.2vw,1.5rem);max-width:16ch}
+.vertrauen__wertung{display:flex;align-items:center;gap:.7rem;margin-top:var(--a-2);flex-wrap:wrap}
+.sterne{display:flex;gap:.12rem}
+.sterne svg{width:1.05rem;height:1.05rem;fill:#ffc53d;stroke:none}
+.sterne svg.leer{fill:rgba(255,255,255,.3)}
+.vertrauen__anzahl{font-size:var(--t-s);color:rgba(255,255,255,.92)}
+
+/* Streufeld: Kacheln in einem Raster, einige leer, zum Rand ausgeblendet. */
+.streu{display:grid;gap:.6rem;grid-template-columns:repeat(var(--spalten,5),1fr);
+  width:100%;max-width:min(100%,calc(var(--spalten,5) * 5rem));min-width:0;
+  margin-inline:auto;
+  -webkit-mask-image:radial-gradient(ellipse at center,#000 52%,transparent 82%);
+  mask-image:radial-gradient(ellipse at center,#000 52%,transparent 82%)}
+.streu__feld{aspect-ratio:4/3;min-width:0;border-radius:9px;border:1px solid var(--linie);
+  background:var(--grund);display:grid;place-items:center;padding:.45rem;
+  box-shadow:0 1px 2px rgba(17,22,29,.04)}
+.streu__feld--leer{background:color-mix(in srgb,var(--linie) 45%,transparent);
+  border-color:transparent;box-shadow:none}
+.streu__feld img{max-width:100%;max-height:100%;object-fit:contain}
+
+/* Weiße Grafik auf Transparenz braucht auch in den Kacheln dunklen Grund. */
+.vertrauen__kachel:has(img[data-invers]),
+.streu__feld:has(img[data-invers]){background:var(--tief);border-color:var(--tief)}
+
+/* Bewertung: leere Sterne als Grund, gefüllte darüber auf die Note
+   beschnitten. So entsteht ein halber Stern ohne zweite Grafik. */
+.sterne{position:relative;display:inline-flex}
+.sterne__voll{position:absolute;inset:0;display:flex;gap:.12rem;overflow:hidden}
+
+/* Dichtes Streufeld: Maske weiter aufziehen, sonst verschwinden Logos. */
+.streu[data-dicht]{-webkit-mask-image:radial-gradient(ellipse at center,#000 72%,transparent 97%);
+  mask-image:radial-gradient(ellipse at center,#000 72%,transparent 97%)}
+/* Volles Feld: nichts mehr auszublenden, also keine Maske. */
+.streu[data-offen]{-webkit-mask-image:none;mask-image:none}
+.sterne__leer{display:flex;gap:.12rem}

@@ -140,3 +140,61 @@ vorhandenen. Vorher lieferte es stillschweigend nichts, und auf der Seite
 stand ein leerer Kasten: Im Fußbereich blieb der runde Knopf für soziale
 Netzwerke leer, weil es `pfeilauf` im Zeichensatz nicht gab. Ein
 fehlgeschlagener Bau ist besser als eine Seite mit unsichtbaren Zeichen.
+
+
+## Vertrauen: Auszeichnungen, Siegel, Partnermarken
+
+Zwei Fassungen, Prüfseite `_vertrauen`. Kundenstimmen gehören nicht hierher,
+die werden ein eigener Baustein.
+
+`vertrauenDuo` — zwei Karten nebeneinander. Links Siegel und Marken als
+Kacheln, darunter Überschrift und ein Absatz, der sagt, was die Auszeichnung
+wert ist. Rechts ein Foto vom Betrieb mit einer Aussage und der Bewertung.
+Erste Wahl, sobald ein brauchbares Foto da ist. Ohne `bild` läuft die linke
+Karte auf die ganze Breite, das trägt auch. Drei bis neun Kacheln.
+
+`vertrauenStreu` — Überschrift und Vorlauf links, rechts ein Streufeld aus
+Kacheln mit absichtlichen Lücken. Braucht kein Foto. Fünf bis vierzehn Logos
+sitzen am besten. Das Raster wächst mit der Anzahl: drei Spalten bis drei
+Logos, vier bis sechs, danach fünf, und so viele Zeilen, dass rund vierzig
+Prozent belegt sind. Bei zwei Logos standen sonst dreiundzwanzig leere
+Kacheln daneben, das sah nicht luftig aus, sondern leer.
+
+### Die Maske darf keine Logos fressen
+
+Das Streufeld wird nach außen ausgeblendet, damit die leeren Kacheln
+weich auslaufen. Beim ersten Bau lag diese Maske auch über dem Kachelfeld
+der Duo-Karte: achtzehn Logos kamen auf Deckkraft 0, darunter beide
+Siegel "Werkstatt des Jahres". Ein Baustein für Auszeichnungen, der
+Auszeichnungen unsichtbar macht. Die Maske ist dort jetzt weg; das
+Auslaufen übernehmen die leeren Füllkacheln.
+
+Im Streufeld bleibt sie, aber der Baustein rechnet vor dem Bauen aus,
+welche Fassung alle belegten Kacheln über Deckkraft 0,6 hält — weit,
+dicht, oder gar keine. Bei sechsundzwanzig Logos ist das Feld so voll,
+dass es nichts mehr auszublenden gibt, und die Maske fällt weg.
+
+### Kacheln sind 4:3, nicht quadratisch
+
+Die Vorlage benutzt quadratische Kacheln, weil dort quadratische
+Markenzeichen liegen. Was wir von echten Seiten holen, sind breite
+Schriftzüge: das TÜV-Logo ist 630 × 302. Im Quadrat blieben davon
+fünfzig Pixel Breite übrig, der Schriftzug war nicht mehr zu lesen.
+
+### Sterne werden nicht geraten
+
+`bewertung({ note, anzahl, quelle })` zeigt Sterne nur, wenn eine Note da
+ist. Bei Roll Truckservice haben wir 301 Bewertungen, aber keine Note —
+dann steht nur die Zahl. Die Note wird aus dem gemessenen Wert gefüllt,
+nicht gerundet: eine Reihe leerer Sterne, darüber eine beschnittene Reihe
+voller. 4,7 ergibt 94 Prozent Breite, gemessen 86 von 92 Pixeln.
+
+### Klassennamen, die es nicht gibt
+
+`entwuerfe/pruefen.mjs` misst eine gebaute Seite auf Querüberlauf,
+Kontrast, nicht geladene Bilder, zu klein geratene Logos, von einer Maske
+verschluckte Logos — und auf Klassennamen, zu denen es keine Regel gibt.
+Der letzte Punkt kam dazu, weil ich in diesem Baustein zweimal eine
+Klasse geschrieben habe, die es nicht gibt: `stapel-2` statt `stapel-3`,
+und `sterne__leer` ohne Regel. Beides fällt beim Hinsehen nicht auf, die
+Abstände sitzen nur falsch. Die anderen fünf Prüfseiten sind sauber.

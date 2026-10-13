@@ -680,3 +680,132 @@ export function fussSpalten({ betrieb, logo, text, spalten = [], telefon, telefo
   </div>
 </footer>`;
 }
+
+/* ══ Vertrauen ═══════════════════════════════════════════════════
+   Auszeichnungen, Siegel, Partnermarken, Bewertungen. Nicht
+   Kundenstimmen — die sind ein eigener Baustein.
+
+   vertrauenDuo    Zwei Karten: links Siegel und Marken in Kacheln mit
+                   Überschrift und Erklärung, rechts ein Foto vom Betrieb
+                   mit Aussage und Bewertung. Braucht ein Bild und drei
+                   bis acht Kacheln.
+   vertrauenStreu  Überschrift und Vorlauf links, rechts ein Streufeld aus
+                   Kacheln mit absichtlichen Lücken. Braucht kein Bild,
+                   trägt fünf bis vierzehn Logos gut.                     */
+
+const STERN = 'M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4 6.2 20.5l1.1-6.5L2.6 9.4l6.5-.9z';
+const sternReihe = (n) => Array.from({ length: n },
+  () => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${STERN}"/></svg>`).join('');
+
+/* Eine Note wird nur angezeigt, wenn eine da ist. Bewertungszahl ohne
+   Note ist der Normalfall bei gescrapten Daten — dann steht nur die Zahl.
+   Sterne werden nie geraten. */
+export function bewertung({ note, anzahl, quelle }) {
+  const teile = [];
+  if (typeof note === 'number') {
+    const anteil = Math.max(0, Math.min(1, note / 5));
+    teile.push(`<span class="sterne" role="img" aria-label="${esc(note.toLocaleString('de-DE'))} von 5 Sternen">` +
+      `<span class="sterne__leer">${sternReihe(5).replace(/<svg /g, '<svg class="leer" ')}</span>` +
+      `<span class="sterne__voll" style="width:${(anteil * 100).toFixed(1)}%">${sternReihe(5)}</span>` +
+      `</span>`);
+    teile.push(`<span class="vertrauen__anzahl"><b>${esc(note.toLocaleString('de-DE'))}</b> von 5` +
+      `${wenn(anzahl, () => ` · ${esc(Number(anzahl).toLocaleString('de-DE'))} Bewertungen`)}` +
+      `${wenn(quelle, () => ` bei ${esc(quelle)}`)}</span>`);
+  } else if (anzahl) {
+    teile.push(`<span class="vertrauen__anzahl"><b>${esc(Number(anzahl).toLocaleString('de-DE'))}</b> Bewertungen` +
+      `${wenn(quelle, () => ` bei ${esc(quelle)}`)}</span>`);
+  }
+  return teile.length ? `<div class="vertrauen__wertung">${teile.join('')}</div>` : '';
+}
+
+const kachel = (l) => `<div class="vertrauen__kachel">${logoBild(l)}</div>`;
+
+export function vertrauenDuo({ ueber, titel, text, kacheln = [], bild, bildAlt = '',
+  bildTitel, note, anzahl, quelle, tief = false }) {
+  if (!kacheln.length) throw new Error('vertrauenDuo braucht mindestens eine Kachel.');
+  /* Lücken auffüllen, damit die Reihen nicht abbrechen. Die leeren Kacheln
+     sind Absicht — das Feld soll auslaufen, nicht abgezählt wirken. */
+  const spalten = Math.min(4, kacheln.length);
+  const voll = Math.ceil(kacheln.length / spalten) * spalten;
+  const felder = kacheln.map(kachel).concat(
+    Array.from({ length: voll - kacheln.length },
+      () => '<div class="vertrauen__kachel vertrauen__kachel--leer"></div>'));
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(`<div class="vertrauen">
+    <div class="vertrauen__karte">
+      <div class="vertrauen__kacheln" style="--spalten:${spalten}" data-erscheinen>${felder.join('')}</div>
+      <div class="vertrauen__text stapel-3">
+        ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
+        <h2 style="font-size:var(--t-l)">${esc(titel)}</h2>
+        ${wenn(text, () => `<p>${esc(text)}</p>`)}
+      </div>
+    </div>
+    ${wenn(bild, () => `<div class="vertrauen__bild">
+      <img class="hintergrund" src="${esc(bild)}" alt="${esc(bildAlt)}" loading="lazy">
+      <div class="vertrauen__bildText">
+        ${wenn(bildTitel, () => `<h3>${esc(bildTitel)}</h3>`)}
+        ${bewertung({ note, anzahl, quelle })}
+      </div>
+    </div>`)}
+  </div>`)}
+</section>`;
+}
+
+/* Reihenfolge der Kacheln: von der Mitte nach außen, mit festem Versatz,
+   damit es gestreut aussieht und nicht als Klotz. */
+function streuFolge(spalten, zeilen) {
+  const mx = (spalten - 1) / 2, my = (zeilen - 1) / 2;
+  return Array.from({ length: spalten * zeilen }, (_, i) => i).sort((a, b) => {
+    const d = (i) => Math.hypot((i % spalten) - mx, Math.floor(i / spalten) - my);
+    return (d(a) - d(b)) || (((a * 7) % 11) - ((b * 7) % 11));
+  });
+}
+
+/* Die Maske soll Lücken weichzeichnen, nie Logos. Deshalb hier ausrechnen,
+   welche Fassung alle belegten Kacheln über Alpha 0,6 hält — und wenn keine
+   das schafft, ganz ohne Maske arbeiten. */
+const MASKEN = [{ marke: '', stops: [.52, .82] }, { marke: ' data-dicht', stops: [.72, .97] }];
+function maskeWaehlen(spalten, zeilen, folge, anzahl) {
+  const alpha = (i) => {
+    const nx = ((i % spalten) - (spalten - 1) / 2) / (spalten / 2);
+    const ny = (Math.floor(i / spalten) - (zeilen - 1) / 2) / (zeilen / 2);
+    return Math.hypot(nx, ny);
+  };
+  const radien = folge.slice(0, anzahl).map(alpha);
+  for (const { marke, stops: [s1, s2] } of MASKEN) {
+    const schlechtestes = Math.max(...radien);
+    const a = schlechtestes <= s1 ? 1 : schlechtestes >= s2 ? 0 : 1 - (schlechtestes - s1) / (s2 - s1);
+    if (a >= .6) return marke;
+  }
+  return ' data-offen';
+}
+
+export function vertrauenStreu({ ueber, titel, text, logos = [], nachsatz, tief = false }) {
+  if (!logos.length) throw new Error('vertrauenStreu braucht mindestens ein Logo.');
+  /* Das Feld wächst und schrumpft mit der Anzahl. Bei zwei Logos sollen
+     nicht dreiundzwanzig leere Kacheln daneben stehen; Ziel sind rund
+     40 % belegte Felder. Gekürzt wird nie — nur das Raster wird größer. */
+  const spalten = logos.length <= 3 ? 3 : logos.length <= 6 ? 4 : 5;
+  const zeilen = Math.max(3, Math.ceil(logos.length / spalten),
+    Math.min(9, Math.round(logos.length / (spalten * 0.4))));
+  const folge = streuFolge(spalten, zeilen);
+  const belegt = new Map(logos.map((l, i) => [folge[i], l]));
+  const maske = maskeWaehlen(spalten, zeilen, folge, logos.length);
+  const felder = Array.from({ length: spalten * zeilen }, (_, i) => belegt.has(i)
+    ? `<div class="streu__feld">${logoBild(belegt.get(i))}</div>`
+    : '<div class="streu__feld streu__feld--leer"></div>').join('');
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(`<div class="raster raster--2" style="align-items:center">
+    <div class="stapel-3">
+      ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
+      <h2>${esc(titel)}</h2>
+      ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
+      ${wenn(nachsatz, () => `<p class="klein">${esc(nachsatz)}</p>`)}
+    </div>
+    <div class="streu"${maske} style="--spalten:${spalten};--zeilen:${zeilen}" data-erscheinen>${felder}</div>
+  </div>`)}
+</section>`;
+}
+
