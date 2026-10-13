@@ -6,17 +6,17 @@
 export const bsp = (id, html) => `<div data-bsp="${id}">${html}</div>`;
 
 export const GRUPPEN = [
-  { id: 'hero', name: 'Kopfbereiche', seite: '_hero',
+  { id: 'hero', icon: 'kopfbereich', name: 'Kopfbereiche', seite: '_hero',
     zweck: 'Der erste Bildschirm. Vorzeile mit dem Kerngeschäft, Überschrift, ein Satz, Knöpfe.' },
-  { id: 'vertrauen', name: 'Vertrauen', seite: '_vertrauen',
+  { id: 'vertrauen', icon: 'siegel', name: 'Vertrauen', seite: '_vertrauen',
     zweck: 'Auszeichnungen, Siegel, Partnermarken, Bewertungen. Kundenstimmen kommen getrennt.' },
-  { id: 'leistungen', name: 'Leistungen', seite: '_leistungen',
+  { id: 'leistungen', icon: 'bento', name: 'Leistungen', seite: '_leistungen',
     zweck: 'Was der Betrieb anbietet. Nie kürzen, auch wenn es nicht ins Raster passt.' },
-  { id: 'logos', name: 'Logowände', seite: '_logos',
+  { id: 'logos', icon: 'logowand', name: 'Logowände', seite: '_logos',
     zweck: 'Partner und Marken als Logos, nie als Textpillen.' },
-  { id: 'verlauf', name: 'Verläufe', seite: '_probe',
+  { id: 'verlauf', icon: 'verlauf', name: 'Verläufe', seite: '_probe',
     zweck: 'Abläufe, Historie, Vorgehen — alles, was eine Reihenfolge hat.' },
-  { id: 'fuss', name: 'Fußbereiche', seite: '_fuss',
+  { id: 'fuss', icon: 'fussbereich', name: 'Fußbereiche', seite: '_fuss',
     zweck: 'Kontakt, Wege, Rechtliches. Immer auf dunklem Grund mit .auf-dunkel.' },
 ];
 

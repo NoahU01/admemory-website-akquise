@@ -21,8 +21,30 @@ const ICONS = {
   uhr:       'M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0-18 0M12 7v5l3 2',
   zurueck:   'M3 12a9 9 0 1 0 3-6.7M3 4v4h4',
   baustein:  'M4 8l8-4l8 4l-8 4zM4 8v8l8 4l8-4V8M12 12v8',
+  /* Die sechs Modularten. Gleicher Strich wie der Rest: nur Pfade, 1,6
+     Breite, runde Enden. Kopf- und Fußbereich unterscheiden sich allein
+     durch die Höhe der Trennlinie — das reicht bei 18 Pixeln gerade noch. */
+  kopfbereich:'M3 5h18v14H3zM3 11h18M6.5 8h7',
+  fussbereich:'M3 5h18v14H3zM3 15h18M6.5 17.3h6',
+  siegel:     'M12 3l7 2.8v5.2c0 4.1-2.8 7.3-7 8.6c-4.2-1.3-7-4.5-7-8.6V5.8zM9.2 11.6l2 2l3.8-3.8',
+  /* Nicht die Bento-Form nehmen: die ist bei 18 Pixeln vom Dashboard-
+     Zeichen nicht zu unterscheiden. Eine breite Karte über zwei kleinen
+     trifft die Leistungen genauso und bleibt eigenständig. */
+  bento:      'M4 5h16v5H4zM4 14h7v5H4zM13 14h7v5h-7z',
+  /* Drei Kacheln nebeneinander verkleben bei 18 Pixeln zu einem Klecks.
+     Rahmen mit zwei Marken darin bleibt lesbar — in Originalgröße geprüft. */
+  logowand:   'M3 6h18v12H3zM7.6 12m-1.9 0a1.9 1.9 0 1 0 3.8 0a1.9 1.9 0 1 0-3.8 0M13 10h4.2v4h-4.2z',
+  verlauf:    'M6 5.5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M6 18.5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M6 7.5v9M11 5.5h9M11 18.5h7',
 };
-const ic = (n, k = '') => '<svg class="ic ' + k + '" viewBox="0 0 24 24" aria-hidden="true"><path d="' + ICONS[n] + '"/></svg>';
+/* Ein unbekannter Name ergab bisher d="undefined" — ein leerer Kasten, der
+   beim Hinsehen nicht auffällt. Jetzt gibt es ein Ersatzzeichen und eine
+   Meldung in der Konsole, statt stillschweigend nichts. */
+function ic(n, k = ''){
+  const d = ICONS[n];
+  if (!d) console.warn('Unbekanntes Zeichen "' + n + '". Vorhanden: ' + Object.keys(ICONS).join(', '));
+  return '<svg class="ic ' + k + '" viewBox="0 0 24 24" aria-hidden="true"><path d="'
+    + (d || ICONS.baustein) + '"/></svg>';
+}
 
 const SEITEN = [
   { gruppe: 'Start' },
@@ -37,6 +59,14 @@ const SEITEN = [
    Navigation eingehängt — eine Gruppe mit einem Unterpunkt je Modulart.
    Quelle ist bibliothek.json, die der Baukasten selbst schreibt. */
 let bibliothek = null;
+let klappen = { bib: true };
+try {
+  const g = localStorage.getItem('klappen');
+  if (g) klappen = { ...klappen, ...JSON.parse(g) };
+} catch { /* ohne Speicher bleibt es beim Standard */ }
+const merkeKlappen = () => {
+  try { localStorage.setItem('klappen', JSON.stringify(klappen)); } catch {}
+};
 
 async function ladeBibliothek(){
   if (bibliothek) return bibliothek;
@@ -45,10 +75,10 @@ async function ladeBibliothek(){
   bibliothek = await r.json();
   /* Nur einhängen, was noch nicht drin steht — zeichneNav läuft mehrfach. */
   if (!SEITEN.some((x) => x.id && x.id.startsWith('bib:'))) {
-    SEITEN.push({ gruppe: 'Bibliothek' });
+    SEITEN.push({ gruppe: 'Bibliothek', klappe: 'bib' });
     for (const g of bibliothek.gruppen) {
-      SEITEN.push({ id: 'bib:' + g.id, label: g.name, icon: 'baustein',
-        titel: g.name, lede: g.zweck });
+      SEITEN.push({ id: 'bib:' + g.id, label: g.name, icon: g.icon || 'baustein',
+        unter: 'bib', titel: g.name, lede: g.zweck });
     }
   }
   return bibliothek;
@@ -128,9 +158,43 @@ el('abmelden').addEventListener('click', async () => {
 });
 
 /* ── Navigation ─────────────────────────────────────────────────── */
+const PFEIL = 'M6 9l6 6l6-6';
+
 function zeichneNav(){
-  el('nav').innerHTML = SEITEN.map((s) => {
-    if (s.gruppe) return '<div class="navgruppentitel">' + text(s.gruppe) + '</div>';
+  /* Unterpunkte einer klappbaren Gruppe kommen in einen eigenen Kasten,
+     damit sie zusammen ein- und ausblenden. Auf dem Handy ist die Leiste
+     waagerecht und die Gruppenüberschrift ausgeblendet — dort muss der
+     Kasten durchgereicht werden, sonst wäre die Bibliothek unerreichbar.
+     Das erledigt display:contents im Stil. */
+  let offen = null;
+  const stuecke = [];
+  for (const s of SEITEN) {
+    if (s.gruppe && s.klappe) {
+      const auf = klappen[s.klappe] !== false;
+      const drin = seite.startsWith(s.klappe + ':');
+      stuecke.push('<button class="navklappe' + (drin && !auf ? ' navklappe--aktiv' : '') +
+        '" data-klappe="' + s.klappe + '"' +
+        ' aria-expanded="' + auf + '" aria-controls="navunter-' + s.klappe + '">' +
+        '<span class="navtext">' + text(s.gruppe) + '</span>' +
+        '<svg class="ic navpfeil" viewBox="0 0 24 24" aria-hidden="true"><path d="' + PFEIL + '"/></svg>' +
+        '</button><div class="navunter" id="navunter-' + s.klappe + '"' +
+        (auf ? '' : ' hidden') + '>');
+      offen = s.klappe;
+      continue;
+    }
+    if (s.gruppe) {
+      if (offen) { stuecke.push('</div>'); offen = null; }
+      stuecke.push('<div class="navgruppentitel">' + text(s.gruppe) + '</div>');
+      continue;
+    }
+    stuecke.push(navKnopf(s));
+  }
+  if (offen) stuecke.push('</div>');
+  el('nav').innerHTML = stuecke.join('');
+}
+
+function navKnopf(s){
+  return [s].map((s) => {
     let n = s.id === 'datenbank' && uebersicht ? uebersicht.kennzahlen.gesamt : null;
     if (s.id && s.id.startsWith('bib:') && bibliothek) {
       const g = bibliothek.gruppen.find((x) => 'bib:' + x.id === s.id);
@@ -142,6 +206,11 @@ function zeichneNav(){
   }).join('');
 }
 el('nav').addEventListener('click', (e) => {
+  const k = e.target.closest('button[data-klappe]');
+  if (k) {
+    klappen[k.dataset.klappe] = k.getAttribute('aria-expanded') !== 'true';
+    merkeKlappen(); zeichneNav(); return;
+  }
   const b = e.target.closest('button[data-id]');
   if (!b || b.dataset.id === seite) return;
   seite = b.dataset.id;
