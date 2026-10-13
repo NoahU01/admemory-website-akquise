@@ -256,6 +256,12 @@ a{color:inherit}
 .karte--wichtig{background:var(--akzent);border-color:var(--akzent);color:#fff;
   --text:#fff; --text-2:rgba(255,255,255,.88)}
 .karte--wichtig h3{color:#fff}
+/* Auf der hervorgehobenen Karte ist der Grund bereits die Akzentfarbe. Alles,
+   was sonst den Akzent als Schriftfarbe nimmt, stünde dort unsichtbar: die
+   Kennzahl kam auf Kontrast 1,0. */
+.karte--wichtig{--akzent-schrift:#fff}
+.karte--wichtig .bento__zahlLabel{color:rgba(255,255,255,.85)}
+.karte--wichtig .liste li::before{border-color:#fff}
 .karte--wichtig .karte__icon{background:rgba(255,255,255,.18);color:#fff}
 .karte--wichtig:hover{border-color:#fff}
 
@@ -523,3 +529,40 @@ a{color:inherit}
   background:rgba(255,255,255,.94);padding:.45rem .7rem;border-radius:7px}
 .auf-dunkel .logowand-karten,.abschnitt--tief .logowand-karten{background:var(--linie-tief)}
 .auf-dunkel .logowand-karten > div,.abschnitt--tief .logowand-karten > div{background:#fff}
+
+/* ══ Leistungen ══════════════════════════════════════════════════ */
+
+.kopf-mittig{text-align:center;max-width:46rem;margin-inline:auto}
+.kopf-mittig .lead{margin-inline:auto}
+
+/* Icon-Fassungen: Kreis in gedämpfter Fläche oder eckiger Kasten in der
+   Akzentfarbe. Beide tragen denselben Strichstil. */
+.karte__icon--kreis{border-radius:50%;background:var(--gedaempft);color:var(--text)}
+.karte__icon--kasten{border-radius:var(--radius-s);
+  background:color-mix(in srgb,var(--akzent) 12%,transparent);color:var(--akzent-schrift)}
+
+/* ── Bento: ungleich große Karten ────────────────────────────────
+   Bricht das gleichförmige Raster auf. Die erste Karte ist doppelt so
+   breit und hoch und trägt die wichtigste Leistung mit mehr Text. */
+.bento{display:grid;gap:var(--a-2);grid-template-columns:1fr}
+@media(min-width:720px){
+  .bento{grid-template-columns:repeat(2,1fr)}
+  .bento__gross{grid-column:span 2}
+}
+@media(min-width:1040px){
+  .bento{grid-template-columns:repeat(4,1fr);grid-auto-rows:minmax(13rem,auto)}
+  .bento__gross{grid-column:span 2;grid-row:span 2}
+  /* Bei wenigen Einträgen wäre die große Karte doppelt so hoch wie alles
+     daneben, und darunter klaffte eine Leere. Dann nur doppelt so breit. */
+  .bento[data-knapp] .bento__gross{grid-row:span 1}
+  .bento__breit{grid-column:span 2}
+  .bento__voll{grid-column:span 4}
+}
+.bento .karte{display:flex;flex-direction:column;height:100%}
+.bento__gross .karte__icon{width:3rem;height:3rem}
+.bento__gross h3{font-size:clamp(1.4rem,2.6vw,1.9rem)}
+.bento__gross .bento__fuss{margin-top:auto;padding-top:var(--a-3)}
+/* Eine Zahl in der großen Karte gibt dem Raster einen Anker. */
+.bento__zahl{font-family:inherit;font-size:clamp(2.2rem,5vw,3.2rem);font-weight:800;
+  letter-spacing:-.04em;line-height:1;color:var(--akzent-schrift)}
+.bento__zahlLabel{font-size:var(--t-xs);color:var(--text-2);margin-top:.3rem}

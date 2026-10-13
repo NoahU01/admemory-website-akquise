@@ -63,7 +63,8 @@ export function notband({ titel, text, nummer, nummerText }) {
 </section>`;
 }
 
-export function leistungen({ ueber, titel, text, eintraege, spalten = 3, tief = false }) {
+export function leistungen({ ueber, titel, text, eintraege, spalten = 3,
+                             mittig = false, iconStil = 'kasten', tief = false }) {
   return `
 <section class="abschnitt ${wenn(tief, 'abschnitt--tief')}" id="leistungen">
   ${schale(`<div class="stapel-3" style="margin-bottom:var(--a-4)">
@@ -73,7 +74,7 @@ export function leistungen({ ueber, titel, text, eintraege, spalten = 3, tief = 
     </div>
     <div class="raster raster--${spalten}">
       ${eintraege.map((e) => {
-        const innen = `${wenn(e.icon, () => `<div class="karte__icon">${zeichen(e.icon)}</div>`)}` +
+        const innen = `${wenn(e.icon, () => `<div class="karte__icon karte__icon--${iconStil}">${zeichen(e.icon)}</div>`)}` +
           `<h3>${esc(e.titel)}</h3>${wenn(e.text, () => `<p class="klein">${esc(e.text)}</p>`)}`;
         // Eine Karte darf herausstechen, damit das Raster nicht gleichförmig wirkt
         const k = 'karte' + (e.wichtig ? ' karte--wichtig' : '') + (e.href ? ' karte--klickbar' : '');
@@ -523,3 +524,58 @@ export const ERSCHEINEN_SKRIPT = `
   teile.forEach(function (t) { w.observe(t); });
 })();
 </script>`;
+
+/* ══ Leistungen ══════════════════════════════════════════════════
+   leistungen       Gleichmäßiges Raster. Mit mittig:true steht die Kopfzeile
+                    zentriert, mit iconStil 'kreis' oder 'kasten' ändert sich
+                    die Icon-Fassung.
+   leistungenBento  Ungleich große Karten: Die erste ist doppelt so breit und
+                    hoch und trägt die wichtigste Leistung mit mehr Text und
+                    einer Kennzahl. Bricht das gleichförmige Raster auf, das
+                    eine Seite schnell nach Baukasten aussehen lässt. Trägt
+                    fünf bis neun Einträge.                                  */
+
+export function leistungenBento({ ueber, titel, text, mittig = false, eintraege, tief = false }) {
+  const [erste, ...rest] = eintraege;
+  const karte = (e, gross = false) => {
+    const innen =
+      `${wenn(e.icon, () => `<div class="karte__icon karte__icon--kasten">${zeichen(e.icon)}</div>`)}` +
+      `<h3>${esc(e.titel)}</h3>` +
+      `${wenn(e.text, () => `<p class="klein" style="margin-top:.4rem">${esc(e.text)}</p>`)}` +
+      `${wenn(gross && e.punkte?.length, () => `<ul class="liste" style="margin-top:var(--a-2)">` +
+        `${e.punkte.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>`)}` +
+      `${wenn(gross && e.zahl, () => `<div class="bento__fuss"><div class="bento__zahl">${esc(e.zahl)}</div>` +
+        `<div class="bento__zahlLabel">${esc(e.zahlLabel ?? '')}</div></div>`)}`;
+    const k = 'karte' + (e.wichtig ? ' karte--wichtig' : '') + (e.href ? ' karte--klickbar' : '');
+    return e.href ? `<a class="${k}" href="${esc(e.href)}">${innen}</a>` : `<div class="${k}">${innen}</div>`;
+  };
+  /* Das Raster gleicht sich selbst aus. Die große Karte belegt zwei Spalten
+     und zwei Zeilen, daneben passen vier kleine. Danach vier je Zeile. Bleibt
+     am Ende ein einzelner Eintrag übrig, läuft er über die ganze Breite; sind
+     es zwei, teilen sie sich die Zeile. Sonst endet das Raster ausgefranst,
+     und der Agent müsste die Anzahl im Kopf ausrechnen. */
+  const breiten = new Array(rest.length).fill('');
+  const uebrig = rest.length - 4;
+  if (uebrig > 0) {
+    const letzteZeile = uebrig % 4;
+    if (letzteZeile === 1) breiten[rest.length - 1] = ' class="bento__voll"';
+    else if (letzteZeile === 2) {
+      breiten[rest.length - 1] = ' class="bento__breit"';
+      breiten[rest.length - 2] = ' class="bento__breit"';
+    } else if (letzteZeile === 3) breiten[rest.length - 1] = ' class="bento__breit"';
+  }
+  const knapp = eintraege.length < 5 ? ' data-knapp' : '';
+
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}" id="leistungen">
+  ${schale(`<div class="stapel-3 ${wenn(mittig, 'kopf-mittig')}" style="margin-bottom:var(--a-4)">
+      ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
+      <h2>${esc(titel)}</h2>
+      ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
+    </div>
+    <div class="bento"${knapp}>
+      <div class="bento__gross">${karte(erste, true)}</div>
+      ${rest.map((e, i) => `<div${breiten[i]}>${karte(e)}</div>`).join('')}
+    </div>`)}
+</section>`;
+}

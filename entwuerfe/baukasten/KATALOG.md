@@ -40,7 +40,8 @@ Alle drei tragen denselben Inhalt. Die Wahl hängt an Menge und Textlänge.
 
 | Baustein | Wann |
 |---|---|
-| `leistungen` | Raster aus Karten mit Icon. Eine darf `wichtig: true` tragen und sticht farbig heraus. |
+| `leistungenBento` | **Erste Wahl bei fünf bis neun Leistungen.** Ungleich große Karten: Die erste ist doppelt so breit und hoch und trägt die wichtigste Leistung mit Aufzählung und einer Kennzahl. Bricht das gleichförmige Raster auf, das eine Seite schnell nach Baukasten aussehen lässt. Das Raster gleicht sich selbst aus, die Anzahl muss niemand ausrechnen. |
+| `leistungen` | Gleichmäßiges Raster. Für zehn und mehr Einträge, oder wenn alle gleich wichtig sind. `mittig: true` zentriert die Kopfzeile, `iconStil: 'kreis'` oder `'kasten'` ändert die Icon-Fassung. Eine Karte darf `wichtig: true` tragen und sticht farbig heraus. |
 | `textBild` | Ein Gedanke mit einem Bild daneben. `bildRechts` abwechseln, aber nicht öfter als zweimal hintereinander. |
 | `zahlen` | Vier Kennzahlen. Nur mit belegten Werten, keine Zahl ohne Aussage. |
 | `zeitleiste` | Älter als die Verlaufsbausteine, Karten im Raster. Für Verläufe lieber einen der drei oben. |
@@ -112,3 +113,12 @@ dunklen Grund gewandert.
 daneben ein eigener Kreis mit Pfeil, der beim Überfahren hinauswandert,
 während ein zweiter von links hereinkommt. Nur einmal je Seite verwenden,
 sonst verliert er seine Wirkung.
+
+
+## Hervorgehobene Karten
+
+Auf einer Karte mit `wichtig: true` ist der Grund bereits die Akzentfarbe.
+Alles, was sonst den Akzent als Schriftfarbe nimmt, stünde dort unsichtbar:
+Die Kennzahl im Bento kam auf Kontrast 1,0, rot auf rot. Innerhalb solcher
+Karten wird die Schriftfarbe deshalb auf Weiß umgestellt. Wer eigene Farben
+in einer Karte setzt, muss das bedenken.
