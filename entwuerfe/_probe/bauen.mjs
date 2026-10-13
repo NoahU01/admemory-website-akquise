@@ -5,12 +5,14 @@ import fs from 'node:fs';
 import { seite } from '../baukasten/seite.mjs';
 import { verlaufSeitlich, verlaufWaagerecht, verlaufSchmal } from '../baukasten/bausteine.mjs';
 
+/* Zwei bis drei Sätze je Eintrag. Ein einzelner kurzer Satz lässt die Karte
+   leer wirken, besonders neben einer großen Überschrift. */
 const echt = [
-  { marke: '1876', titel: 'Gründung', text: 'Martin Schmidt beginnt mit der Güterbeförderung.' },
-  { marke: '1994', titel: 'Roll Truck-Service GmbH', text: 'Die Werkstatt wird eigenständig.' },
-  { marke: '2000', titel: 'Vertragswerkstatt', text: 'Volvo Trucks und Iveco kommen dazu.' },
-  { marke: '2020', titel: 'LNG-Tankstelle', text: 'Auf dem eigenen Firmengelände.' },
-  { marke: '2024', titel: 'Werkstatt des Jahres', text: 'Ausgezeichnet durch autoservice praxis.' },
+  { marke: '1876', titel: 'Gründung', text: 'Martin Schmidt beginnt mit der Güterbeförderung. Aus dem Fuhrunternehmen wird über die Jahrzehnte eine Firmengruppe, die bis heute in Familienhand ist.' },
+  { marke: '1994', titel: 'Roll Truck-Service GmbH', text: 'Die Werkstatt wird aus der Spedition herausgelöst und eigenständig. Ab hier steht das Nutzfahrzeug im Mittelpunkt, nicht mehr der eigene Fuhrpark.' },
+  { marke: '2000', titel: 'Vertragswerkstatt', text: 'Volvo Trucks und Iveco kommen als Vertragspartner dazu. Drei Jahre später folgt DAF, später Schmitz Cargobull und Vergölst.' },
+  { marke: '2020', titel: 'LNG-Tankstelle', text: 'Auf dem eigenen Firmengelände entsteht eine LNG-Tankstelle. Für Speditionen in der Region ist das die nächstgelegene Zapfstelle.' },
+  { marke: '2024', titel: 'Werkstatt des Jahres', text: 'Ausgezeichnet durch autoservice praxis als Werkstatt des Jahres 24/25. Im selben Jahr kommt der Pkw-Abschleppdienst dazu.' },
 ];
 const lang = [
   { marke: '2019', titel: 'Erschließung der Abschlepp-Niederlassung Wörnitz mit eigenem Bereitschaftsdienst',

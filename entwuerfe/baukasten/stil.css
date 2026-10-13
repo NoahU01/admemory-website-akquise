@@ -70,14 +70,18 @@ a{color:inherit}
 .abschnitt--tief h1,.abschnitt--tief h2,.abschnitt--tief h3{color:#fff}
 .abschnitt--gedaempft{background:var(--gedaempft)}
 
-.stapel>*+*{margin-top:var(--a-2)}
-.stapel-3>*+*{margin-top:var(--a-3)}
+/* Der doppelte Klassenname hebt die Spezifität um eine Stufe. Ohne das
+   gewinnt jede später im Stylesheet stehende Regel mit 'margin:0' — etwa die
+   Zurücksetzung einer Liste —, und die Abstände im Stapel fallen weg. Genau
+   das passierte bei den Merkmalen im geteilten Kopfbereich. */
+.stapel.stapel>*+*{margin-top:var(--a-2)}
+.stapel-3.stapel-3>*+*{margin-top:var(--a-3)}
 /* Vorzeile und Überschrift sind eine Einheit, kein Abstand von einer vollen
    Stufe dazwischen. */
 .ueber{font-size:var(--t-xs);font-weight:600;letter-spacing:.1em;text-transform:uppercase;
   color:var(--akzent-schrift);margin-bottom:.35rem}
 .ueber + h1,.ueber + h2{margin-top:0}
-.stapel-3 > .ueber + *{margin-top:.35rem}
+.stapel-3.stapel-3 > .ueber + *{margin-top:.35rem}
 .lead{font-size:var(--t-m);color:var(--text);opacity:.88;line-height:1.6;max-width:56ch}
 .klein{font-size:var(--t-s);color:var(--text-2)}
 
@@ -284,20 +288,26 @@ a{color:inherit}
    Nummernkreise sitzen auf der Linie und schneiden sie mit einem Ring
    in der Hintergrundfarbe durch. */
 .verlauf-seitlich{display:grid;gap:var(--a-4);align-items:start}
+/* Links etwas kleinere Überschrift: Der Text rechts soll zwei bis drei Sätze
+   tragen können, ohne dass die Spalten auseinanderfallen. */
+.verlauf-seitlich h2{font-size:clamp(1.5rem,3vw,2.1rem)}
 @media(min-width:900px){.verlauf-seitlich{grid-template-columns:.85fr 1.15fr;gap:var(--a-5);align-items:center}}
 .verlauf-liste{list-style:none;margin:0;padding:0 0 0 var(--a-4);
   border-left:2px solid var(--akzent);display:flex;flex-direction:column;gap:var(--a-2)}
 .verlauf-schritt{position:relative}
 /* Die Marke an der Linie: rund bei einer Ziffer, als Pille bei einer
    Jahreszahl. Mit fester Breite lief "1876" über den Kreis hinaus. */
-.verlauf-nummer{position:absolute;top:1.3rem;left:calc(var(--a-4) * -1 - 1rem - 1px);
+/* Die Marke sitzt mittig auf der Linie, unabhängig von ihrer Breite: Der
+   linke Rand der Liste liegt eine Polsterung plus einen halben Strich vom
+   Inhalt entfernt, und translateX(-50%) zentriert die Marke darauf. Rund bei
+   einer Ziffer, als Pille bei einer Jahreszahl. */
+.verlauf-nummer{position:absolute;top:1.3rem;
+  left:calc(var(--a-4) * -1 - 1px);transform:translateX(-50%);
   min-width:2rem;height:2rem;padding:0 .55rem;display:inline-flex;align-items:center;
   justify-content:center;border-radius:999px;
   background:var(--akzent);color:var(--akzent-text);
   font-size:var(--t-xs);font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;
-  box-shadow:0 0 0 5px var(--grund);transform:translateX(0)}
-/* Mehrstellige Marken mittig auf der Linie halten */
-.verlauf-nummer[data-breit]{left:auto;right:calc(100% + var(--a-4) - 1rem);transform:translateX(50%)}
+  box-shadow:0 0 0 5px var(--grund)}
 .verlauf-schritt .karte{background:var(--gedaempft)}
 .verlauf-kopf{display:flex;align-items:flex-start;gap:.6rem}
 .verlauf-kopf svg{width:1.15rem;height:1.15rem;flex:none;margin-top:.22rem;
@@ -342,3 +352,78 @@ a{color:inherit}
 .verlauf-text{padding-bottom:var(--a-4)}
 .verlauf-schmal li:last-child .verlauf-text{padding-bottom:0}
 .verlauf-text h3{font-size:var(--t-m);margin-bottom:.35rem}
+
+/* ══ Hero-Varianten ══════════════════════════════════════════════ */
+
+/* ── Mittig über ganzflächigem Bild ──────────────────────────────
+   Die einnehmendste Fassung. Braucht ein Bild, das auch abgedunkelt
+   trägt, und eine Überschrift, die kurz genug für zwei Zeilen ist. */
+.hero-mitte{position:relative;isolation:isolate;min-height:min(88vh,760px);
+  display:grid;place-items:center;text-align:center;overflow:hidden;
+  background:var(--tief);color:#fff;padding-block:var(--a-6)}
+.hero-mitte__bild{position:absolute;inset:0;z-index:-2}
+.hero-mitte__bild img{width:100%;height:100%;object-fit:cover}
+.hero-mitte::after{content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,rgba(8,12,18,.52),rgba(8,12,18,.46) 45%,rgba(8,12,18,.78))}
+.hero-mitte__in{max-width:60rem;display:grid;gap:var(--a-3);justify-items:center}
+/* Leichter und größer als sonst: Die Fassung lebt von der Schriftgröße. */
+.hero-mitte h1{font-size:clamp(2.4rem,7vw,5rem);font-weight:600;letter-spacing:-.03em;
+  max-width:20ch;color:#fff}
+.hero-mitte .lead{font-size:clamp(1rem,1.9vw,1.3rem);max-width:46rem;color:#e9eef4;opacity:1}
+
+/* Pillenknopf mit abgesetztem Pfeilkreis. Beim Überfahren wandert der
+   Pfeil hinaus und ein zweiter von links herein. */
+.knopf-pille{display:inline-flex;align-items:stretch;gap:.4rem;text-decoration:none;
+  border:0;background:none;padding:0;cursor:pointer}
+.knopf-pille__text{display:inline-flex;align-items:center;border-radius:999px;
+  padding:.95rem 1.7rem;background:var(--akzent);color:var(--akzent-text);
+  font-weight:600;font-size:var(--t-s);transition:background .35s,color .35s}
+.knopf-pille__kreis{position:relative;overflow:hidden;flex:none;
+  width:3.3rem;border-radius:999px;background:var(--akzent);color:var(--akzent-text);
+  display:grid;place-items:center;transition:background .35s,color .35s}
+.knopf-pille__kreis svg{position:absolute;width:1.15rem;height:1.15rem;
+  stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+  transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.knopf-pille__kreis svg:nth-child(2){transform:translateX(-2.6rem)}
+.knopf-pille:hover .knopf-pille__kreis svg:nth-child(1){transform:translateX(2.6rem)}
+.knopf-pille:hover .knopf-pille__kreis svg:nth-child(2){transform:translateX(0)}
+.knopf-pille:hover .knopf-pille__text,.knopf-pille:hover .knopf-pille__kreis{
+  background:#fff;color:var(--akzent)}
+.knopf-pille:focus-visible{outline:3px solid #fff;outline-offset:4px;border-radius:999px}
+
+/* ── Geteilt, Bild läuft rechts aus dem Rahmen ───────────────────
+   Für Betriebe mit einem guten Einzelbild. Links Text mit Merkmalen,
+   rechts das Bild, das zum Rand hin ausblendet. */
+.hero-geteilt{position:relative;overflow:hidden;padding-block:var(--a-5)}
+.hero-geteilt__in{position:relative;z-index:2;max-width:34rem}
+.hero-geteilt__bild{position:absolute;inset:0 0 0 38%;z-index:1}
+.hero-geteilt__bild img{width:100%;height:100%;object-fit:cover}
+.hero-geteilt__bild::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,var(--grund) 2%,transparent 48%)}
+@media(max-width:860px){
+  .hero-geteilt{padding-bottom:0}
+  .hero-geteilt__in{max-width:none}
+  .hero-geteilt__bild{position:relative;inset:auto;margin-top:var(--a-4);
+    aspect-ratio:16/10;border-radius:var(--radius);overflow:hidden}
+  .hero-geteilt__bild::after{background:none}
+}
+.merkmale{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
+.merkmale li{display:flex;align-items:center;gap:.6rem;font-size:var(--t-s)}
+.merkmale svg{width:1.1rem;height:1.1rem;flex:none;stroke:var(--akzent-schrift);fill:none;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── Tiefenwirkung beim Scrollen ─────────────────────────────────
+   Das Bild wandert langsamer als die Seite. Echter mehrschichtiger
+   Parallaxeffekt braucht freigestellte Ebenen; aus einem Foto von der
+   alten Seite lässt sich das nicht herstellen. Deshalb eine Schicht,
+   dezent. Bei reduzierter Bewegung steht das Bild still. */
+.hero-tiefe{position:relative;isolation:isolate;min-height:min(92vh,820px);
+  display:grid;place-items:center;overflow:hidden;background:var(--tief);color:#fff}
+.hero-tiefe__bild{position:absolute;inset:-12% 0;z-index:-2;will-change:transform}
+.hero-tiefe__bild img{width:100%;height:100%;object-fit:cover}
+.hero-tiefe::after{content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,rgba(8,12,18,.3),rgba(8,12,18,.55) 60%,rgba(8,12,18,.92))}
+.hero-tiefe__in{text-align:center;display:grid;gap:var(--a-3);justify-items:center;
+  padding-inline:clamp(1rem,4vw,2rem)}
+.hero-tiefe h1{font-size:clamp(2.6rem,9vw,6.5rem);font-weight:800;letter-spacing:-.04em;color:#fff}
+@media(prefers-reduced-motion:reduce){.hero-tiefe__bild{transform:none!important}}

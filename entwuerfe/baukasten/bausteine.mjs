@@ -301,7 +301,7 @@ export function verlaufSeitlich({ ueber, titel, text, schritte, tief = false }) 
           : `<h3>${esc(s.titel)}</h3>` +
             `${wenn(s.text, () => `<p class="klein" style="margin-top:.4rem">${esc(s.text)}</p>`)}`;
         return `<li class="verlauf-schritt">
-        <span class="verlauf-nummer"${marke.length > 2 ? ' data-breit' : ''}>${esc(marke)}</span>
+        <span class="verlauf-nummer">${esc(marke)}</span>
         <div class="karte">${kopf}</div></li>`;
       }).join('')}
     </ol>
@@ -351,3 +351,92 @@ export function verlaufSchmal({ plakette, titel, text, schritte, tief = false })
   </div>`)}
 </section>`;
 }
+
+/* ══ Hero-Varianten ══════════════════════════════════════════════
+   heroMitte    Ganzflächiges Bild, Text mittig darüber, große leichte
+                Überschrift. Die einnehmendste Fassung. Braucht ein Bild, das
+                abgedunkelt noch trägt, und eine Überschrift unter acht Wörtern.
+   heroGeteilt  Links Text mit Merkmalen und Knöpfen, rechts ein Bild, das zum
+                Rand ausblendet. Für ein einzelnes gutes Bild, und wenn drei
+                Merkmale sofort genannt werden sollen.
+   heroTiefe    Wie heroMitte, aber das Bild wandert beim Scrollen langsamer.
+                Nur bei einem ruhigen, tiefen Motiv. Bei einem unruhigen Bild
+                wirkt die Bewegung billig.                                    */
+
+const PFEIL = 'M7 17L17 7M9 7h8v8';
+
+/* Pillenknopf mit abgesetztem Pfeilkreis. */
+export function knopfPille({ text, href, neu = false }) {
+  const pfeil = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${PFEIL}"/></svg>`;
+  return `<a class="knopf-pille" href="${esc(href)}"${wenn(neu, ' target="_blank" rel="noopener"')}>
+    <span class="knopf-pille__text">${esc(text)}</span>
+    <span class="knopf-pille__kreis">${pfeil}${pfeil}</span></a>`;
+}
+
+export function heroMitte({ ueber, titel, text, knopfHaupt, knoepfe = [], bild, bildAlt = '', marken = [] }) {
+  return `
+<header class="hero-mitte" id="start">
+  <div class="hero-mitte__bild"><img src="${esc(bild)}" alt="${esc(bildAlt)}" fetchpriority="high"></div>
+  ${schale(`<div class="hero-mitte__in">
+    ${wenn(ueber, () => `<p class="ueber" style="color:#ffb4b4;margin:0">${esc(ueber)}</p>`)}
+    <h1>${esc(titel)}</h1>
+    ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
+    ${wenn(knopfHaupt || knoepfe.length, () => `<div class="knopfreihe" style="justify-content:center">
+      ${wenn(knopfHaupt, () => knopfPille(knopfHaupt))}${knoepfe.map(knopf).join('')}</div>`)}
+    ${wenn(marken.length, () => `<div class="logoband" style="justify-content:center;margin-top:var(--a-2)">
+      ${marken.map((m) => `<img src="${esc(m.pfad)}" alt="${esc(m.name)}" loading="lazy">`).join('')}</div>`)}
+  </div>`)}
+</header>`;
+}
+
+export function heroGeteilt({ plakette, titel, text, merkmale = [], knoepfe = [], bild, bildAlt = '' }) {
+  return `
+<header class="hero-geteilt" id="start">
+  <div class="hero-geteilt__bild"><img src="${esc(bild)}" alt="${esc(bildAlt)}" fetchpriority="high"></div>
+  ${schale(`<div class="hero-geteilt__in stapel-3">
+    ${wenn(plakette, () => `<span class="plakette" style="margin:0">${esc(plakette)}</span>`)}
+    <h1>${esc(titel)}</h1>
+    ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
+    ${wenn(merkmale.length, () => `<ul class="merkmale">${merkmale.map((m) =>
+      `<li>${zeichen(m.icon ?? 'haken')}<span>${esc(m.text ?? m)}</span></li>`).join('')}</ul>`)}
+    ${wenn(knoepfe.length, () => `<div class="knopfreihe">${knoepfe.map(knopf).join('')}</div>`)}
+  </div>`)}
+</header>`;
+}
+
+export function heroTiefe({ ueber, titel, text, knopfHaupt, knoepfe = [], bild, bildAlt = '' }) {
+  return `
+<header class="hero-tiefe" id="start" data-tiefe>
+  <div class="hero-tiefe__bild"><img src="${esc(bild)}" alt="${esc(bildAlt)}" fetchpriority="high"></div>
+  <div class="hero-tiefe__in">
+    ${wenn(ueber, () => `<p class="ueber" style="color:#ffb4b4;margin:0">${esc(ueber)}</p>`)}
+    <h1>${esc(titel)}</h1>
+    ${wenn(text, () => `<p class="lead" style="color:#e9eef4;opacity:1;max-width:46rem">${esc(text)}</p>`)}
+    ${wenn(knopfHaupt || knoepfe.length, () => `<div class="knopfreihe" style="justify-content:center">
+      ${wenn(knopfHaupt, () => knopfPille(knopfHaupt))}${knoepfe.map(knopf).join('')}</div>`)}
+  </div>
+</header>`;
+}
+
+/* Das Skript für die Tiefenwirkung. Nur einbinden, wenn heroTiefe verwendet
+   wird: Ohne Bewegung braucht die Seite kein Skript. Läuft ohne
+   Fremdbibliothek und hält sich an die Systemeinstellung für reduzierte
+   Bewegung. */
+export const TIEFE_SKRIPT = `
+<script>
+(function () {
+  var el = document.querySelector('[data-tiefe] .hero-tiefe__bild');
+  if (!el) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var laeuft = false;
+  function schieben() {
+    var y = window.scrollY;
+    if (y < window.innerHeight * 1.2) el.style.transform = 'translate3d(0,' + (y * 0.28) + 'px,0)';
+    laeuft = false;
+  }
+  addEventListener('scroll', function () {
+    if (!laeuft) { laeuft = true; requestAnimationFrame(schieben); }
+  }, { passive: true });
+  schieben();
+})();
+</script>`;
