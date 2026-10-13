@@ -13,8 +13,8 @@ liegt unter `entwuerfe/_probe/`.
 | Baustein | Wann |
 |---|---|
 | `heroMitte` | **Erste Wahl.** Ganzflächiges Bild, Text mittig darüber, große leichte Überschrift. Nimmt am stärksten ein. Braucht ein Bild, das abgedunkelt noch trägt, und eine Überschrift unter acht Wörtern. Partnerlogos können darunter stehen. |
-| `heroGeteilt` | Links Text mit drei Merkmalen und Knöpfen, rechts ein Bild, das zum Rand ausblendet. Wenn drei Argumente sofort genannt werden sollen, oder bei einem Bild mit klarem Motiv auf einer Seite. |
-| `heroTiefe` | Wie `heroMitte`, aber das Bild wandert beim Scrollen langsamer. **Nur bei einem ruhigen, tiefen Motiv.** Bei einem unruhigen Bild wirkt die Bewegung billig. Braucht `TIEFE_SKRIPT` am Seitenende. |
+| `heroGeteilt` | **Zweite Wahl, oft die bessere.** Links Text mit drei Merkmalen und Knöpfen, rechts ein Bild, das zum Rand ausblendet. Wenn drei Argumente sofort genannt werden sollen. Funktioniert auch mit Panoramabildern, weil nur ein Ausschnitt gezeigt wird. |
+| `heroTiefe` | **Nicht für die automatische Wahl.** Das Bild wandert beim Scrollen langsamer. Braucht ein ruhiges, tiefes Motiv; bei einem unruhigen Bild wirkt die Bewegung billig, und genau solche Bilder liefern die alten Seiten meistens. Bleibt im Baukasten für den Einzelfall, den Noah selbst bestimmt. Braucht `TIEFE_SKRIPT` am Seitenende. |
 | `heroVoll` | Ältere Fassung: Bild ganzflächig, Text linksbündig unten. Weiterhin brauchbar, aber `heroMitte` nimmt mehr ein. |
 | `heroBand` | Text oben, breites Bildband darunter. Für Panoramabilder, die als Ausschnitt nichts hergeben. |
 | `hero` | Geteilt mit Bildkasten rechts. Der sicherste, aber blasseste Aufbau. Nur, wenn nichts anderes passt. |
@@ -89,6 +89,10 @@ Ebenfalls dort: Das Vertrauenselement steht weit oben, nicht erst im unteren
 Drittel.
 
 ## Knöpfe
+
+**Logos auf dunklem Grund** bekommen eine helle Fläche darunter. Umfärben
+hilft nicht: Viele Logodateien sind selbst weiß hinterlegt, ein Invertieren
+macht daraus einen schwarzen Kasten.
 
 `knopfPille` ist der betonte Knopf für Kopfbereiche: Text in einer Pille,
 daneben ein eigener Kreis mit Pfeil, der beim Überfahren hinauswandert,

@@ -264,7 +264,14 @@ a{color:inherit}
 .logoband img{height:2.6rem;width:auto;object-fit:contain;
   filter:grayscale(1);opacity:.62;transition:filter .2s,opacity .2s}
 .logoband img:hover{filter:none;opacity:1}
-.auf-dunkel .logoband img,.abschnitt--tief .logoband img{filter:grayscale(1) invert(1) brightness(1.6);opacity:.75}
+/* Auf dunklem Grund bekommen Logos eine helle Fläche. Umfärben hilft nicht:
+   Viele Logodateien sind selbst weiß hinterlegt, ein Invertieren macht daraus
+   einen schwarzen Kasten. Eine Fläche darunter wirkt gewollt und funktioniert
+   für freigestellte wie für hinterlegte Dateien. */
+.auf-dunkel .logoband img,.abschnitt--tief .logoband img,.hero-mitte .logoband img,
+.hero-tiefe .logoband img{
+  filter:none;opacity:1;background:rgba(255,255,255,.94);
+  padding:.45rem .7rem;border-radius:7px;height:2.3rem}
 
 /* ── Siegel ───────────────────────────────────────────────────── */
 .siegel{display:flex;flex-wrap:wrap;gap:var(--a-3);align-items:center}
@@ -365,11 +372,13 @@ a{color:inherit}
 .hero-mitte__bild img{width:100%;height:100%;object-fit:cover}
 .hero-mitte::after{content:"";position:absolute;inset:0;z-index:-1;
   background:linear-gradient(180deg,rgba(8,12,18,.52),rgba(8,12,18,.46) 45%,rgba(8,12,18,.78))}
-.hero-mitte__in{max-width:60rem;display:grid;gap:var(--a-3);justify-items:center}
-/* Leichter und größer als sonst: Die Fassung lebt von der Schriftgröße. */
-.hero-mitte h1{font-size:clamp(2.4rem,7vw,5rem);font-weight:600;letter-spacing:-.03em;
+/* margin-inline:auto nicht vergessen: Eine Maximalbreite allein zentriert
+   nichts, der Block klebte dadurch links an der Schale. */
+.hero-mitte__in{max-width:60rem;margin-inline:auto;display:grid;gap:var(--a-3);justify-items:center}
+.hero-mitte h1{font-size:clamp(2.4rem,7vw,5rem);font-weight:800;letter-spacing:-.035em;
   max-width:20ch;color:#fff}
-.hero-mitte .lead{font-size:clamp(1rem,1.9vw,1.3rem);max-width:46rem;color:#e9eef4;opacity:1}
+.hero-mitte .lead{font-size:clamp(1.05rem,2vw,1.35rem);font-weight:600;
+  max-width:46rem;color:#e9eef4;opacity:1}
 
 /* Pillenknopf mit abgesetztem Pfeilkreis. Beim Überfahren wandert der
    Pfeil hinaus und ein zweiter von links herein. */

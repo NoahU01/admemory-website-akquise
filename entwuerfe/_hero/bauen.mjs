@@ -56,7 +56,7 @@ const html = seite({
         { text: 'Unsere Leistungen', href: '#leistungen', art: 'wichtig' },
         { text: 'Kontakt', href: '#kontakt' },
       ],
-      bild: B.team, bildAlt: 'Das Team',
+      bild: B.trucks, bildAlt: 'Lastwagen von Roll Truck-Service',
     }),
 
     marke('heroTiefe · Bild wandert beim Scrollen'),
