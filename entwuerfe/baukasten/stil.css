@@ -269,3 +269,76 @@ a{color:inherit}
 /* ── Kopflogo ─────────────────────────────────────────────────── */
 .nav__logo{height:2.1rem;width:auto;object-fit:contain;flex:none}
 @media(max-width:760px){.nav__logo{height:1.7rem}}
+
+/* ══ Verläufe ════════════════════════════════════════════════════
+   Drei Fassungen für Abläufe, Historie und Vorgehen. Welche passt,
+   steht bei der jeweiligen Funktion in bausteine.mjs. */
+
+/* ── Plakette ───────────────────────────────────────────────── */
+.plakette{display:inline-block;font-size:var(--t-xs);font-weight:600;
+  padding:.3rem .8rem;border:1px solid var(--linie);border-radius:999px;
+  color:var(--text-2);margin-bottom:var(--a-2)}
+
+/* ── V1: zwei Spalten, Karten an einer Linie ────────────────────
+   Links steht der Text still, rechts hat die Liste Rhythmus. Die
+   Nummernkreise sitzen auf der Linie und schneiden sie mit einem Ring
+   in der Hintergrundfarbe durch. */
+.verlauf-seitlich{display:grid;gap:var(--a-4);align-items:start}
+@media(min-width:900px){.verlauf-seitlich{grid-template-columns:.85fr 1.15fr;gap:var(--a-5);align-items:center}}
+.verlauf-liste{list-style:none;margin:0;padding:0 0 0 var(--a-4);
+  border-left:2px solid var(--akzent);display:flex;flex-direction:column;gap:var(--a-2)}
+.verlauf-schritt{position:relative}
+/* Die Marke an der Linie: rund bei einer Ziffer, als Pille bei einer
+   Jahreszahl. Mit fester Breite lief "1876" über den Kreis hinaus. */
+.verlauf-nummer{position:absolute;top:1.3rem;left:calc(var(--a-4) * -1 - 1rem - 1px);
+  min-width:2rem;height:2rem;padding:0 .55rem;display:inline-flex;align-items:center;
+  justify-content:center;border-radius:999px;
+  background:var(--akzent);color:var(--akzent-text);
+  font-size:var(--t-xs);font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;
+  box-shadow:0 0 0 5px var(--grund);transform:translateX(0)}
+/* Mehrstellige Marken mittig auf der Linie halten */
+.verlauf-nummer[data-breit]{left:auto;right:calc(100% + var(--a-4) - 1rem);transform:translateX(50%)}
+.verlauf-schritt .karte{background:var(--gedaempft)}
+.verlauf-kopf{display:flex;align-items:flex-start;gap:.6rem}
+.verlauf-kopf svg{width:1.15rem;height:1.15rem;flex:none;margin-top:.22rem;
+  stroke:var(--akzent-schrift);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── V2: waagerechte Linie mit Zuständen ────────────────────────
+   Erledigte Punkte in voller Farbe, kommende blass. Die Linie trägt
+   die Aussage, sonst steht fast nichts da. */
+.verlauf-waagerecht{list-style:none;margin:0;padding:0;display:grid;gap:var(--a-3)}
+@media(min-width:760px){
+  .verlauf-waagerecht{grid-auto-flow:column;grid-auto-columns:1fr;gap:var(--a-2)}
+}
+.verlauf-punkt{position:relative;padding-top:2.2rem}
+.verlauf-punkt::before{content:"";position:absolute;left:0;top:.35rem;
+  width:1rem;height:1rem;border-radius:50%;border:2.5px solid var(--linie);background:var(--grund)}
+.verlauf-punkt::after{content:"";position:absolute;left:1rem;top:.85rem;
+  right:0;height:2px;background:var(--linie)}
+.verlauf-punkt:last-child::after{display:none}
+.verlauf-punkt[data-erreicht]::before{border-color:var(--akzent)}
+.verlauf-punkt[data-erreicht]::after{background:var(--akzent)}
+@media(max-width:759px){
+  .verlauf-punkt{padding-top:0;padding-left:2.2rem}
+  .verlauf-punkt::before{top:.3rem}
+  .verlauf-punkt::after{left:.5rem;top:1.3rem;right:auto;bottom:-1.6rem;width:2px;height:auto}
+}
+.verlauf-datum{font-size:var(--t-xs);color:var(--text-2);margin-bottom:.15rem}
+.verlauf-punkt h3{font-size:var(--t-m);margin-bottom:.3rem}
+
+/* ── V3: schmale Spalte, eckige Icon-Kästen ─────────────────────
+   Der schmale Satzspiegel und die großzügigen Abstände tragen die
+   Wirkung, nicht die Dekoration. */
+.verlauf-schmal{max-width:44rem;margin-inline:auto}
+.verlauf-schmal ol{list-style:none;margin:0;padding:0}
+.verlauf-schmal li{display:flex;gap:var(--a-3)}
+.verlauf-spur{display:flex;flex-direction:column;align-items:center;flex:none}
+.verlauf-kasten{width:2.5rem;height:2.5rem;display:grid;place-items:center;flex:none;
+  border:1px solid var(--linie);background:var(--gedaempft);color:var(--text)}
+.verlauf-kasten svg{width:1.1rem;height:1.1rem;stroke:currentColor;fill:none;
+  stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.verlauf-strich{width:1px;flex:1;background:var(--linie);margin-top:.25rem}
+.verlauf-schmal li:last-child .verlauf-strich{display:none}
+.verlauf-text{padding-bottom:var(--a-4)}
+.verlauf-schmal li:last-child .verlauf-text{padding-bottom:0}
+.verlauf-text h3{font-size:var(--t-m);margin-bottom:.35rem}

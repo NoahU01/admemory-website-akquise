@@ -268,3 +268,86 @@ export function siegel({ ueber, titel, text, bilder, tief = false }) {
   </div>`)}
 </section>`;
 }
+
+/* ══ Verläufe ════════════════════════════════════════════════════
+   Drei Fassungen für dieselbe Art Inhalt: Abläufe, Historie, Vorgehen.
+
+   verlaufSeitlich   Viele Schritte mit je zwei bis drei Zeilen Text.
+                     Braucht links genug Text, sonst steht die Spalte leer.
+                     Trägt vier bis sieben Einträge.
+   verlaufWaagerecht Wenige Stationen, sehr kurze Texte, am besten drei bis
+                     fünf. Gut für "so läuft es ab" oder eine Jahreszahlen-
+                     reihe. Bei mehr als fünf wird es am Rechner eng.
+   verlaufSchmal     Lange Erklärtexte, ruhige Seite. Keine Konkurrenz durch
+                     Bilder daneben. Trägt drei bis sechs Einträge.        */
+
+export function verlaufSeitlich({ ueber, titel, text, schritte, tief = false }) {
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(`<div class="verlauf-seitlich">
+    <div class="stapel-3">
+      ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
+      <h2>${esc(titel)}</h2>
+      ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
+    </div>
+    <ol class="verlauf-liste">
+      ${schritte.map((s, i) => {
+        const marke = String(s.marke ?? i + 1);
+        /* Ein Haken vor jedem Titel passt zu einer Checkliste, nicht zu einer
+           Historie. Deshalb nur, wenn ausdrücklich gewünscht. */
+        const kopf = s.icon
+          ? `<div class="verlauf-kopf">${zeichen(s.icon)}<div><h3>${esc(s.titel)}</h3>` +
+            `${wenn(s.text, () => `<p class="klein" style="margin-top:.4rem">${esc(s.text)}</p>`)}</div></div>`
+          : `<h3>${esc(s.titel)}</h3>` +
+            `${wenn(s.text, () => `<p class="klein" style="margin-top:.4rem">${esc(s.text)}</p>`)}`;
+        return `<li class="verlauf-schritt">
+        <span class="verlauf-nummer"${marke.length > 2 ? ' data-breit' : ''}>${esc(marke)}</span>
+        <div class="karte">${kopf}</div></li>`;
+      }).join('')}
+    </ol>
+  </div>`)}
+</section>`;
+}
+
+/* bisHier: bis zu welcher Station der Verlauf als erreicht gilt. Bei einer
+   Firmenhistorie sind das alle; bei einem laufenden Vorgang nur ein Teil. */
+export function verlaufWaagerecht({ ueber, titel, text, stationen, bisHier = stationen.length, tief = false }) {
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(`<div class="stapel-3" style="margin-bottom:var(--a-4);max-width:62ch">
+      ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
+      ${wenn(titel, () => `<h2>${esc(titel)}</h2>`)}
+      ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
+    </div>
+    <ol class="verlauf-waagerecht">
+      ${stationen.map((s, i) => `<li class="verlauf-punkt"${i < bisHier ? ' data-erreicht' : ''}>
+        ${wenn(s.marke, () => `<p class="verlauf-datum">${esc(s.marke)}</p>`)}
+        <h3>${esc(s.titel)}</h3>
+        ${wenn(s.text, () => `<p class="klein">${esc(s.text)}</p>`)}</li>`).join('')}
+    </ol>`)}
+</section>`;
+}
+
+export function verlaufSchmal({ plakette, titel, text, schritte, tief = false }) {
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(`<div class="verlauf-schmal">
+    <div style="margin-bottom:var(--a-4)">
+      ${wenn(plakette, () => `<span class="plakette">${esc(plakette)}</span>`)}
+      <h2>${esc(titel)}</h2>
+      ${wenn(text, () => `<p class="lead" style="margin-top:.75rem">${esc(text)}</p>`)}
+    </div>
+    <ol>
+      ${schritte.map((s) => `<li>
+        <div class="verlauf-spur">
+          <span class="verlauf-kasten">${zeichen(s.icon ?? 'haken')}</span>
+          <span class="verlauf-strich"></span>
+        </div>
+        <div class="verlauf-text">
+          <h3>${esc(s.titel)}</h3>
+          ${wenn(s.text, () => `<p class="klein">${esc(s.text)}</p>`)}
+        </div></li>`).join('')}
+    </ol>
+  </div>`)}
+</section>`;
+}
