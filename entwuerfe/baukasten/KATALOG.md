@@ -49,7 +49,10 @@ Alle drei tragen denselben Inhalt. Die Wahl hängt an Menge und Textlänge.
 
 | Baustein | Wann |
 |---|---|
-| `logoband` | Partner und Marken. **Immer als Logo, nie als Textpille.** Liegt kein Logo vor, gehört der Name in einen Satz daneben. |
+| `logowandKarten` | **Erste Wahl bei vier bis acht Logos.** Raster mit feinen Fugen. Die beste Fassung für weiß hinterlegte Dateien, weil die Karte ohnehin weiß ist. Die Spaltenzahl richtet sich nach der Anzahl, zwei Logos ergeben zwei Spalten statt zwei Leerfelder. |
+| `logowandGitter` | Ab etwa sechs Logos. Frei umbrechend, die Logos erscheinen beim Hereinscrollen nacheinander. Braucht `ERSCHEINEN_SKRIPT` am Seitenende. |
+| `logowandLauf` | Endloses Laufband, hält beim Überfahren an. Braucht Bewegung auf der Seite und mindestens sechs Logos; bei weniger wird die Liste automatisch wiederholt, bis sie trägt. Bei reduzierter Bewegung bricht sie um, statt zu laufen. |
+| `logoband` | Einfache Reihe. Für den Kopfbereich unter den Knöpfen. |
 | `siegel` | Auszeichnungen groß, nicht als Dekoration am Rand. |
 | `markenband` | Veraltet. Zeigt Textpillen. Nicht mehr verwenden. |
 
@@ -93,6 +96,17 @@ Drittel.
 **Logos auf dunklem Grund** bekommen eine helle Fläche darunter. Umfärben
 hilft nicht: Viele Logodateien sind selbst weiß hinterlegt, ein Invertieren
 macht daraus einen schwarzen Kasten.
+
+**Manche Logos sind weiße Grafik auf Transparenz** und auf hellem Grund
+unsichtbar. Das TÜV-Logo von rolltruck.de fehlte deshalb in der hellen
+Kartenfassung. Beim Holen wird jetzt gemessen, wie viele Bildpunkte wirklich
+dunkel sind; unter vier Prozent heißt: braucht dunklen Grund. Der Wert steht
+in `bilder/herkunft.json` als `brauchtDunkel` und muss an den Baustein
+weitergereicht werden.
+
+Der Durchschnitt taugt dafür nicht. Das Vergölst-Logo ist ein gelber Kasten
+mit dunkler Schrift, kam auf 0,68 mittlere Helligkeit und wäre fälschlich auf
+dunklen Grund gewandert.
 
 `knopfPille` ist der betonte Knopf für Kopfbereiche: Text in einer Pille,
 daneben ein eigener Kreis mit Pfeil, der beim Überfahren hinauswandert,

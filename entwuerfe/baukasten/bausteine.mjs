@@ -440,3 +440,86 @@ export const TIEFE_SKRIPT = `
   schieben();
 })();
 </script>`;
+
+/* ══ Logowände ═══════════════════════════════════════════════════
+   logowandGitter  Viele Logos, frei umbrechend, erscheinen beim
+                   Hereinscrollen nacheinander. Ab etwa sechs Logos.
+   logowandKarten  Raster mit feinen Fugen. Erste Wahl bei vier bis acht
+                   Logos, und die beste Fassung für weiß hinterlegte
+                   Dateien, weil die Karte ohnehin weiß ist.
+   logowandLauf    Endloses Laufband. Braucht mindestens sechs Logos, sonst
+                   klafft eine Lücke. Die Liste wird dafür so oft wiederholt,
+                   bis genug zusammenkommt.                                 */
+
+/* brauchtDunkel kommt aus herkunft.json: beim Holen gemessen, weil weiße
+   Grafik auf Transparenz sonst auf hellem Grund unsichtbar bleibt. */
+const logoBild = (l) => `<img src="${esc(l.pfad)}" alt="${esc(l.name)}"` +
+  `${l.brauchtDunkel ? ' data-invers' : ''} loading="lazy">`;
+
+function logoKopf({ ueber, titel, titelLeise }) {
+  if (!ueber && !titel) return '';
+  return `<div class="logowand-kopf">
+    ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
+    ${wenn(titel, () => `<h2>${wenn(titelLeise, () => `<em>${esc(titelLeise)}</em> `)}${esc(titel)}</h2>`)}
+  </div>`;
+}
+
+export function logowandGitter({ ueber, titel, titelLeise, logos, nachsatz, tief = false }) {
+  return `
+<section class="abschnitt--eng ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(logoKopf({ ueber, titel, titelLeise }) +
+    `<div class="logowand-gitter" data-erscheinen>${logos.map(logoBild).join('')}</div>` +
+    wenn(nachsatz, () => `<p class="klein" style="text-align:center;margin-top:var(--a-3)">${esc(nachsatz)}</p>`))}
+</section>`;
+}
+
+export function logowandKarten({ ueber, titel, titelLeise, logos, nachsatz, tief = false }) {
+  return `
+<section class="abschnitt--eng ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(logoKopf({ ueber, titel, titelLeise }) +
+    `<div class="logowand-karten" style="--spalten:${Math.min(4, logos.length)};` +
+      `--spalten-klein:${Math.min(2, logos.length)}">` +
+      `${logos.map((l) => `<div>${logoBild(l)}</div>`).join('')}</div>` +
+    wenn(nachsatz, () => `<p class="klein" style="text-align:center;margin-top:var(--a-3)">${esc(nachsatz)}</p>`))}
+</section>`;
+}
+
+export function logowandLauf({ ueber, titel, titelLeise, logos, nachsatz, dauer = 38, tief = false }) {
+  /* Zu wenige Logos reißen im Laufband eine Lücke. Deshalb so oft
+     wiederholen, bis mindestens acht zusammenkommen, und das Ganze dann
+     noch einmal für den nahtlosen Übergang. */
+  let reihe = [...logos];
+  while (reihe.length < 8 && logos.length) reihe = reihe.concat(logos);
+  const spur = reihe.concat(reihe).map(logoBild).join('');
+  return `
+<section class="abschnitt--eng ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(logoKopf({ ueber, titel, titelLeise }))}
+  <div class="logowand-lauf"><div class="logowand-lauf__spur" style="--dauer:${dauer}s"
+       aria-label="${esc(logos.map((l) => l.name).join(', '))}">${spur}</div></div>
+  ${wenn(nachsatz, () => schale(`<p class="klein" style="text-align:center;margin-top:var(--a-3)">${esc(nachsatz)}</p>`))}
+</section>`;
+}
+
+/* Lässt Elemente mit data-erscheinen beim Hereinscrollen auftauchen. Ohne
+   Fremdbibliothek, und wer reduzierte Bewegung eingestellt hat, sieht sie
+   sofort. Nur einbinden, wenn ein solcher Baustein auf der Seite steht. */
+export const ERSCHEINEN_SKRIPT = `
+<script>
+(function () {
+  var teile = document.querySelectorAll('[data-erscheinen]');
+  if (!teile.length) return;
+  if (!('IntersectionObserver' in window) ||
+      matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    teile.forEach(function (t) { t.setAttribute('data-sichtbar', ''); });
+    return;
+  }
+  var w = new IntersectionObserver(function (eintraege) {
+    eintraege.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.setAttribute('data-sichtbar', '');
+      w.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -12% 0px' });
+  teile.forEach(function (t) { w.observe(t); });
+})();
+</script>`;

@@ -32,6 +32,63 @@ const sipsDa = (() => {
    über die volle Fensterbreite und braucht deshalb mehr Pixel als ein Bild in
    einer halben Spalte. Mit einer Grenze für alle wurde das Hero hochgerechnet
    und unscharf. */
+/* Prüfen, auf welchem Grund ein Logo überhaupt sichtbar ist.
+
+   Logodateien von fremden Seiten sind manchmal weiße Grafik auf Transparenz,
+   gedacht für dunkle Flächen. Auf weißem Grund sind sie unsichtbar. Beim
+   ersten Durchlauf fiel genau das auf: Das TÜV-Logo von rolltruck.de fehlte in
+   der hellen Kartenfassung und erschien nur auf dunklem Grund.
+
+   Der Durchschnitt taugt dafür nicht: Das Vergölst-Logo ist ein gelber Kasten
+   mit dunkler Schrift und kam auf 0,68, galt damit als hell und wäre fälschlich
+   auf dunklen Grund gewandert. Gemessen wird deshalb der Anteil wirklich
+   dunkler und wirklich heller Punkte. Fehlen die dunklen fast vollständig,
+   braucht das Logo einen dunklen Grund. */
+export async function messeHelligkeit(dateien) {
+  let browser;
+  try {
+    const puppeteer = (await import('puppeteer-core')).default;
+    browser = await puppeteer.launch({
+      executablePath: process.env.CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+      headless: true, args: ['--no-sandbox', '--allow-file-access-from-files'],
+    });
+    const seite = await browser.newPage();
+    const werte = {};
+    for (const [name, datei] of Object.entries(dateien)) {
+      try {
+        /* Als eingebettete Daten statt über file://: Ein Bild fremder Herkunft
+           macht die Zeichenfläche unrein, und das Auslesen der Bildpunkte wird
+           dann blockiert. */
+        const roh = fs.readFileSync(datei);
+        const typ = path.extname(datei).toLowerCase() === '.svg' ? 'image/svg+xml'
+                  : path.extname(datei).toLowerCase() === '.png' ? 'image/png' : 'image/jpeg';
+        const url = `data:${typ};base64,${roh.toString('base64')}`;
+        werte[name] = await seite.evaluate(async (url) => {
+          const bild = new Image();
+          bild.src = url;
+          await bild.decode();
+          const c = document.createElement('canvas');
+          const b = Math.min(bild.naturalWidth, 160);
+          c.width = b; c.height = Math.max(1, Math.round(bild.naturalHeight * b / bild.naturalWidth));
+          const g = c.getContext('2d', { willReadFrequently: true });
+          g.drawImage(bild, 0, 0, c.width, c.height);
+          const d = g.getImageData(0, 0, c.width, c.height).data;
+          let dunkel = 0, hell = 0, n = 0;
+          for (let i = 0; i < d.length; i += 4) {
+            if (d[i + 3] < 128) continue;                  // durchsichtig: zählt nicht
+            const l = (0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]) / 255;
+            if (l < 0.45) dunkel++; else if (l > 0.55) hell++;
+            n++;
+          }
+          return n ? { dunkel: +(dunkel / n).toFixed(3), hell: +(hell / n).toFixed(3) } : null;
+        }, url);
+      } catch { werte[name] = null; }
+    }
+    return werte;
+  } catch { return {}; }
+  finally { if (browser) await browser.close(); }
+}
+
 export async function holeBilder(ordner, bilder, { maxBreite = MAX_BREITE, breiten = {}, log = () => {} } = {}) {
   const ziel = path.join(ordner, 'bilder');
   fs.mkdirSync(ziel, { recursive: true });
@@ -91,6 +148,22 @@ export async function holeBilder(ordner, bilder, { maxBreite = MAX_BREITE, breit
     const spar = vorher > nachher ? ` (−${Math.round((1 - nachher / vorher) * 100)} %)` : ' (unverändert)';
     log(`  ${name.padEnd(12)} ${(vorher / 1024).toFixed(0)} kB → ${(nachher / 1024).toFixed(0)} kB${spar}` +
         (masse ? `  ${masse.breite}×${masse.hoehe}` : ''));
+  }
+
+  /* Helligkeit nachmessen und festhalten, welche Logos eine dunkle Fläche
+     brauchen. Nur für Grafiken: Bei Fotos sagt der Durchschnitt nichts. */
+  const grafiken = Object.fromEntries(Object.entries(herkunft)
+    .filter(([, v]) => v.unveraendert)
+    .map(([d]) => [d, path.join(ziel, d)]));
+  if (Object.keys(grafiken).length) {
+    const anteile = await messeHelligkeit(grafiken);
+    for (const [datei, a] of Object.entries(anteile)) {
+      if (!a) continue;
+      herkunft[datei].anteile = a;
+      herkunft[datei].brauchtDunkel = a.dunkel < 0.04;
+      if (a.dunkel < 0.04)
+        log(`  ${datei.padEnd(32)} nur helle Punkte (${Math.round(a.dunkel * 100)} % dunkel), braucht dunklen Grund`);
+    }
   }
 
   fs.writeFileSync(path.join(ziel, 'herkunft.json'), JSON.stringify(herkunft, null, 1));
