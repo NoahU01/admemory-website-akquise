@@ -192,9 +192,28 @@ export const ZEICHEN = {
   leute:      'M9 11a3.5 3.5 0 1 0 0-7a3.5 3.5 0 0 0 0 7M3 20v-1a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v1M16.5 4.5a3.5 3.5 0 0 1 0 6.9M21 20v-1a5 5 0 0 0-3.5-4.8',
   haken:      'M20 6L9 17l-5-5',
   stern:      'M12 3.5l2.6 5.4l5.9.8l-4.3 4.1l1 5.9L12 17l-5.2 2.7l1-5.9L3.5 9.7l5.9-.8z',
+  telefon:    'M8.5 4.5l2 3.5l-2 1.5a11 11 0 0 0 6 6l1.5-2l3.5 2l-1 3a2 2 0 0 1-2 1.3A16 16 0 0 1 4.2 7.5A2 2 0 0 1 5.5 5.5z',
+  fax:        'M7 9V4h10v5M7 18h10v3H7zM5 9h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-1M7 18H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2M17.5 12.5h.01',
+  brief2:     'M3 7l9 6l9-6M3 7v10h18V7z',
+  ort:        'M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11M12 10m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0',
+  pfeilrechts:'M5 12h13M13 6l6 6l-6 6',
+  pfeilauf:   'M7 17L17 7M9 7h8v8',
+  facebook:   'M13 21v-8h2.5l.5-3h-3V8.3c0-.8.2-1.3 1.4-1.3H16V4.3A18 18 0 0 0 13.9 4C11.7 4 10 5.3 10 8v2H7.5v3H10v8z',
+  instagram:  'M4 8a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM12 8.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 0 0 0-7M16.9 7.1v.01',
+  linkedin:   'M5 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M4 9h2v11H4zM10 20V9h2v1.5a3.5 3.5 0 0 1 6 2.5V20h-2v-6a2 2 0 0 0-4 0v6z',
+  youtube:    'M3 9a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3zM10 9.5l5 2.5l-5 2.5z',
 };
-export const zeichen = (n) => ZEICHEN[n]
-  ? `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ZEICHEN[n]}"/></svg>` : '';
+
+/* Ein unbekannter Name lieferte vorher stillschweigend nichts, und auf der
+   Seite stand ein leerer Kasten. Der Agent wird Namen raten, deshalb bricht
+   der Bau jetzt ab und nennt die vorhandenen. Ein fehlgeschlagener Bau ist
+   besser als eine Seite mit unsichtbaren Zeichen. */
+export const zeichen = (n) => {
+  if (!n) return '';
+  if (!ZEICHEN[n])
+    throw new Error(`Unbekanntes Zeichen "${n}". Vorhanden: ${Object.keys(ZEICHEN).join(', ')}`);
+  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ZEICHEN[n]}"/></svg>`;
+};
 
 /* ── Hero: Bild über die volle Breite, Text darüber ──────────────
    Trägt weiter als die geteilte Anordnung, wenn das Bild auch abgedunkelt
@@ -578,4 +597,86 @@ export function leistungenBento({ ueber, titel, text, mittig = false, eintraege,
       ${rest.map((e, i) => `<div${breiten[i]}>${karte(e)}</div>`).join('')}
     </div>`)}
 </section>`;
+}
+
+/* ══ Fußbereiche ═════════════════════════════════════════════════
+   fussKontakt  Logo und Anschrift links, Öffnungszeiten in der Mitte,
+                ein Knopf rechts. Für Betriebe, bei denen Erreichbarkeit
+                das Wichtigste ist: Handwerk, Praxis, Gastronomie, Werkstatt.
+                Erste Wahl.
+   fussSpalten  Logo mit kurzem Text, daneben Linkspalten und Kontakt. Für
+                Betriebe mit vielen Unterseiten. Kein Newsletter-Feld: Wir
+                bauen keine Anmeldung, die niemand entgegennimmt.           */
+
+const fussZeile = (icon, inhalt) =>
+  `<div class="fuss__zeile">${zeichen(icon)}<span>${inhalt}</span></div>`;
+
+function fussUnten({ betrieb, jahr, recht = [] }) {
+  return `<div class="fuss__unten">
+    <span style="opacity:.75">© ${esc(betrieb)} ${jahr}</span>
+    ${wenn(recht.length, () => `<nav class="fuss__recht">${recht.map((r) =>
+      `<a href="${esc(r.href)}">${esc(r.text)}</a>`).join('')}</nav>`)}
+  </div>`;
+}
+
+export function fussKontakt({ betrieb, logo, anschrift = [], telefon, telefonText,
+                              zweitnummer, zweitnummerLabel, fax, email, zeiten = [],
+                              zeitenHinweis, knopf: haupt, recht = [],
+                              jahr = new Date().getFullYear(), dunkel = false }) {
+  return `
+<footer class="fuss ${dunkel ? 'auf-dunkel' : 'abschnitt--gedaempft'}">
+  <div class="schale">
+    <div class="fuss__gitter fuss__gitter--drei">
+      <div>
+        ${wenn(logo, () => `<img class="fuss__logo" src="${esc(logo)}" alt="${esc(betrieb)}">`)}
+        ${wenn(anschrift.length, () => `<p class="klein" style="margin-bottom:var(--a-2)">${anschrift.map(esc).join('<br>')}</p>`)}
+        <div class="fuss__zeilen">
+          ${wenn(telefon, () => fussZeile('telefon', `<a href="tel:${esc(telefon)}">${esc(telefonText ?? telefon)}</a>`))}
+          ${wenn(zweitnummer, () => fussZeile('notruf',
+            `<a href="tel:${esc(zweitnummer)}">${esc(zweitnummerLabel ?? zweitnummer)}</a>`))}
+          ${wenn(fax, () => fussZeile('fax', `Fax: ${esc(fax)}`))}
+          ${wenn(email, () => fussZeile('brief2', `<a href="mailto:${esc(email)}">${esc(email)}</a>`))}
+        </div>
+      </div>
+      <div>
+        ${wenn(zeiten.length, () => `<h3>Öffnungszeiten</h3>
+          <table class="fuss__zeiten"><tbody>${zeiten.map((z) =>
+            `<tr><td>${esc(z.tag)}</td><td>${esc(z.zeit)}</td></tr>`).join('')}</tbody></table>
+          ${wenn(zeitenHinweis, () => `<p class="klein" style="margin-top:var(--a-2)">${esc(zeitenHinweis)}</p>`)}`)}
+      </div>
+      <div>${wenn(haupt, () => knopf({ ...haupt, art: haupt.art ?? 'wichtig' }))}</div>
+    </div>
+    ${fussUnten({ betrieb, jahr, recht })}
+  </div>
+</footer>`;
+}
+
+export function fussSpalten({ betrieb, logo, text, spalten = [], telefon, telefonText,
+                              email, anschrift = [], sozial = [], recht = [],
+                              jahr = new Date().getFullYear(), dunkel = true }) {
+  return `
+<footer class="fuss ${dunkel ? 'auf-dunkel' : 'abschnitt--gedaempft'}">
+  <div class="schale">
+    <div class="fuss__gitter fuss__gitter--spalten" style="--fuss-spalten:${spalten.length + 2}">
+      <div>
+        ${wenn(logo, () => `<img class="fuss__logo" src="${esc(logo)}" alt="${esc(betrieb)}">`)}
+        ${wenn(text, () => `<p class="klein" style="max-width:34ch">${esc(text)}</p>`)}
+        ${wenn(sozial.length, () => `<div class="fuss__sozial" style="margin-top:var(--a-3)">${sozial.map((s) =>
+          `<a href="${esc(s.href)}" target="_blank" rel="noopener" aria-label="${esc(s.name)}">${zeichen(s.icon ?? 'pfeilauf')}</a>`).join('')}</div>`)}
+      </div>
+      ${spalten.map((sp) => `<div><h3>${esc(sp.titel)}</h3>
+        <nav class="fuss__liste">${sp.links.map((l) =>
+          `<a href="${esc(l.href)}">${esc(l.text)}</a>`).join('')}</nav></div>`).join('')}
+      <div>
+        <h3>Kontakt</h3>
+        ${wenn(anschrift.length, () => `<p class="klein" style="margin-bottom:var(--a-2)">${anschrift.map(esc).join('<br>')}</p>`)}
+        <div class="fuss__zeilen">
+          ${wenn(telefon, () => fussZeile('telefon', `<a href="tel:${esc(telefon)}">${esc(telefonText ?? telefon)}</a>`))}
+          ${wenn(email, () => fussZeile('brief2', `<a href="mailto:${esc(email)}">${esc(email)}</a>`))}
+        </div>
+      </div>
+    </div>
+    ${fussUnten({ betrieb, jahr, recht })}
+  </div>
+</footer>`;
 }

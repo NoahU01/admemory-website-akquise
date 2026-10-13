@@ -2,7 +2,7 @@
  "trucks.jpg": {
   "quelle": "https://rolltruck.de/v_images/original/slider-trucks-01-2022.jpg",
   "geholt": "2026-10-13",
-  "bytes": 115975,
+  "bytes": 115849,
   "breite": 2000,
   "hoehe": 521,
   "verhaeltnis": "2000/521"
@@ -10,7 +10,7 @@
  "team.jpg": {
   "quelle": "https://rolltruck.de/v_images/original/slider-startseite-teambild-neu.jpg",
   "geholt": "2026-10-13",
-  "bytes": 44447,
+  "bytes": 44296,
   "breite": 1200,
   "hoehe": 312,
   "verhaeltnis": "1200/312"
@@ -18,7 +18,7 @@
  "lng.jpg": {
   "quelle": "https://rolltruck.de/v_images/original/slider_lng.jpg",
   "geholt": "2026-10-13",
-  "bytes": 34285,
+  "bytes": 34208,
   "breite": 1200,
   "hoehe": 312,
   "verhaeltnis": "1200/312"
@@ -26,7 +26,7 @@
  "werkstatt.jpg": {
   "quelle": "https://rolltruck.de/v_images/original/slider-startseite-1.jpg",
   "geholt": "2026-10-13",
-  "bytes": 46785,
+  "bytes": 46649,
   "breite": 1200,
   "hoehe": 312,
   "verhaeltnis": "1200/312"

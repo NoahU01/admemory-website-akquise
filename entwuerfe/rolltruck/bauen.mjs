@@ -17,8 +17,9 @@
 
 import fs from 'node:fs';
 import { seite, pruefeGeruest } from '../baukasten/seite.mjs';
-import { heroVoll, notband, zahlen, leistungen, logoband, siegel, textBild, kontakt,
-         ruflasche } from '../baukasten/bausteine.mjs';
+import { heroMitte, heroGeteilt, notband, zahlen, leistungen, leistungenBento,
+         logowandKarten, siegel, textBild, kontakt, ruflasche, fussKontakt,
+         verlaufSeitlich } from '../baukasten/bausteine.mjs';
 import { holeBilder } from '../baukasten/bilder.mjs';
 import { fileURLToPath } from 'node:url';
 
@@ -35,8 +36,11 @@ const { pfade: B, herkunft } = await holeBilder(hier, alleBilder, {
   // Das Hero läuft randlos über die volle Fensterbreite
   breiten: { trucks: 2000 },
   log: (t) => console.log(t) });
-const partner = d.partnerLogos.wert.map((l) => ({ name: l.name, pfad: B[`partner_${l.name.replace(/\W+/g, '')}`] }))
-  .filter((l) => l.pfad);
+const partner = d.partnerLogos.wert.map((l) => {
+  const schluessel = `partner_${l.name.replace(/\W+/g, '')}`;
+  const datei = Object.keys(herkunft).find((k) => k.startsWith(schluessel));
+  return { name: l.name, pfad: B[schluessel], brauchtDunkel: !!herkunft[datei]?.brauchtDunkel };
+}).filter((l) => l.pfad);
 const vh = (n) => herkunft[Object.keys(herkunft).find((k) => k.startsWith(n))]?.verhaeltnis;
 /* Greift den belegten Wert heraus und meckert, wenn es keinen gibt — sonst
    steht am Ende stillschweigend "undefined" auf der Seite. */
@@ -60,16 +64,17 @@ const NAV = [
 ];
 const NOTKNOPF = { text: `Notdienst ${d.notruf.anzeige}`, href: `tel:${d.notruf.wert}` };
 
-const FUSS = `
-  <div><h3 style="font-size:var(--t-s);margin-bottom:var(--a-1)">${d.firma.wert}</h3>
-    <p class="klein" style="color:#8b97a6">${w('anschrift').slice(1).join('<br>')}</p></div>
-  <div><h3 style="font-size:var(--t-s);margin-bottom:var(--a-1)">Erreichbarkeit</h3>
-    <p class="klein" style="color:#8b97a6">
-      Zentrale <a href="tel:${d.telefon.wert}" style="color:#fff">${d.telefon.anzeige}</a><br>
-      Notdienst <a href="tel:${d.notruf.wert}" style="color:#fff">${d.notruf.anzeige}</a><br>
-      <a href="mailto:${d.email.wert}" style="color:#fff">${d.email.wert}</a></p></div>
-  <div><h3 style="font-size:var(--t-s);margin-bottom:var(--a-1)">Öffnungszeiten</h3>
-    <p class="klein" style="color:#8b97a6">${w('zeiten').map((z) => `${z.tag}: ${z.zeit}`).join('<br>')}</p></div>`;
+const FUSS = () => fussKontakt({
+  betrieb: d.firma.wert, logo: B.logoWeiss, dunkel: true,
+  anschrift: w('anschrift').slice(1),
+  telefon: d.telefon.wert, telefonText: `Werkstatt ${d.telefon.anzeige}`,
+  zweitnummer: d.notruf.wert, zweitnummerLabel: `Notdienst ${d.notruf.anzeige}`,
+  email: d.email.wert, zeiten: w('zeiten'),
+  zeitenHinweis: 'Der Notdienst ist außerhalb dieser Zeiten durchgehend besetzt.',
+  knopf: { text: `Notdienst ${d.notruf.anzeige}`, href: `tel:${d.notruf.wert}` },
+  recht: [{ text: 'Impressum', href: 'https://rolltruck.de/impressum' },
+          { text: 'Datenschutz', href: 'https://rolltruck.de/datenschutz' }],
+});
 
 /* ── Startseite ──────────────────────────────────────────────────── */
 const start = seite({
@@ -77,21 +82,22 @@ const start = seite({
   beschreibung: `Werkstatt für alle Nutzfahrzeugmarken in Crailsheim: Kundendienst, Reifen, `
     + `Ersatzteile, Prüfservice und LNG-Tankstelle. Abschleppen und Bergung rund um die Uhr `
     + `unter ${d.notruf.anzeige}.`,
-  betrieb: d.betrieb, nav: NAV, navKnopf: NOTKNOPF, fuss: FUSS,
+  betrieb: d.betrieb, nav: NAV, navKnopf: NOTKNOPF, fuss: FUSS(),
   logo: B.logo, logoWeiss: B.logoWeiss,
   vorInhalt: ruflasche({ titel: 'Notdienst rund um die Uhr', nummer: d.notruf.wert,
                          nummerText: d.notruf.anzeige }),
   inhalt: [
-    heroVoll({
+    heroMitte({
       ueber: d.kerngeschaeft.wert,
       titel: 'Wenn der Lkw steht, zählt jede Stunde.',
       text: `Werkstatt für alle Nutzfahrzeugmarken in Crailsheim. Der Notdienst rückt rund `
           + `um die Uhr aus, von Crailsheim, Wörnitz und Burgoberbach.`,
       knoepfe: [
-        { text: `Notdienst ${d.notruf.anzeige}`, href: `tel:${d.notruf.wert}`, art: 'wichtig' },
-        { text: `Werkstatt ${d.telefon.anzeige}`, href: `tel:${d.telefon.wert}` },
+        { text: 'Kontakt', href: '#kontakt' },
       ],
+      knopfHaupt: { text: 'Unsere Leistungen', href: '#leistungen' },
       bild: B.trucks, bildAlt: 'Lastwagen und Bergungsfahrzeug von Roll Truck-Service',
+      marken: partner,
     }),
 
     notband({
@@ -109,10 +115,11 @@ const start = seite({
       { zahl: '1876', label: 'gegründet, bis heute in Familienhand' },
     ] }),
 
-    leistungen({
-      ueber: 'Leistungen',
+    leistungenBento({
+      ueber: 'Leistungen', mittig: true,
       titel: 'Alles für das Nutzfahrzeug an einem Ort',
-      text: 'Von der planbaren Wartung bis zur Bergung mitten in der Nacht.',
+      text: 'Von der planbaren Wartung bis zur Bergung mitten in der Nacht. Vertragswerkstatt '
+          + 'für sechs Marken, mit eigenem Lager und eigener Mannschaft in Crailsheim.',
       eintraege: w('leistungen').map((e) => ({ ...e,
         icon: { '24h-Notdienst':'notruf', 'Kundendienst aller Marken':'werkzeug',
                 'Reifenservice':'reifen', 'Ersatzteile und Zubehör':'teile',
@@ -123,7 +130,8 @@ const start = seite({
       spalten: 3,
     }),
 
-    logoband({ ueber: 'Vertragspartner', titel: 'Mit denen wir arbeiten', logos: partner,
+    logowandKarten({ ueber: 'Vertragspartner', titelLeise: 'Wir arbeiten mit', titel: 'diesen Marken.',
+               logos: partner,
                nachsatz: 'Dazu Vertragswerkstatt für Volvo Trucks und Iveco, '
                        + 'DAF Vertragspartner und PEMA Stützpunkt.' }),
 
@@ -185,17 +193,17 @@ const notdienst = seite({
   titel: `24-Stunden-Notdienst für Lkw bei ${d.firma.wert}`,
   beschreibung: `Abschleppen und Bergung rund um die Uhr von Crailsheim, Wörnitz und `
     + `Burgoberbach aus. Notdienst ${d.notruf.anzeige}, auch nachts und am Wochenende.`,
-  betrieb: d.betrieb, nav: NAV, navKnopf: NOTKNOPF, fuss: FUSS,
+  betrieb: d.betrieb, nav: NAV, navKnopf: NOTKNOPF, fuss: FUSS(),
   logo: B.logo, logoWeiss: B.logoWeiss,
   vorInhalt: ruflasche({ titel: 'Notdienst rund um die Uhr', nummer: d.notruf.wert,
                          nummerText: d.notruf.anzeige }),
   inhalt: [
-    heroVoll({
+    heroMitte({
       ueber: 'Rund um die Uhr',
       titel: `Notdienst: ${d.notruf.anzeige}`,
       text: 'Abschleppen und Bergung für Lkw und Pkw. Nachts, am Wochenende, an Feiertagen. '
           + 'Rufen Sie an, wir sagen Ihnen sofort, wann jemand bei Ihnen ist.',
-      knoepfe: [{ text: `Jetzt anrufen: ${d.notruf.anzeige}`, href: `tel:${d.notruf.wert}`, art: 'wichtig' }],
+      knopfHaupt: { text: `Jetzt anrufen: ${d.notruf.anzeige}`, href: `tel:${d.notruf.wert}` },
       bild: B.trucks, bildAlt: 'Bergungsfahrzeug von Roll Truck-Service',
     }),
 

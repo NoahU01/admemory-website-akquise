@@ -61,7 +61,9 @@ Alle drei tragen denselben Inhalt. Die Wahl hängt an Menge und Textlänge.
 
 | Baustein | Wann |
 |---|---|
-| `kontakt` | Anschrift, Zeiten, Telefon. Immer am Seitenende. |
+| `kontakt` | Anschrift, Zeiten, Telefon als eigener Abschnitt. Immer vor dem Fußbereich. |
+| `fussKontakt` | **Erste Wahl.** Logo und Anschrift links, Öffnungszeiten in der Mitte, ein Knopf rechts. Für Betriebe, bei denen Erreichbarkeit das Wichtigste ist: Handwerk, Praxis, Gastronomie, Werkstatt. |
+| `fussSpalten` | Logo mit kurzem Text, daneben Linkspalten und Kontakt. Für Betriebe mit vielen Unterseiten. Die Spaltenzahl richtet sich nach dem Inhalt. **Kein Newsletter-Feld**: Wir bauen keine Anmeldung, die niemand entgegennimmt. |
 | `notband` | Ein Band quer, eine Aussage, eine Nummer. Nur bei echtem Notdienst. |
 | `ruflasche` | Sticky am Rand, am Telefon als Leiste unten. Nur wenn ein Anruf das Ziel ist. |
 
@@ -122,3 +124,19 @@ Alles, was sonst den Akzent als Schriftfarbe nimmt, stünde dort unsichtbar:
 Die Kennzahl im Bento kam auf Kontrast 1,0, rot auf rot. Innerhalb solcher
 Karten wird die Schriftfarbe deshalb auf Weiß umgestellt. Wer eigene Farben
 in einer Karte setzt, muss das bedenken.
+
+
+## Nichts kürzen
+
+Kein Baustein darf Einträge weglassen, weil sie nicht ins Muster passen. Hat
+ein Betrieb zehn Leistungen, stehen zehn auf der Seite. Passt die Anzahl nicht
+zum Raster, gleicht sich das Raster an, nicht der Inhalt. Die Ausschnitte auf
+den Prüfseiten sind nur dort, um verschiedene Anzahlen zu zeigen.
+
+## Zeichen
+
+`zeichen(name)` bricht bei einem unbekannten Namen ab und nennt die
+vorhandenen. Vorher lieferte es stillschweigend nichts, und auf der Seite
+stand ein leerer Kasten: Im Fußbereich blieb der runde Knopf für soziale
+Netzwerke leer, weil es `pfeilauf` im Zeichensatz nicht gab. Ein
+fehlgeschlagener Bau ist besser als eine Seite mit unsichtbaren Zeichen.

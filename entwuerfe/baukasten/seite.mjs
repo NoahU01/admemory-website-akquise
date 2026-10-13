@@ -53,21 +53,14 @@ ${vorInhalt}
 ${inhalt}
 </main>
 
-<footer class="abschnitt--eng auf-dunkel"
-        style="padding-block:var(--a-4) calc(var(--a-4) + var(--unten))">
-  <div class="schale">
-    ${wenn(logoWeiss, () => `<img src="${esc(basis)}${esc(logoWeiss)}" alt="${esc(betrieb)}"
-       style="height:2.4rem;width:auto;margin-bottom:var(--a-3)">`)}
-    <div class="raster raster--3">${fuss}</div>
-    <hr class="trenner" style="border-color:var(--linie-tief);margin-block:var(--a-3)">
-    <p class="klein">
-      ${esc(betrieb)} · ${jahr} · Entwurfsfassung, nicht für Suchmaschinen freigegeben.
-    </p>
-  </div>
-</footer>
+${fuss}
 </body>
 </html>`;
 }
+
+/* Der Fußbereich kommt fertig von außen: fussKontakt oder fussSpalten aus
+   bausteine.mjs. Vorher steckte er hier als festes Gerüst, in dem der Text
+   nicht die Farben der dunklen Umgebung kannte. */
 
 /* Gegenprobe vor dem Schreiben: Was hier durchfällt, darf gar nicht erst in
    den Ordner. Billiger als der Torwächter, der erst den Browser startet. */

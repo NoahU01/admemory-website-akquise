@@ -566,3 +566,45 @@ a{color:inherit}
 .bento__zahl{font-family:inherit;font-size:clamp(2.2rem,5vw,3.2rem);font-weight:800;
   letter-spacing:-.04em;line-height:1;color:var(--akzent-schrift)}
 .bento__zahlLabel{font-size:var(--t-xs);color:var(--text-2);margin-top:.3rem}
+
+/* ══ Fußbereiche ═════════════════════════════════════════════════ */
+
+.fuss{padding-block:var(--a-5) calc(var(--a-3) + var(--unten))}
+.fuss__gitter{display:grid;gap:var(--a-4)}
+@media(min-width:760px){.fuss__gitter--drei{grid-template-columns:1.1fr 1fr auto}}
+/* Die Spaltenzahl richtet sich nach dem Inhalt. Fest vier Spalten ließen
+   rechts eine Lücke, wenn ein Betrieb keine Linkspalten hat. */
+@media(min-width:760px){
+  .fuss__gitter--spalten{grid-template-columns:1.4fr repeat(calc(var(--fuss-spalten,4) - 1),1fr)}
+}
+.fuss h3{font-size:var(--t-s);font-weight:600;margin-bottom:var(--a-2);color:inherit}
+.fuss__logo{height:2.6rem;width:auto;margin-bottom:var(--a-2)}
+.fuss__zeilen{display:grid;gap:.6rem;font-size:var(--t-s)}
+.fuss__zeile{display:flex;align-items:center;gap:.65rem}
+.fuss__zeile svg{width:1.05rem;height:1.05rem;flex:none;stroke:currentColor;fill:none;
+  stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.7}
+.fuss__zeile a{text-decoration:none}
+.fuss__zeile a:hover{text-decoration:underline}
+.fuss__liste{display:grid;gap:.55rem;font-size:var(--t-s)}
+.fuss__liste a{text-decoration:none;opacity:.85}
+.fuss__liste a:hover{opacity:1;text-decoration:underline}
+
+/* Öffnungszeiten als Tabelle: Tage links, Zeiten rechts, Zahlen bündig. */
+.fuss__zeiten{width:100%;border-collapse:collapse;font-size:var(--t-s)}
+.fuss__zeiten td{padding:.3rem 0;vertical-align:top}
+.fuss__zeiten td:first-child{padding-right:var(--a-2);white-space:nowrap}
+.fuss__zeiten td:last-child{font-variant-numeric:tabular-nums}
+
+.fuss__unten{display:flex;flex-wrap:wrap;gap:var(--a-2);align-items:center;
+  justify-content:space-between;margin-top:var(--a-4);padding-top:var(--a-3);
+  border-top:1px solid var(--linie);font-size:var(--t-xs)}
+.fuss__recht{display:flex;flex-wrap:wrap;gap:var(--a-2)}
+.fuss__recht a{text-decoration:none;opacity:.8}
+.fuss__recht a:hover{opacity:1;text-decoration:underline}
+
+/* Runde Knöpfe für soziale Netzwerke. Nur zeigen, wenn es sie wirklich gibt. */
+.fuss__sozial{display:flex;gap:.6rem;flex-wrap:wrap}
+.fuss__sozial a{width:2.6rem;height:2.6rem;border-radius:50%;border:1px solid var(--linie);
+  display:grid;place-items:center;transition:border-color .15s,background .15s}
+.fuss__sozial a:hover{border-color:var(--akzent);background:var(--akzent-hell)}
+.fuss__sozial svg{width:1.05rem;height:1.05rem;stroke:currentColor;fill:none;stroke-width:1.6}
