@@ -33,6 +33,10 @@ const ICONS = {
   bento:      'M4 5h16v5H4zM4 14h7v5H4zM13 14h7v5h-7z',
   /* Drei Kacheln nebeneinander verkleben bei 18 Pixeln zu einem Klecks.
      Rahmen mit zwei Marken darin bleibt lesbar — in Originalgröße geprüft. */
+  /* Kundenstimmen: Sprechblase mit zwei Zeilen. Nicht die Anführungs-
+     zeichen aus dem Baukasten — als Strich gezeichnet werden daraus bei
+     18 Pixeln zwei Kringel, die man nicht erkennt. */
+  stimmen:    'M4 5h16v11H9l-4 4v-4H4zM8 9h8M8 12.5h5',
   logowand:   'M3 6h18v12H3zM7.6 12m-1.9 0a1.9 1.9 0 1 0 3.8 0a1.9 1.9 0 1 0-3.8 0M13 10h4.2v4h-4.2z',
   verlauf:    'M6 5.5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M6 18.5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M6 7.5v9M11 5.5h9M11 18.5h7',
 };

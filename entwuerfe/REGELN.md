@@ -88,3 +88,22 @@ hatte.
 | Bilder nicht zu klein dargestellt | ja, über die Anzeigefläche |
 | Vorzeile nennt das Kerngeschäft | nein, das beurteilt Claude |
 | Wirkt die Seite modern | nein, das beurteilt Claude |
+
+## Keine zweite Markenfarbe erfinden
+
+Die Akzentfarbe kommt von der Originalseite. Gibt es dort nur eine, bleibt es
+bei einer. Eine zweite zu raten heißt, dem Betrieb eine Farbe anzudichten, die
+er nicht hat — und beim Pitch fällt genau das auf.
+
+## Kundenstimmen werden nicht umgeschrieben
+
+Was in einer Google-Bewertung steht, steht so auf der Seite. Keine Kürzung auf
+Werbelänge, keine Glättung. Eine Bewertung mit vier Sternen und einem Einwand
+wirkt echter als fünf makellose.
+
+## Sterne nur, wenn es eine Note gibt
+
+Weder im Vertrauens-Modul noch bei den Stimmen werden Sterne geraten. Ohne
+Note steht die Zahl der Bewertungen allein. Wo die Note fehlt, holt
+`sterne-nachholen.mjs` sie bei Google nach — und übernimmt sie nur, wenn der
+Hostname der gefundenen Website zu unserem passt.

@@ -197,6 +197,7 @@ export const ZEICHEN = {
   brief2:     'M3 7l9 6l9-6M3 7v10h18V7z',
   ort:        'M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11M12 10m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0',
   pfeilrechts:'M5 12h13M13 6l6 6l-6 6',
+  pfeillinks: 'M19 12H6M11 6l-6 6l6 6',
   pfeilauf:   'M7 17L17 7M9 7h8v8',
   facebook:   'M13 21v-8h2.5l.5-3h-3V8.3c0-.8.2-1.3 1.4-1.3H16V4.3A18 18 0 0 0 13.9 4C11.7 4 10 5.3 10 8v2H7.5v3H10v8z',
   instagram:  'M4 8a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM12 8.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 0 0 0-7M16.9 7.1v.01',
@@ -809,3 +810,196 @@ export function vertrauenStreu({ ueber, titel, text, logos = [], nachsatz, tief 
 </section>`;
 }
 
+
+/* ══ Kundenstimmen ═══════════════════════════════════════════════
+   Was wir wirklich haben: Name, Text, oft eine Note — aus Google-
+   Bewertungen oder von der alten Seite. Was wir fast nie haben: ein Foto
+   des Kunden. Deshalb kommt jeder dieser Bausteine ohne Bild aus und
+   setzt an die Stelle des Porträts die Initialen.
+
+   stimmenSpalten  Drei langsam laufende Spalten, oben und unten
+                   ausgeblendet. Braucht mindestens sechs Stimmen, sonst
+                   wiederholt sich zu offensichtlich.
+   stimmenBilder   Zitat über einem Foto. Das Foto ist die Karte, deshalb
+                   steht unten nur der Name — ein Kreis mit demselben Bild
+                   daneben wäre doppelt. Nur nehmen, wenn es echte Bilder
+                   gibt — ohne Bild läuft es auf einen Farbverlauf hinaus,
+                   der trägt, aber nicht begeistert.
+   stimmenBuehne   Eine Stimme auf einmal, daneben ein Stapel Porträts, mit
+                   Vor und Zurück. Lohnt sich nur mit echten Bildern; ohne
+                   sie bleibt eine einzelne Kachel mit Initialen, und dann
+                   sind die Spalten die bessere Wahl. Drei bis sechs
+                   ausgesuchte Stimmen.                                      */
+
+const ANFUEHRUNG = 'M4.6 17.3C3.6 16.2 3 15 3 13c0-3.5 2.5-6.6 6-8.2l.9 1.4c-3.3 1.8-4 4.2-4.2 5.6'
+  + 'c.5-.3 1.2-.4 1.9-.3c1.8.2 3.2 1.7 3.2 3.5a3.5 3.5 0 0 1-3.5 3.5c-1.1 0-2.1-.5-2.7-1.2z'
+  + 'm10 0C13.6 16.2 13 15 13 13c0-3.5 2.5-6.6 6-8.2l.9 1.4c-3.3 1.8-4 4.2-4.2 5.6'
+  + 'c.5-.3 1.2-.4 1.9-.3c1.8.2 3.2 1.7 3.2 3.5a3.5 3.5 0 0 1-3.5 3.5c-1.1 0-2.1-.5-2.7-1.2z';
+
+/* "Sabine Vogt" → SV, "M. Keller" → MK. Zwei Zeichen reichen; drei wirken
+   im Kreis gedrängt. */
+export const initialen = (name) => String(name || '').split(/[\s.]+/).filter(Boolean)
+  .slice(0, 2).map((w) => w[0].toUpperCase()).join('');
+
+const kopf = (s) => `<div class="stimme__kopf">
+  ${s.bild
+    ? `<img class="stimme__bild" src="${esc(s.bild)}" alt="" loading="lazy">`
+    : `<span class="stimme__initialen" aria-hidden="true">${esc(initialen(s.name))}</span>`}
+  <span class="stimme__wer"><b>${esc(s.name)}</b>${wenn(s.rolle, () => `<span>${esc(s.rolle)}</span>`)}</span>
+</div>`;
+
+/* Noten nur zeigen, wenn eine da ist. Geraten wird nichts. */
+const noten = (n) => (typeof n === 'number' && n > 0)
+  ? `<div class="stimme__noten" role="img" aria-label="${esc(n)} von 5 Sternen">${sternReihe(Math.round(n))}</div>`
+  : '';
+
+const stimmeKarte = (s) => `<figure class="stimme">
+  ${noten(s.note)}
+  <blockquote>${esc(s.text)}</blockquote>
+  <figcaption>${kopf(s)}</figcaption>
+</figure>`;
+
+function stimmenKopf({ ueber, titel, text }) {
+  if (!ueber && !titel && !text) return '';
+  return `<div class="stapel-3" style="text-align:center;max-width:46rem;margin-inline:auto">
+    ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
+    ${wenn(titel, () => `<h2>${esc(titel)}</h2>`)}
+    ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
+  </div>`;
+}
+
+export function stimmenSpalten({ ueber, titel, text, stimmen = [], tief = false }) {
+  if (!stimmen.length) throw new Error('stimmenSpalten braucht mindestens eine Stimme.');
+  /* Drei Spalten, aber nie mehr als es Stimmen gibt — zwei Stimmen auf drei
+     Spalten hieße: jede Spalte zeigt eine einzige Karte im Kreis. */
+  const anzahl = Math.min(3, stimmen.length);
+  const spalten = Array.from({ length: anzahl }, (_, i) =>
+    stimmen.filter((_, j) => j % anzahl === i));
+  /* Verschiedene Dauern, damit die Spalten nicht im Gleichschritt laufen. */
+  const dauer = [46, 58, 52];
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(stimmenKopf({ ueber, titel, text }) +
+    `<div class="stimmen-spalten" style="margin-top:var(--a-4)">` +
+    spalten.map((sp, i) =>
+      `<div class="stimmen-spalte" style="--dauer:${dauer[i]}s">` +
+      /* Zweimal dieselbe Liste: die Hälfte ist genau eine Listenhöhe, der
+         Sprung bei -50 % fällt deshalb nicht auf. */
+      sp.map(stimmeKarte).join('') + sp.map(stimmeKarte).join('') +
+      `</div>`).join('') +
+    `</div>`)}
+</section>`;
+}
+
+export function stimmenBilder({ ueber, titel, text, stimmen = [], tief = false }) {
+  if (!stimmen.length) throw new Error('stimmenBilder braucht mindestens eine Stimme.');
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(stimmenKopf({ ueber, titel, text }) +
+    `<div class="stimmen-bilder" style="margin-top:var(--a-4)">` +
+    stimmen.map((s) => `<figure class="stimme-bild${s.bild ? '' : ' stimme-bild--ohne'}">
+      ${wenn(s.bild, () => `<img src="${esc(s.bild)}" alt="" loading="lazy">`)}
+      <div class="stimme-bild__in">
+        <svg class="stimme-bild__zeichen" viewBox="0 0 24 24" aria-hidden="true"><path d="${ANFUEHRUNG}"/></svg>
+        ${noten(s.note)}
+        <blockquote>${esc(s.text)}</blockquote>
+        <figcaption class="stimme__kopf">
+          <span class="stimme__wer"><b>${esc(s.name)}</b>${
+            wenn(s.rolle, () => `<span>${esc(s.rolle)}</span>`)}</span>
+        </figcaption>
+      </div>
+    </figure>`).join('') +
+    `</div>`)}
+</section>`;
+}
+
+export function stimmenBuehne({ ueber, titel, stimmen = [], tief = false }) {
+  if (!stimmen.length) throw new Error('stimmenBuehne braucht mindestens eine Stimme.');
+  const id = 'buehne' + Math.random().toString(36).slice(2, 7);
+  /* Ohne ein einziges Porträt wird aus dem Stapel eine einzelne Kachel —
+     siehe Stil. Vorgetäuschte Tiefe aus grauen Kästen hilft niemandem. */
+  const nurInitialen = !stimmen.some((s) => s.bild);
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(`<div class="buehne" data-buehne${nurInitialen ? ' data-nurinitialen' : ''} id="${id}">
+    <div class="buehne__stapel">
+      ${stimmen.map((s, i) => `<div class="buehne__bild" data-wo="${i === 0 ? 'mitte' : 'weg'}">
+        ${s.bild
+          ? `<img src="${esc(s.bild)}" alt="" loading="lazy">`
+          : `<span aria-hidden="true">${esc(initialen(s.name))}</span>`}
+      </div>`).join('')}
+    </div>
+    <div class="buehne__text stapel-3">
+      ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
+      ${wenn(titel, () => `<h2 style="font-size:var(--t-l)">${esc(titel)}</h2>`)}
+      <div data-buehne-inhalt aria-live="polite">
+        ${noten(stimmen[0].note)}
+        <blockquote>${esc(stimmen[0].text)}</blockquote>
+        ${kopf(stimmen[0])}
+      </div>
+      ${wenn(stimmen.length > 1, () => `<div class="buehne__knoepfe">
+        <button class="buehne__knopf" type="button" data-buehne-zurueck aria-label="Vorherige Stimme">
+          ${zeichen('pfeillinks')}</button>
+        <button class="buehne__knopf" type="button" data-buehne-vor aria-label="Nächste Stimme">
+          ${zeichen('pfeilrechts')}</button>
+      </div>`)}
+    </div>
+  </div>`)}
+  <script type="application/json" data-buehne-daten="${id}">${
+    JSON.stringify(stimmen.map((s) => ({ text: s.text, name: s.name, rolle: s.rolle ?? null,
+      note: s.note ?? null, bild: s.bild ?? null }))).replace(/</g, '\\u003c')}</script>
+</section>`;
+}
+
+export const BUEHNE_SKRIPT = `
+<script>
+(function () {
+  var sterne = 'M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4 6.2 20.5l1.1-6.5L2.6 9.4l6.5-.9z';
+  function kuerzel(n) {
+    return String(n || '').split(/[\\s.]+/).filter(Boolean).slice(0, 2)
+      .map(function (w) { return w[0].toUpperCase(); }).join('');
+  }
+  function sicher(t) {
+    var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML;
+  }
+  document.querySelectorAll('[data-buehne]').forEach(function (b) {
+    var quelle = document.querySelector('[data-buehne-daten="' + b.id + '"]');
+    if (!quelle) return;
+    var stimmen; try { stimmen = JSON.parse(quelle.textContent); } catch (e) { return; }
+    if (!stimmen.length) return;
+    var bilder = b.querySelectorAll('.buehne__bild');
+    var inhalt = b.querySelector('[data-buehne-inhalt]');
+    var i = 0, n = stimmen.length;
+
+    function zeichne() {
+      bilder.forEach(function (el, k) {
+        var wo = 'weg';
+        if (k === i) wo = 'mitte';
+        else if (k === (i - 1 + n) % n) wo = 'links';
+        else if (k === (i + 1) % n) wo = 'rechts';
+        el.setAttribute('data-wo', wo);
+      });
+      var s = stimmen[i];
+      var note = '';
+      if (typeof s.note === 'number' && s.note > 0) {
+        var r = '';
+        for (var k = 0; k < Math.round(s.note); k++)
+          r += '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + sterne + '"/></svg>';
+        note = '<div class="stimme__noten" role="img" aria-label="' + Math.round(s.note) +
+               ' von 5 Sternen">' + r + '</div>';
+      }
+      var kopf = '<div class="stimme__kopf">' + (s.bild
+        ? '<img class="stimme__bild" src="' + sicher(s.bild) + '" alt="">'
+        : '<span class="stimme__initialen" aria-hidden="true">' + sicher(kuerzel(s.name)) + '</span>')
+        + '<span class="stimme__wer"><b>' + sicher(s.name) + '</b>'
+        + (s.rolle ? '<span>' + sicher(s.rolle) + '</span>' : '') + '</span></div>';
+      inhalt.innerHTML = note + '<blockquote>' + sicher(s.text) + '</blockquote>' + kopf;
+    }
+    var vor = b.querySelector('[data-buehne-vor]');
+    var zurueck = b.querySelector('[data-buehne-zurueck]');
+    if (vor) vor.addEventListener('click', function () { i = (i + 1) % n; zeichne(); });
+    if (zurueck) zurueck.addEventListener('click', function () { i = (i - 1 + n) % n; zeichne(); });
+    zeichne();
+  });
+})();
+</script>`;

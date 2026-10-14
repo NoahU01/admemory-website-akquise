@@ -12,9 +12,19 @@ import { esc } from './bausteine.mjs';
    es dann. Deshalb nimmt sie wahlweise eine Funktion entgegen. */
 const wenn = (b, s) => (b ? (typeof s === 'function' ? s() : s) : '');
 
-export function seite({ titel, beschreibung, akzent = '#b4121a', basis = '', logo, logoWeiss,
-                        nav = [], navKnopf, inhalt, vorInhalt = '', fuss, betrieb,
-                        jahr = new Date().getFullYear() }) {
+/* Eine unbekannte Angabe wird nicht mehr verschluckt. `skripte:` gab es
+   lange nicht, wurde aber übergeben: Auf zwei Prüfseiten lief deshalb kein
+   einziges Skript, und niemand sah es — die Seite stand ja da. */
+const ERLAUBT = new Set(['titel', 'beschreibung', 'akzent', 'basis', 'logo', 'logoWeiss',
+  'nav', 'navKnopf', 'inhalt', 'vorInhalt', 'fuss', 'betrieb', 'jahr', 'skripte']);
+
+export function seite(angaben) {
+  for (const k of Object.keys(angaben))
+    if (!ERLAUBT.has(k))
+      throw new Error(`seite(): unbekannte Angabe "${k}". Erlaubt: ${[...ERLAUBT].join(', ')}`);
+  const { titel, beschreibung, akzent = '#b4121a', basis = '', logo, logoWeiss,
+          nav = [], navKnopf, inhalt, vorInhalt = '', fuss, betrieb, skripte = '',
+          jahr = new Date().getFullYear() } = angaben;
   return `<!doctype html>
 <html lang="de">
 <head>
@@ -54,6 +64,7 @@ ${inhalt}
 </main>
 
 ${fuss}
+${skripte}
 </body>
 </html>`;
 }

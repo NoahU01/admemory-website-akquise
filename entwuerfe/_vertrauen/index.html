@@ -176,5 +176,25 @@
 </main>
 
 <div><p class="klein">Interne Prüfseite</p></div>
+
+<script>
+(function () {
+  var teile = document.querySelectorAll('[data-erscheinen]');
+  if (!teile.length) return;
+  if (!('IntersectionObserver' in window) ||
+      matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    teile.forEach(function (t) { t.setAttribute('data-sichtbar', ''); });
+    return;
+  }
+  var w = new IntersectionObserver(function (eintraege) {
+    eintraege.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.setAttribute('data-sichtbar', '');
+      w.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -12% 0px' });
+  teile.forEach(function (t) { w.observe(t); });
+})();
+</script>
 </body>
 </html>

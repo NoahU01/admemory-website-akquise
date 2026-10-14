@@ -198,3 +198,69 @@ Der letzte Punkt kam dazu, weil ich in diesem Baustein zweimal eine
 Klasse geschrieben habe, die es nicht gibt: `stapel-2` statt `stapel-3`,
 und `sterne__leer` ohne Regel. Beides fällt beim Hinsehen nicht auf, die
 Abstände sitzen nur falsch. Die anderen fünf Prüfseiten sind sauber.
+
+
+## Kundenstimmen
+
+Drei Fassungen, Prüfseite `_stimmen`. Die Beispiele dort sind erfunden und
+branchenneutral: Die Bibliothek soll zeigen, wie ein Modul allgemein aussieht,
+nicht wie es bei einem bestimmten Kunden aussieht. Das echte Material steht
+daneben in den Härtefällen, wo es gegen die Wirklichkeit testet.
+
+### Fotos von Kunden haben wir nie
+
+Aus einer Google-Bewertung kommen Name, Text und manchmal eine Note. Kein
+Porträt. Alle drei Fassungen kommen deshalb ohne Bild aus und setzen an die
+Stelle des Gesichts die Initialen. Das ist kein Notbehelf, sondern der
+Normalfall — die Vorlagen von 21st.dev sind um Porträts herum gebaut, wir
+bauen um ihr Fehlen herum.
+
+`stimmenSpalten` — drei langsam laufende Spalten, oben und unten
+ausgeblendet. Erste Wahl ab sechs Stimmen. Hält beim Überfahren an. Wer
+Bewegung abgestellt hat, bekommt die vollständige Liste ohne Deckel und ohne
+Maske, statt eines eingefrorenen Ausschnitts.
+
+`stimmenBuehne` — eine Stimme auf einmal, daneben ein Stapel Porträts, mit
+Vor und Zurück. Lohnt sich nur mit echten Bildern. Ohne sie wären es graue
+Kästen, deren Buchstaben sich gegenseitig verdecken; dann bleibt eine
+einzelne, größere Kachel.
+
+`stimmenBilder` — Zitat über einem Foto aus dem Betrieb. Das Foto ist die
+Karte, unten steht nur der Name.
+
+### Was beim Messen herauskam
+
+Der Verlauf über dem Foto begann erst bei 35 Prozent Höhe. Auf einem hellen
+Bild stand das Zitat damit auf Weiß. Er deckt jetzt die ganze Karte.
+
+Ein festes Seitenverhältnis von 3:4 schnitt lange Zitate ab — das
+Anführungszeichen lag außerhalb der Karte. Mindesthöhe statt Verhältnis.
+
+Die Initialen standen in Akzentrot auf einem Akzent-Hauch: Kontrast 3,03 bei
+13 Pixeln. Jetzt normale Schriftfarbe auf dem getönten Kreis.
+
+### Drei Fehler im Werkzeug, nicht im Baustein
+
+`pruefen.mjs` hat zweimal falsch gemessen, bevor es die echten Fehler fand:
+
+Farben kommen aus Chrome als `rgb(0..255)` oder als `color(srgb 0..1)`. Wer
+beides durch 255 teilt, hält Weiß für Schwarz — dunkle Schrift auf hellem
+Grund kam auf Kontrast 1,15 statt 17.
+
+Ein Hintergrund ist oft durchsichtig: eine Stimme auf dunklem Abschnitt ist
+6 Prozent Weiß über Dunkel. Wer diese Schicht für sich nimmt, hält sie für
+fast Weiß und meldet hellen Text als unlesbar. Jetzt werden alle Schichten
+bis zur ersten deckenden übereinandergerechnet.
+
+Was hinter einem Verlauf oder Bild liegt, kann diese Rechnung nicht bewerten.
+Das wird jetzt getrennt als „nicht messbar" gemeldet, statt stillschweigend
+für bestanden erklärt zu werden — und genau an diesen neun Stellen saßen die
+Fehler oben.
+
+### Und einer im Seitengerüst
+
+`seite()` kannte den Parameter `skripte` gar nicht und hat ihn verschluckt.
+Auf `_vertrauen` und `_stimmen` lief deshalb kein einziges Skript. Aufgefallen
+ist es erst, als die Bühne nur eine Kachel zeigte; beim Erscheinen der Logos
+hatte ich vorher das Symptom behandelt und im Export `data-sichtbar` von Hand
+gesetzt. `seite()` bricht jetzt bei jeder unbekannten Angabe ab.

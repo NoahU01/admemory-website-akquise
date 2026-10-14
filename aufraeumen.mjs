@@ -18,7 +18,7 @@ const PORTAL = /elektrikerportal|kfzwerkstatt\.io|werkstaetten\.net|sloi\.me|mob
 const alle = [];
 for (let von = 0; ; von += 1000) {
   const { data, error } = await db().from('unternehmen')
-    .select('id,name,website,status,quality_score,lead_score,seiten_geprueft,letzter_scan,entwurf_url,mail_gesendet_am,feedback,google_reviews,standorte')
+    .select('id,name,website,status,quality_score,lead_score,seiten_geprueft,letzter_scan,entwurf_url,mail_gesendet_am,feedback,google_rating,google_reviews,standorte')
     .order('id').range(von, von + 999);
   if (error) { console.error(error.message); process.exit(1); }
   alle.push(...data);
@@ -62,7 +62,14 @@ for (const [host, zeilen] of nachHost) {
   zuAendern.push({ id: sieger.id, website: host,
     // Mehrfachnennungen sind ein Größensignal, das nicht verloren gehen soll
     standorte: Math.max(sieger.standorte ?? 1, zeilen.length),
-    google_reviews: Math.max(...zeilen.map((r) => r.google_reviews ?? 0)) || null });
+    google_reviews: Math.max(...zeilen.map((r) => r.google_reviews ?? 0)) || null,
+    /* Die Note wurde beim ersten Durchlauf nicht mitgeführt und ist mit den
+       Dubletten gelöscht worden: 737 Betriebe hatten danach eine
+       Bewertungszahl, aber keine Note. Der Gewinner wird nach Scan-Tiefe
+       gewählt, nicht nach Datenfülle — deshalb hier die erste vorhandene
+       Note aus allen Zeilen übernehmen. */
+    google_rating: sieger.google_rating
+      ?? zeilen.map((r) => r.google_rating).find((v) => v != null) ?? null });
   zuLoeschen.push(...rest.map((r) => r.id));
 }
 

@@ -1,5 +1,5 @@
 {
-  "stand": "2026-10-13",
+  "stand": "2026-10-14",
   "gruppen": [
     {
       "id": "hero",
@@ -70,6 +70,40 @@
       ]
     },
     {
+      "id": "stimmen",
+      "icon": "stimmen",
+      "name": "Kundenstimmen",
+      "seite": "_stimmen",
+      "zweck": "Was Kunden sagen. Aus den Google-Bewertungen übernommen, nie umgeschrieben.",
+      "bausteine": [
+        {
+          "id": "stimmenSpalten",
+          "name": "Laufende Spalten",
+          "erste": true,
+          "wann": "Erste Wahl. Trägt ab sechs Stimmen und braucht keine Fotos.",
+          "grenzen": "Unter sechs Stimmen wiederholt sich der Lauf zu offensichtlich; die Spaltenzahl geht dann auf zwei oder eine zurück. Beim Überfahren hält der Lauf an, und wer Bewegung abgestellt hat, bekommt die Liste ohne Deckel.",
+          "bild": "assets/bibliothek/stimmenSpalten.jpg",
+          "bytes": 97399
+        },
+        {
+          "id": "stimmenBuehne",
+          "name": "Eine nach der anderen",
+          "wann": "Bei drei bis sechs ausgesuchten Stimmen, wenn es echte Porträts gibt.",
+          "grenzen": "Ohne Porträts bleibt eine einzelne Kachel mit Initialen — dann sind die Spalten besser. Bei nur einer Stimme fallen die Knöpfe weg.",
+          "bild": "assets/bibliothek/stimmenBuehne.jpg",
+          "bytes": 27707
+        },
+        {
+          "id": "stimmenBilder",
+          "name": "Zitat über Foto",
+          "wann": "Wenn es gute Bilder aus dem Betrieb gibt.",
+          "grenzen": "Das Foto ist die Karte, unten steht nur der Name. Ohne Bild läuft es auf einen Verlauf aus der Markenfarbe hinaus — tragfähig, aber kein Grund, diese Fassung zu wählen.",
+          "bild": "assets/bibliothek/stimmenBilder.jpg",
+          "bytes": 89502
+        }
+      ]
+    },
+    {
       "id": "leistungen",
       "icon": "bento",
       "name": "Leistungen",
@@ -125,7 +159,7 @@
           "wann": "Wenn viele Marken da sind und Bewegung passt.",
           "grenzen": "Braucht mindestens sechs Logos, sonst klafft eine Lücke. Die Liste wird dafür wiederholt.",
           "bild": "assets/bibliothek/logowandLauf.jpg",
-          "bytes": 21206
+          "bytes": 21047
         }
       ]
     },
