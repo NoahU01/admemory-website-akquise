@@ -34,18 +34,17 @@ const allgemein = [
   { marke: '2024', titel: 'Vierzig Jahre', text: 'Zwölf Monteure, zwei Meister, drei Servicewagen. Der Betrieb ist in zweiter Generation in Familienhand.' },
 ];
 const stationen = [
-  { marke: '1', titel: 'Anruf', text: 'Sie schildern kurz, worum es geht.' },
-  { marke: '2', titel: 'Termin', text: 'Wir nennen einen festen Termin, kein Zeitfenster.' },
-  { marke: '3', titel: 'Vor Ort', text: 'Aufmaß, Angebot und, wenn es passt, gleich die Arbeit.' },
-  { marke: '4', titel: 'Abnahme', text: 'Gemeinsam durchgehen, dann die Rechnung.' },
+  { marke: '1', titel: 'Anruf', text: 'Sie schildern kurz, worum es geht. Wir sagen Ihnen sofort, ob wir der richtige Betrieb dafür sind.' },
+  { marke: '2', titel: 'Termin', text: 'Sie bekommen einen festen Termin, kein Zeitfenster von vier Stunden. Wenn es sich verschiebt, rufen wir an.' },
+  { marke: '3', titel: 'Vor Ort', text: 'Aufmaß und Angebot auf der Stelle. Was sich gleich erledigen lässt, erledigen wir gleich.' },
+  { marke: '4', titel: 'Abnahme', text: 'Wir gehen alles gemeinsam durch und übergeben die Unterlagen. Danach kommt die Rechnung.' },
 ];
 const schritte = [
-  { titel: 'Anruf oder Nachricht', text: 'Werktags gehen wir ans Telefon, sonst rufen wir am selben Tag zurück.' },
-  { titel: 'Termin innerhalb einer Woche', text: 'Bei Störungen am selben Tag, sonst nach Absprache.' },
-  { titel: 'Festpreis vor der Arbeit', text: 'Was vorher genannt wird, steht hinterher auf der Rechnung.' },
-  { titel: 'Abnahme und Übergabe', text: 'Alles wird gemeinsam durchgegangen und dokumentiert.' },
+  { icon: 'telefon', titel: 'Anruf oder Nachricht', text: 'Werktags gehen wir ans Telefon, sonst rufen wir am selben Tag zurück.' },
+  { icon: 'uhr', titel: 'Termin innerhalb einer Woche', text: 'Bei Störungen am selben Tag, sonst nach Absprache.' },
+  { icon: 'pruefung', titel: 'Festpreis vor der Arbeit', text: 'Was vorher genannt wird, steht hinterher auf der Rechnung.' },
+  { icon: 'haken', titel: 'Abnahme und Übergabe', text: 'Alles wird gemeinsam durchgegangen und dokumentiert.' },
 ];
-
 const probe = (was, fn) => {
   try { fn(); return `${was}: KEIN ABBRUCH — das ist ein Fehler`; }
   catch (e) { return `${was}: ${e.message}`; }
@@ -81,6 +80,8 @@ const html = seite({
       <p class="ueber">Was der Baukasten verweigert</p>
       <ul class="klein" style="margin-top:var(--a-2);line-height:1.9">
         <li>${probe('Verlauf mit einem Eintrag', () => verlaufSeitlich({ titel: 'x', schritte: allgemein.slice(0, 1) }))}</li>
+        <li>${probe('Schmaler Verlauf ohne Zeichen', () => verlaufSchmal({ titel: 'x',
+          schritte: [{ titel: 'a' }, { titel: 'b' }, { titel: 'c' }] }))}</li>
         <li>${probe('Waagerecht mit neun Stationen', () => verlaufWaagerecht({ titel: 'x',
           stationen: Array.from({ length: 9 }, (_, i) => ({ marke: i + 1, titel: 'S', text: 'x' })) }))}</li>
       </ul>

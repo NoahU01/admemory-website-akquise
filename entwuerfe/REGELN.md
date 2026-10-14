@@ -190,3 +190,20 @@ bekommt nichts davon.
 
 Was es nicht geben soll, wird nicht als Beispiel gezeigt, sondern beim
 Bauen verweigert. Die Prüfseiten führen unten vor, mit welcher Meldung.
+
+## Die Bibliothek bleibt allgemein
+
+In den Katalog kommt kein Kundenmaterial. Keine Fotos einer echten Firma,
+keine echten Partnerlogos, keine echten Bewertungen. Geprüft wird gegen die
+Wirklichkeit am fertigen Entwurf, nicht am Katalog.
+
+## Jeder Schritt bekommt sein eigenes Zeichen
+
+Im schmalen Verlauf stehen sonst vier gleiche Haken untereinander. Der
+Baustein bricht ab, wenn ein Schritt ohne Zeichen kommt.
+
+## Das Streufeld streut wirklich
+
+Keine zwei Logos nebeneinander, die vier Ecken bleiben leer. Aus dem
+Rechteck wird dadurch eine Raute, und zwischen zwei Logos liegt immer eine
+leere Kachel. Logos dicht an dicht sind kein Streufeld, sondern ein Raster.

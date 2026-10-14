@@ -813,6 +813,11 @@ blockquote,figure{margin:0}
 
 /* ── Geteilter Kopfbereich auf dunklem Grund ─────────────────────── */
 .hero-geteilt--tief{background:var(--tief)}
+/* Der Übergang vom Bild zum Text blendet auf den Seitengrund. In der dunklen
+   Fassung blendete er weiterhin auf Weiß — der Verlauf war dadurch nicht zu
+   sehen, das Bild hörte einfach auf. */
+.hero-geteilt--tief .hero-geteilt__bild::after{
+  background:linear-gradient(90deg,var(--tief) 2%,transparent 48%)}
 .hero-geteilt--tief .plakette{color:#fff;border-color:rgba(255,255,255,.3);
   background:rgba(255,255,255,.1)}
 
@@ -873,3 +878,5 @@ blockquote,figure{margin:0}
 .verlauf-schmal li{transition:transform .18s ease}
 .verlauf-schmal li:hover{transform:translateX(3px)}
 @media(prefers-reduced-motion:reduce){.verlauf-schmal li,.verlauf-schmal li:hover{transition:none;transform:none}}
+/* Ecke ohne Kachel: Platzhalter, damit das Raster nicht verrutscht. */
+.streu__ecke{aspect-ratio:4/3;min-width:0}

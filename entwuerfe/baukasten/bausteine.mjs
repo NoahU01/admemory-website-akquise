@@ -337,7 +337,7 @@ export function verlaufWaagerecht({ titel, text, stationen, bisHier = stationen.
       + 'dafuer ist verlaufSeitlich da.');
   /* Unter den Punkten ist wenig Platz. Lange Texte brechen das Raster auf
      und machen die Reihe unruhig. */
-  stationen = stationen.map((st) => ({ ...st, text: st.text ? kuerze(st.text, 90) : st.text }));
+  stationen = stationen.map((st) => ({ ...st, text: st.text ? kuerze(st.text, 150) : st.text }));
   return `
 <section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
   ${schale(`<div class="stapel-3" style="margin-bottom:var(--a-4);max-width:62ch">
@@ -354,6 +354,12 @@ export function verlaufWaagerecht({ titel, text, stationen, bisHier = stationen.
 }
 
 export function verlaufSchmal({ plakette, titel, text, schritte, tief = false }) {
+  /* Jeder Schritt braucht sein eigenes Zeichen. Vorher fiel jeder ohne
+     Angabe auf den Haken zurück — vier gleiche Haken untereinander sagen
+     nichts und sahen aus wie ein Fehler. */
+  const ohne = schritte.filter((x) => !x.icon).length;
+  if (ohne) throw new Error(`verlaufSchmal: ${ohne} Schritt(e) ohne Zeichen. `
+    + 'Jeder Schritt braucht ein eigenes — sonst stehen gleiche Zeichen untereinander.');
   return `
 <section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
   ${schale(`<div class="verlauf-schmal">
@@ -365,7 +371,7 @@ export function verlaufSchmal({ plakette, titel, text, schritte, tief = false })
     <ol>
       ${schritte.map((s) => `<li>
         <div class="verlauf-spur">
-          <span class="verlauf-kasten">${zeichen(s.icon ?? 'haken')}</span>
+          <span class="verlauf-kasten">${zeichen(s.icon)}</span>
           <span class="verlauf-strich"></span>
         </div>
         <div class="verlauf-text">
@@ -845,11 +851,26 @@ export function vertrauenStreu({ ueber, titel, text, logos = [], nachsatz, tief 
   const zeilen = Math.max(3, Math.ceil(logos.length / spalten),
     Math.min(9, Math.round(logos.length / (spalten * 0.4))));
   const folge = streuFolge(spalten, zeilen);
-  const belegt = new Map(logos.map((l, i) => [folge[i], l]));
-  const maske = maskeWaehlen(spalten, zeilen, folge, logos.length);
-  const felder = Array.from({ length: spalten * zeilen }, (_, i) => belegt.has(i)
-    ? `<div class="streu__feld">${logoBild(belegt.get(i))}</div>`
-    : '<div class="streu__feld streu__feld--leer"></div>').join('');
+  const eckenIndex = new Set([0, spalten - 1, spalten * (zeilen - 1), spalten * zeilen - 1]);
+  /* Von der Mitte nach außen allein ergibt einen geschlossenen Klotz: Die
+     Logos standen dicht an dicht und das Feld hatte keine Bewegung. Zuerst
+     werden deshalb nur die Felder eines Schachbrettmusters belegt — so
+     liegt zwischen zwei Logos immer eine leere Kachel. Reicht das nicht,
+     kommen die übrigen dran. */
+  const ohneEcken = folge.filter((i) => !eckenIndex.has(i));
+  const gerade = (i) => ((i % spalten) + Math.floor(i / spalten)) % 2 === 0;
+  const frei = [...ohneEcken.filter(gerade), ...ohneEcken.filter((i) => !gerade(i))];
+  const belegt = new Map(logos.map((l, i) => [frei[i], l]));
+  const maske = maskeWaehlen(spalten, zeilen, frei, logos.length);
+  /* Ohne die vier Ecken wird aus dem Rechteck eine Raute. Vorher standen
+     die Kacheln als sauberer Block nebeneinander, und genau das nahm dem
+     Feld die Bewegung. Die Ecken bleiben leer — kein Rahmen, keine Fläche. */
+  const ecken = new Set([0, spalten - 1, spalten * (zeilen - 1), spalten * zeilen - 1]);
+  const felder = Array.from({ length: spalten * zeilen }, (_, i) => ecken.has(i)
+    ? '<div class="streu__ecke"></div>'
+    : belegt.has(i)
+      ? `<div class="streu__feld">${logoBild(belegt.get(i))}</div>`
+      : '<div class="streu__feld streu__feld--leer"></div>').join('');
   return `
 <section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
   ${schale(`<div class="raster raster--2" style="align-items:center">

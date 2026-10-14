@@ -618,7 +618,7 @@ function zeichneBibliothek(){
           '</div>' +
           '<button class="bibklappe" type="button" data-bib="' + i + '" aria-expanded="false"' +
             ' aria-controls="bibdetail' + i + '">' +
-            ic('buch') + '<span>Wann und Grenzen</span>' +
+            ic('buch') + '<span>Informationen</span>' +
             '<svg class="ic bibpfeil" viewBox="0 0 24 24" aria-hidden="true"><path d="' + PFEIL + '"/></svg>' +
           '</button>' +
           '<div class="bibdetail" id="bibdetail' + i + '" hidden>' +

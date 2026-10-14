@@ -1,20 +1,13 @@
-/* Prüfseite für die Kopfbereiche. Die mit bsp() ausgezeichneten Beispiele
-   sind allgemein: freie Bilder, erfundener Betrieb. Daneben dieselben
-   Fassungen mit echtem Material von Roll Truckservice — weil nur das zeigt,
-   wie sie mit verwaschenen Panoramabannern und breiten Schriftzug-Logos
-   umgehen, die wir von alten Seiten wirklich bekommen. */
+/* Prüfseite für die Kopfbereiche. Durchgehend allgemein: erfundener
+   Betrieb, freie Bilder, Platzhalter-Wortmarken. Echtes Kundenmaterial
+   gehört nicht in die Bibliothek — das wird am fertigen Entwurf geprüft,
+   nicht am Katalog. */
 import fs from 'node:fs';
 import { seite } from '../baukasten/seite.mjs';
 import { bsp } from '../baukasten/katalog.mjs';
 import { ALLGEMEIN, MARKEN } from '../baukasten/beispiele.mjs';
 import { heroMitte, heroGeteilt, heroVoll } from '../baukasten/bausteine.mjs';
 
-const R = '../rolltruck/bilder/';
-const partnerEcht = [
-  { name: 'Schmitz Cargobull', pfad: R + 'partner_SchmitzCargobull.png' },
-  { name: 'Vergölst', pfad: R + 'partner_Verglst.png' },
-  { name: 'Krone', pfad: R + 'partner_Krone.png' },
-];
 const marke = (t) => `<div class="schale" style="padding-block:var(--a-3)"><p class="ueber">${t}</p></div>`;
 
 const html = seite({
@@ -33,17 +26,6 @@ const html = seite({
       bild: ALLGEMEIN.handwerk, bildAlt: 'Elektriker bei der Arbeit an einer Steckdose',
       marken: MARKEN,
     })),
-
-    marke('heroMitte · mit echtem Material von Roll Truckservice'),
-    heroMitte({
-      ueber: 'Werkstatt & Notdienst für Nutzfahrzeuge',
-      titel: 'Wenn der Lkw steht, zählt jede Stunde.',
-      text: 'Werkstatt für alle Nutzfahrzeugmarken in Crailsheim. Der Notdienst rückt rund um die Uhr aus.',
-      knopfHaupt: { text: 'Unsere Leistungen', href: '#leistungen' },
-      knoepfe: [{ text: 'Kontakt aufnehmen', href: '#kontakt' }],
-      bild: R + 'trucks.jpg', bildAlt: 'Lastwagen von Roll Truck-Service',
-      marken: partnerEcht,
-    }),
 
     marke('heroGeteilt · allgemein · mit Merkmalen'),
     bsp('heroGeteilt', heroGeteilt({

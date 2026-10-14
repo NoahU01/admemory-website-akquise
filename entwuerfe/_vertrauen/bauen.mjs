@@ -1,25 +1,11 @@
-/* Prüfseite für die Vertrauens-Module. Die mit bsp() ausgezeichneten
-   Beispiele sind allgemein; daneben dieselbe Fassung mit echtem Material
-   von Roll Truckservice, inklusive der echten Google-Note 4,4 aus 304
-   Bewertungen. */
+/* Prüfseite für die Vertrauens-Module. Durchgehend allgemein — echtes
+   Kundenmaterial gehört nicht in die Bibliothek. */
 import fs from 'node:fs';
 import { seite } from '../baukasten/seite.mjs';
 import { bsp } from '../baukasten/katalog.mjs';
 import { ALLGEMEIN, MARKEN } from '../baukasten/beispiele.mjs';
 import { vertrauenDuo, vertrauenStreu, ERSCHEINEN_SKRIPT } from '../baukasten/bausteine.mjs';
 
-const R = '../rolltruck/bilder/';
-const herkunft = JSON.parse(fs.readFileSync(new URL('../rolltruck/bilder/herkunft.json', import.meta.url), 'utf8'));
-const echt = (name, datei) => ({ name, pfad: R + datei, brauchtDunkel: !!herkunft[datei]?.brauchtDunkel });
-const siegelEcht = [
-  echt('Werkstatt des Jahres 2024', 'werkstatt24.svg'),
-  echt('Werkstatt des Jahres 2025', 'werkstatt25.svg'),
-  echt('150 Jahre Roll', 'siegel150.svg'),
-  echt('Schmitz Cargobull', 'partner_SchmitzCargobull.png'),
-  echt('Vergölst', 'partner_Verglst.png'),
-  echt('Krone', 'partner_Krone.png'),
-  echt('TÜV', 'partner_TV.png'),
-];
 const marke = (t) => `<div class="schale" style="padding-block:var(--a-3)"><p class="ueber">${t}</p></div>`;
 
 const probe = (was, fn) => {
@@ -43,7 +29,7 @@ const html = seite({
       titel: 'Geprüft, ausgezeichnet, weiterempfohlen.',
       text: 'Meisterbetrieb mit Innungszugehörigkeit, geprüfter Fachbetrieb für '
         + 'Blitzschutz und seit 2019 im Fachkreis Gebäudetechnik.',
-      kacheln: MARKEN.slice(0, 7),
+      kacheln: MARKEN,
       bild: ALLGEMEIN.team, bildAlt: 'Team im Gespräch am Tisch',
       note: 4.8, anzahl: 127, quelle: 'Google',
     })),
@@ -53,20 +39,9 @@ const html = seite({
       ueber: 'Elektrotechnik für Gewerbe und Privat',
       titel: 'Geprüft, ausgezeichnet, weiterempfohlen.',
       text: 'Dieselbe Fassung auf dunklem Grund.',
-      kacheln: MARKEN.slice(0, 7),
+      kacheln: MARKEN,
       bild: ALLGEMEIN.beratung, bildAlt: 'Handschlag am Besprechungstisch',
       note: 4.8, anzahl: 127, quelle: 'Google', tief: true,
-    }),
-
-    marke('vertrauenDuo · mit echtem Material · Google-Note 4,4 aus 304 Bewertungen'),
-    vertrauenDuo({
-      ueber: 'Nutzfahrzeug-Werkstatt in Crailsheim',
-      titel: 'Zweimal in Folge Werkstatt des Jahres.',
-      text: 'Die Auszeichnung vergibt eine Fachjury an Betriebe, die bei Erreichbarkeit, '
-        + 'Durchlaufzeit und Diagnosequalität vorne liegen.',
-      kacheln: siegelEcht,
-      bild: R + 'werkstatt.jpg', bildAlt: 'Blick in die Werkstatthalle',
-      note: 4.4, anzahl: 304, quelle: 'Google',
     }),
 
     marke('vertrauenStreu · zwölf Logos · bewegt sich beim Überfahren'),

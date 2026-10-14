@@ -53,6 +53,11 @@ const html = seite({
       telefon: '+497951297930', telefonText: '07951 29793-0', email: 'info@rolltruck.de',
       sozial: [{ name: 'LinkedIn', href: '#', icon: 'pfeilauf' }], recht })),
 
+    /* Darunter folgt der Fußbereich der Prüfseite selbst — die dunkle
+       Kontaktfassung. Ohne diese Trennung standen zwei Fußbereiche
+       unmittelbar untereinander und sahen aus wie einer. */
+    marke('fussKontakt · dunkel — das ist zugleich der Fuß dieser Seite'),
+
   ].join('\n'),
 });
 fs.writeFileSync(new URL('./index.html', import.meta.url), html);

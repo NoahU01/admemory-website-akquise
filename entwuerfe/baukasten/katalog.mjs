@@ -27,7 +27,7 @@ export const BAUSTEINE = [
     wann: 'Erste Wahl. Trägt jedes Gewerbe und kommt mit einem einzigen Querformat aus.',
     grenzen: 'Braucht ein Bild im Breitformat. Die Logoleiste darunter läuft und sitzt auf der Breite der Navigation; unter acht Logos wird die Liste wiederholt, sonst klafft eine Lücke.' },
   { id: 'heroGeteilt', gruppe: 'hero',
-    wann: 'Wenn es drei bis vier harte Merkmale gibt, die sofort stehen sollen. Gibt es hell und dunkel.',
+    wann: 'Wenn es drei bis vier harte Merkmale gibt, die sofort stehen sollen. Gibt es hell und dunkel; der Übergang vom Bild zum Text blendet in beiden Fassungen auf den Seitengrund.',
     name: 'Geteilt mit Merkmalen',
     grenzen: 'Die Merkmale brauchen Zeichen aus ZEICHEN. Bei nur einem Merkmal wirkt die Spalte leer.' },
   { id: 'heroVoll', gruppe: 'hero', name: 'Bild über die volle Breite',
@@ -37,7 +37,7 @@ export const BAUSTEINE = [
     wann: 'Erste Wahl, sobald ein brauchbares Foto vom Betrieb da ist. Gibt es hell und dunkel.',
     grenzen: 'Drei bis neun Kacheln. Auf der Bildkarte steht die Bewertung groß: Note, Sterne, Anzahl. Ohne Note bleibt die Anzahl, geraten wird nichts.' },
   { id: 'vertrauenStreu', gruppe: 'vertrauen', name: 'Streufeld mit Lücken',
-    wann: 'Wenn kein Foto da ist, aber genug Logos. Die Kacheln heben sich beim Überfahren leicht an.',
+    wann: 'Wenn kein Foto da ist, aber genug Logos. Die Logos liegen versetzt, nie zwei nebeneinander, und die Ecken bleiben frei — das macht aus dem Rechteck eine Raute. Die Kacheln heben sich beim Überfahren an.',
     grenzen: 'Fünf bis vierundzwanzig Logos — darunter und darüber bricht der Baustein ab. Das Raster wächst mit der Anzahl; ab etwa der Hälfte belegt fällt die Maske weg, damit sie kein Logo verschluckt.' },
 
   { id: 'stimmenSpalten', gruppe: 'stimmen', name: 'Laufende Spalten', erste: true,
@@ -72,7 +72,7 @@ export const BAUSTEINE = [
     grenzen: 'Unter drei und über fünf bricht der Baustein ab. Die Texte unter den Punkten werden auf 90 Zeichen gekürzt, sonst wird die Reihe unruhig.' },
   { id: 'verlaufSchmal', gruppe: 'verlauf', name: 'Schmale Spalte',
     wann: 'Wenn der Verlauf neben anderem Inhalt stehen soll.',
-    grenzen: 'Trägt keine langen Absätze. Die Schritte rücken beim Überfahren leicht zur Seite.' },
+    grenzen: 'Trägt keine langen Absätze. Jeder Schritt braucht ein eigenes Zeichen, sonst bricht der Baustein ab. Die Schritte rücken beim Überfahren zur Seite.' },
 
   { id: 'fussKontakt', gruppe: 'fuss', name: 'Mit Kontaktspalte', erste: true,
     wann: 'Erste Wahl. Anschrift, Telefon, Zeiten direkt im Fuß.',
