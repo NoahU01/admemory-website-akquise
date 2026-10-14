@@ -1,6 +1,6 @@
-/* Prüfseite für neue Bausteine. Jede Variante dreimal: mit echten Daten,
-   mit zu viel Inhalt und mit zu wenig. Was hier zerbricht, zerbricht später
-   bei irgendeinem Betrieb — nur merkt es dann niemand. */
+/* Prüfseite für die Verlaufs-Bausteine. Allgemeines Beispiel, daneben der
+   echte Fall. Die gestrichenen Grenzfälle stehen unten als Probe: Was der
+   Baukasten verweigert, soll sichtbar sein statt nur vereinbart. */
 import fs from 'node:fs';
 import { seite } from '../baukasten/seite.mjs';
 import { bsp } from '../baukasten/katalog.mjs';
@@ -26,35 +26,67 @@ const eines = [{ marke: '1876', titel: 'Gegründet', text: 'Mehr gibt die Quelle
 const teil = (ueberschrift, inhalt) =>
   `<div class="schale" style="padding-top:var(--a-4)"><p class="ueber">${ueberschrift}</p></div>${inhalt}<hr class="trenner">`;
 
+const allgemein = [
+  { marke: '1984', titel: 'Gegründet', text: 'Als Zweimannbetrieb in einer angemieteten Halle. Die ersten Aufträge kamen aus der Nachbarschaft, und ein Teil dieser Kunden ist bis heute geblieben.' },
+  { marke: '1998', titel: 'Erster eigener Standort', text: 'Umzug ins Gewerbegebiet mit eigener Werkstatt und Lager. Ab hier konnten wir Material vorhalten, statt es für jeden Auftrag zu bestellen.' },
+  { marke: '2012', titel: 'Meisterbetrieb', text: 'Eintragung in die Handwerksrolle und erste eigene Ausbildung. Seitdem haben vierzehn Lehrlinge hier gelernt, neun davon sind geblieben.' },
+  { marke: '2019', titel: 'Photovoltaik', text: 'Aufbau der Sparte für Anlagen und Speicher. Der erste eigene Speicher steht seit 2020 auf unserem eigenen Dach.' },
+  { marke: '2024', titel: 'Vierzig Jahre', text: 'Zwölf Monteure, zwei Meister, drei Servicewagen. Der Betrieb ist in zweiter Generation in Familienhand.' },
+];
+const stationen = [
+  { marke: '1', titel: 'Anruf', text: 'Sie schildern kurz, worum es geht.' },
+  { marke: '2', titel: 'Termin', text: 'Wir nennen einen festen Termin, kein Zeitfenster.' },
+  { marke: '3', titel: 'Vor Ort', text: 'Aufmaß, Angebot und, wenn es passt, gleich die Arbeit.' },
+  { marke: '4', titel: 'Abnahme', text: 'Gemeinsam durchgehen, dann die Rechnung.' },
+];
+const schritte = [
+  { titel: 'Anruf oder Nachricht', text: 'Werktags gehen wir ans Telefon, sonst rufen wir am selben Tag zurück.' },
+  { titel: 'Termin innerhalb einer Woche', text: 'Bei Störungen am selben Tag, sonst nach Absprache.' },
+  { titel: 'Festpreis vor der Arbeit', text: 'Was vorher genannt wird, steht hinterher auf der Rechnung.' },
+  { titel: 'Abnahme und Übergabe', text: 'Alles wird gemeinsam durchgegangen und dokumentiert.' },
+];
+
+const probe = (was, fn) => {
+  try { fn(); return `${was}: KEIN ABBRUCH — das ist ein Fehler`; }
+  catch (e) { return `${was}: ${e.message}`; }
+};
+
 const html = seite({
   titel: 'Prüfseite für Verlaufs-Bausteine im Baukasten',
-  beschreibung: 'Interne Prüfseite: Jede Verlaufsvariante mit echten Daten, mit Überlänge und mit nur einem Eintrag.',
+  beschreibung: 'Interne Prüfseite: Die drei Verlaufsfassungen allgemein und mit echten Daten.',
   betrieb: 'Baukasten', nav: [], fuss: '<div><p class="klein">Interne Prüfseite</p></div>',
   inhalt: [
-    bsp('verlaufSeitlich', teil('V1 · echte Daten', verlaufSeitlich({ ueber: 'Der Betrieb', titel: 'Seit 1876 in Familienhand',
-      text: 'Aus der Güterbeförderung wurde über fünf Generationen eine Firmengruppe. Die Werkstatt ist seit 1994 eigenständig.',
-      schritte: echt }))),
-    teil('V1 · Überlänge und leerer Text', verlaufSeitlich({ ueber: 'Härtefall',
-      titel: 'Eine ungewöhnlich lange Überschrift, die über mehrere Zeilen läuft',
-      text: 'Kurz.', schritte: lang })),
-    teil('V1 · nur ein Eintrag', verlaufSeitlich({ titel: 'Nur eine Station', schritte: eines })),
+    teil('verlaufSeitlich · allgemein · erste Wahl', bsp('verlaufSeitlich', verlaufSeitlich({
+      titel: 'Seit 1984 in Familienhand',
+      text: 'Vierzig Jahre in derselben Stadt, in zweiter Generation. Was hier steht, ist nicht die Firmengeschichte für den Prospekt, sondern das, was für einen Auftrag heute noch zählt: gewachsene Mannschaft, eigenes Lager, feste Ansprechpartner.',
+      schritte: allgemein }))),
 
-    bsp('verlaufWaagerecht', teil('V2 · echte Daten', verlaufWaagerecht({ ueber: 'Historie', titel: 'Fünf Stationen',
-      text: 'Von der Güterbeförderung zur Vertragswerkstatt.', stationen: echt }))),
-    teil('V2 · neun Stationen', verlaufWaagerecht({ titel: 'Zu viele Stationen', stationen: viele })),
-    teil('V2 · laufender Vorgang', verlaufWaagerecht({ titel: 'Erst zur Hälfte erreicht',
-      stationen: echt.slice(0, 4), bisHier: 2 })),
+    teil('verlaufSeitlich · mit echten Daten von Roll Truckservice', verlaufSeitlich({
+      titel: 'Seit 1876 in Familienhand',
+      text: 'Aus einem Fuhrunternehmen wurde über fünf Generationen eine Firmengruppe. Die Werkstatt ist seit 1994 eigenständig.',
+      schritte: echt })),
 
-    bsp('verlaufSchmal', teil('V3 · echte Daten', verlaufSchmal({ plakette: 'So läuft es ab', titel: 'Vom Anruf bis zur Abfahrt',
-      text: 'Vier Schritte, die bei jedem Einsatz gleich sind.',
-      schritte: [
-        { icon: 'notruf', titel: 'Sie rufen an', text: 'Rund um die Uhr, auch am Wochenende.' },
-        { icon: 'uhr', titel: 'Wir nennen eine Zeit', text: 'Sie wissen sofort, wann jemand bei Ihnen ist.' },
-        { icon: 'werkzeug', titel: 'Vor Ort', text: 'Reparatur, wenn es geht. Abschleppen, wenn nötig.' },
-        { icon: 'haken', titel: 'In der Werkstatt', text: 'Instandsetzung durch die eigene Mannschaft.' },
-      ] }))),
-    teil('V3 · Überlänge', verlaufSchmal({ titel: 'Mit sehr langen Texten', schritte: lang })),
+    teil('verlaufWaagerecht · vier Stationen', bsp('verlaufWaagerecht', verlaufWaagerecht({
+      titel: 'So läuft es ab',
+      text: 'Vier Schritte vom Anruf bis zur Abnahme, ohne Zwischenstellen.',
+      stationen }))),
+
+    teil('verlaufSchmal · allgemein', bsp('verlaufSchmal', verlaufSchmal({
+      plakette: 'So arbeiten wir',
+      titel: 'Vom Anruf bis zur Abnahme',
+      text: 'Vier Punkte, die wir zusagen.',
+      schritte }))),
+
+    `<div class="schale" style="padding-block:var(--a-4)">
+      <p class="ueber">Was der Baukasten verweigert</p>
+      <ul class="klein" style="margin-top:var(--a-2);line-height:1.9">
+        <li>${probe('Verlauf mit einem Eintrag', () => verlaufSeitlich({ titel: 'x', schritte: allgemein.slice(0, 1) }))}</li>
+        <li>${probe('Waagerecht mit neun Stationen', () => verlaufWaagerecht({ titel: 'x',
+          stationen: Array.from({ length: 9 }, (_, i) => ({ marke: i + 1, titel: 'S', text: 'x' })) }))}</li>
+      </ul>
+    </div>`,
   ].join('\n'),
 });
-fs.writeFileSync(new URL('./index.html', import.meta.url), html);
-console.log('Prüfseite geschrieben:', (html.length / 1024).toFixed(1), 'kB');
+
+fs.writeFileSync(new URL('index.html', import.meta.url), html);
+console.log('_probe geschrieben,', (html.length / 1024).toFixed(1), 'kB');

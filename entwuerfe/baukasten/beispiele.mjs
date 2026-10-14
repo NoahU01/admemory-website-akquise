@@ -77,3 +77,20 @@ const wortmarke = (wort) => {
 };
 export const MARKEN = ['Nordhaus', 'Vektor', 'Stellar', 'Brandt & Co', 'Aurum',
   'Lindner', 'Pfeil', 'Keramos'].map((w) => ({ name: w, pfad: wortmarke(w) }));
+
+/* Leistungen eines erfundenen Elektrobetriebs — breit genug, dass jede
+   Rasterfassung damit vorführbar ist. */
+export const LEISTUNGEN = [
+  { titel: 'Störungsdienst', icon: 'notruf', wichtig: true,
+    text: 'Wenn der Strom weg ist, zählt die erste Stunde. Wir sind rund um die Uhr erreichbar und im Notfall innerhalb von zwei Stunden vor Ort.',
+    punkte: ['Rund um die Uhr erreichbar', 'Zwei Stunden Anfahrt im Umkreis', 'Auch an Wochenenden'],
+    zahl: '2 h', zahlLabel: 'bis jemand da ist' },
+  { titel: 'Elektroinstallation', icon: 'werkzeug', text: 'Neubau, Umbau und Sanierung für Privat und Gewerbe.' },
+  { titel: 'Anlagenprüfung', icon: 'pruefung', text: 'Wiederkehrende Prüfung ortsfester Anlagen nach DGUV V3.' },
+  { titel: 'Beleuchtung', icon: 'haus', text: 'Planung und Umbau auf LED, innen wie außen.' },
+  { titel: 'Photovoltaik', icon: 'teile', text: 'Anlage, Speicher und Anmeldung beim Netzbetreiber.' },
+  { titel: 'Ladetechnik', icon: 'tankstelle', text: 'Wallboxen für Zuhause und Ladepunkte für den Betrieb.' },
+  { titel: 'Netzwerktechnik', icon: 'uhr', text: 'Datenverkabelung und Technikräume im Betrieb.' },
+  { titel: 'Smart Home', icon: 'haken', text: 'Steuerung für Licht, Heizung und Rollläden.' },
+  { titel: 'Wartungsvertrag', icon: 'miete', text: 'Feste Termine, feste Preise, ein Ansprechpartner.' },
+];

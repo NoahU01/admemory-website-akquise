@@ -1,5 +1,8 @@
-/* Prüfseite für die Fußbereiche: mit und ohne Öffnungszeiten, hell und dunkel,
-   mit vielen und mit wenigen Angaben. */
+/* Prüfseite für die Fußbereiche. Der Fuß der Seite selbst ist die dunkle
+   Kontaktfassung — sie steht unten und ist damit zugleich Beispiel.
+
+   Die abgespeckten Fassungen sind raus: Einen Fußbereich ohne Telefonzeiten
+   oder ohne Spalten bauen wir nicht, dafür ist er zu wichtig. */
 import fs from 'node:fs';
 import { seite } from '../baukasten/seite.mjs';
 import { bsp } from '../baukasten/katalog.mjs';
@@ -36,10 +39,6 @@ const html = seite({
       zeitenHinweis: 'Der Notdienst ist außerhalb dieser Zeiten durchgehend besetzt.',
       knopf: { text: 'Notdienst 07951 6048', href: 'tel:+4979516048' }, recht })),
 
-    marke('fussKontakt · ohne Öffnungszeiten, ohne Fax, ohne Knopf'),
-    fussKontakt({ betrieb: 'Kleiner Betrieb', anschrift: ['Hauptstraße 1', '74564 Crailsheim'],
-      telefon: '+497951123', telefonText: '07951 123', email: 'info@example.de', recht }),
-
     marke('fussSpalten · dunkel, drei Spalten'),
 
     bsp('fussSpalten', fussSpalten({ betrieb: 'Roll Truckservice GmbH', logo: P + 'logoWeiss.png', dunkel: true,
@@ -54,10 +53,6 @@ const html = seite({
       telefon: '+497951297930', telefonText: '07951 29793-0', email: 'info@rolltruck.de',
       sozial: [{ name: 'LinkedIn', href: '#', icon: 'pfeilauf' }], recht })),
 
-    marke('fussSpalten · hell, ohne Spalten und ohne Soziales'),
-    fussSpalten({ betrieb: 'Kleiner Betrieb', dunkel: false,
-      text: 'Nur das Nötigste.', anschrift: ['Hauptstraße 1', '74564 Crailsheim'],
-      telefon: '+497951123', email: 'info@example.de', recht }),
   ].join('\n'),
 });
 fs.writeFileSync(new URL('./index.html', import.meta.url), html);

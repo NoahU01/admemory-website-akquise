@@ -158,3 +158,35 @@ woher ein Bild kam.
 
 Darunter ist es mehr Lücke als Inhalt, darüber eine Wand — dafür gibt es
 die Logowand. Das Feld wächst mit der Anzahl, aber nicht endlos.
+
+## Vorzeilen nur noch im Kopfbereich
+
+Die kleine Zeile über der Überschrift ist aus Leistungen, Logoleisten,
+Verläufen und Fußbereichen verschwunden. Sie bekommt ein eigenes Modul.
+Geblieben ist sie im Kopfbereich, wo sie als hinterlegte Plakette das
+Kerngeschäft nennt, und bei den Auszeichnungen.
+
+## Der Vorspann unter der Überschrift ist zwei Zeilen lang
+
+Darunter liest er sich wie ein Absatz und nimmt der Überschrift das
+Gewicht. Längere Texte werden am Satzende gekürzt. Der Abstand zwischen
+Überschrift und Vorspann ist halb so groß wie der zwischen den Blöcken —
+sonst stehen beide unverbunden untereinander.
+
+## Logos passen in eine Zeile, sonst läuft die Leiste
+
+Ein umbrechendes Logogitter sieht nach Resteverwertung aus. Was in eine
+Zeile passt, steht in Karten; alles andere läuft als Band — und das Band
+läuft nicht über die ganze Seitenbreite, sondern in einem begrenzten
+Streifen. Unter vier Marken gibt es gar keine Logoleiste.
+
+## Karten reagieren auf die Maus
+
+Leistungskarten heben sich beim Überfahren leicht an, Streufeld-Kacheln
+auch, Verlaufsschritte rücken zur Seite. Wer Bewegung abgestellt hat,
+bekommt nichts davon.
+
+## Grenzen gehören in den Baustein, nicht in die Prüfseite
+
+Was es nicht geben soll, wird nicht als Beispiel gezeigt, sondern beim
+Bauen verweigert. Die Prüfseiten führen unten vor, mit welcher Meldung.

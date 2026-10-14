@@ -15,7 +15,7 @@
           "wann": "Erste Wahl. Trägt jedes Gewerbe und kommt mit einem einzigen Querformat aus.",
           "grenzen": "Braucht ein Bild im Breitformat. Die Logoleiste darunter läuft und sitzt auf der Breite der Navigation; unter acht Logos wird die Liste wiederholt, sonst klafft eine Lücke.",
           "bild": "assets/bibliothek/heroMitte.jpg",
-          "bytes": 94639
+          "bytes": 93810
         },
         {
           "id": "heroGeteilt",
@@ -49,7 +49,7 @@
           "wann": "Erste Wahl, sobald ein brauchbares Foto vom Betrieb da ist. Gibt es hell und dunkel.",
           "grenzen": "Drei bis neun Kacheln. Auf der Bildkarte steht die Bewertung groß: Note, Sterne, Anzahl. Ohne Note bleibt die Anzahl, geraten wird nichts.",
           "bild": "assets/bibliothek/vertrauenDuo.jpg",
-          "bytes": 55596
+          "bytes": 50842
         },
         {
           "id": "vertrauenStreu",
@@ -57,7 +57,7 @@
           "wann": "Wenn kein Foto da ist, aber genug Logos. Die Kacheln heben sich beim Überfahren leicht an.",
           "grenzen": "Fünf bis vierundzwanzig Logos — darunter und darüber bricht der Baustein ab. Das Raster wächst mit der Anzahl; ab etwa der Hälfte belegt fällt die Maske weg, damit sie kein Logo verschluckt.",
           "bild": "assets/bibliothek/vertrauenStreu.jpg",
-          "bytes": 38154
+          "bytes": 33872
         }
       ]
     },
@@ -75,7 +75,7 @@
           "wann": "Erste Wahl. Die einzige Fassung ohne Bilder — und damit die einzige, die allein aus Google-Bewertungen entsteht. Ab sechs Stimmen am besten.",
           "grenzen": "Unter drei Stimmen bricht der Baustein ab, darunter gibt es kein Modul. Beim Überfahren hält der Lauf an; wer Bewegung abgestellt hat, bekommt die Liste ohne Deckel.",
           "bild": "assets/bibliothek/stimmenSpalten.jpg",
-          "bytes": 116001
+          "bytes": 115917
         },
         {
           "id": "stimmenBuehne",
@@ -91,7 +91,7 @@
           "wann": "Wenn es gute Bilder gibt. Das Foto ist die Karte, unten steht nur der Name.",
           "grenzen": "Ohne Bilder bricht der Baustein ab. Hochformate und Szenen aus dem Betrieb sitzen besser als quadratische Porträts, die unten angeschnitten werden.",
           "bild": "assets/bibliothek/stimmenBilder.jpg",
-          "bytes": 78660
+          "bytes": 78717
         }
       ]
     },
@@ -107,17 +107,17 @@
           "name": "Bento-Raster",
           "erste": true,
           "wann": "Erste Wahl bei fünf bis neun Leistungen.",
-          "grenzen": "Die letzte Zeile gleicht sich an, damit keine Lücke bleibt. Unter fünf Einträgen wird es schmal.",
+          "grenzen": "Unter fünf bricht der Baustein ab — dafür ist das gleichmäßige Raster da. Bei genau sechs stehen alle Karten gleich groß nebeneinander, die hervorgehobene bleibt hervorgehoben. Karten heben sich beim Überfahren an.",
           "bild": "assets/bibliothek/leistungenBento.jpg",
-          "bytes": 106406
+          "bytes": 100188
         },
         {
           "id": "leistungen",
           "name": "Gleichmäßiges Raster",
           "wann": "Bei sehr vielen Leistungen oder wenn alle gleich wichtig sind.",
-          "grenzen": "Spaltenzahl einstellbar. Kürzt nie.",
+          "grenzen": "Spaltenzahl einstellbar, Icon im Kreis oder im Kasten. Lässt keinen Eintrag weg. Karten heben sich beim Überfahren an.",
           "bild": "assets/bibliothek/leistungen.jpg",
-          "bytes": 62680
+          "bytes": 66225
         }
       ]
     },
@@ -132,26 +132,18 @@
           "id": "logowandKarten",
           "name": "Karten",
           "erste": true,
-          "wann": "Erste Wahl. Trägt schon ab zwei Logos.",
-          "grenzen": "Weiße Grafik auf Transparenz bekommt dunklen Grund — gemessen, nicht geraten.",
+          "wann": "Erste Wahl bei vier bis sechs Marken, die in eine Zeile passen.",
+          "grenzen": "Unter vier bricht der Baustein ab — zwei Partner wirken wie eine Entschuldigung. Weiße Grafik auf Transparenz bekommt dunklen Grund, gemessen und nicht geraten.",
           "bild": "assets/bibliothek/logowandKarten.jpg",
-          "bytes": 27822
-        },
-        {
-          "id": "logowandGitter",
-          "name": "Freies Gitter",
-          "wann": "Ab etwa sechs Logos, erscheinen nacheinander beim Hereinscrollen.",
-          "grenzen": "Ohne Rahmen; sehr helle Logos brauchen den dunklen Grund.",
-          "bild": "assets/bibliothek/logowandGitter.jpg",
-          "bytes": 28407
+          "bytes": 17558
         },
         {
           "id": "logowandLauf",
           "name": "Laufband",
-          "wann": "Wenn viele Marken da sind und Bewegung passt.",
-          "grenzen": "Braucht mindestens sechs Logos, sonst klafft eine Lücke. Die Liste wird dafür wiederholt.",
+          "wann": "Sobald mehr Logos da sind, als in eine Zeile passen. Hält beim Überfahren an.",
+          "grenzen": "Läuft nicht über die ganze Seitenbreite, sondern in einem begrenzten Band. Unter sechs Logos wird die Liste wiederholt, sonst klafft eine Lücke.",
           "bild": "assets/bibliothek/logowandLauf.jpg",
-          "bytes": 21192
+          "bytes": 11074
         }
       ]
     },
@@ -167,25 +159,25 @@
           "name": "Senkrecht mit Text daneben",
           "erste": true,
           "wann": "Vier bis sieben Schritte mit je zwei bis drei Zeilen Text.",
-          "grenzen": "Braucht links genug Text, sonst steht die Spalte leer.",
+          "grenzen": "Unter drei Schritten bricht der Baustein ab. Der Vorspann links darf lang sein, er trägt die Spalte.",
           "bild": "assets/bibliothek/verlaufSeitlich.jpg",
-          "bytes": 97825
+          "bytes": 100260
         },
         {
           "id": "verlaufWaagerecht",
           "name": "Waagerechte Stationen",
           "wann": "Drei bis fünf Stationen mit sehr kurzem Text.",
-          "grenzen": "Ab sechs wird es am Rechner eng.",
+          "grenzen": "Unter drei und über fünf bricht der Baustein ab. Die Texte unter den Punkten werden auf 90 Zeichen gekürzt, sonst wird die Reihe unruhig.",
           "bild": "assets/bibliothek/verlaufWaagerecht.jpg",
-          "bytes": 71490
+          "bytes": 29308
         },
         {
           "id": "verlaufSchmal",
           "name": "Schmale Spalte",
           "wann": "Wenn der Verlauf neben anderem Inhalt stehen soll.",
-          "grenzen": "Trägt keine langen Absätze.",
+          "grenzen": "Trägt keine langen Absätze. Die Schritte rücken beim Überfahren leicht zur Seite.",
           "bild": "assets/bibliothek/verlaufSchmal.jpg",
-          "bytes": 37754
+          "bytes": 41469
         }
       ]
     },
@@ -211,7 +203,7 @@
           "wann": "Bei vielen Unterseiten, die verlinkt werden sollen.",
           "grenzen": "Bei zwei Unterseiten wirken die Spalten leer.",
           "bild": "assets/bibliothek/fussSpalten.jpg",
-          "bytes": 24769
+          "bytes": 24845
         }
       ]
     }

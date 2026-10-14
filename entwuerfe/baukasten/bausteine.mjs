@@ -37,7 +37,7 @@ export function hero({ ueber, titel, text, knoepfe = [], bild, bildAlt = '',
     <div class="stapel-3">
       ${wenn(ueber, `<p class="ueber">${esc(ueber)}</p>`)}
       <h1>${esc(titel)}</h1>
-      ${wenn(text, `<p class="lead">${esc(text)}</p>`)}
+      ${wenn(text, `<p class="lead lead--zwei">${esc(text)}</p>`)}
       ${wenn(knoepfe.length, `<div class="knopfreihe">${knoepfe.map(knopf).join('')}</div>`)}
     </div>
     ${bildKasten(bild, bildAlt, { verhaeltnis: bildVerhaeltnis, zuerst: true })}
@@ -63,14 +63,13 @@ export function notband({ titel, text, nummer, nummerText }) {
 </section>`;
 }
 
-export function leistungen({ ueber, titel, text, eintraege, spalten = 3,
+export function leistungen({ titel, text, eintraege, spalten = 3,
                              mittig = false, iconStil = 'kasten', tief = false }) {
   return `
 <section class="abschnitt ${wenn(tief, 'abschnitt--tief')}" id="leistungen">
-  ${schale(`<div class="stapel-3" style="margin-bottom:var(--a-4)">
-      ${wenn(ueber, `<p class="ueber">${esc(ueber)}</p>`)}
+  ${schale(`<div class="stapel-3 kopf-eng ${wenn(mittig, 'kopf-mittig')}" style="margin-bottom:var(--a-4)">
       <h2>${esc(titel)}</h2>
-      ${wenn(text, `<p class="lead">${esc(text)}</p>`)}
+      ${wenn(text, `<p class="lead lead--zwei">${esc(kuerze(text, 150))}</p>`)}
     </div>
     <div class="raster raster--${spalten}">
       ${eintraege.map((e) => {
@@ -132,7 +131,7 @@ export function zeitleiste({ ueber, titel, text, punkte, tief = false }) {
   ${schale(`<div class="stapel-3" style="margin-bottom:var(--a-4)">
       ${wenn(ueber, `<p class="ueber">${esc(ueber)}</p>`)}
       <h2>${esc(titel)}</h2>
-      ${wenn(text, `<p class="lead">${esc(text)}</p>`)}
+      ${wenn(text, `<p class="lead lead--zwei">${esc(text)}</p>`)}
     </div>
     <div class="raster raster--3">
       ${punkte.map((p) => `<div class="karte">
@@ -150,7 +149,7 @@ export function kontakt({ ueber, titel, text, anschrift, telefon, telefonText, n
     <div class="stapel-3">
       ${wenn(ueber, `<p class="ueber">${esc(ueber)}</p>`)}
       <h2>${esc(titel)}</h2>
-      ${wenn(text, `<p class="lead">${esc(text)}</p>`)}
+      ${wenn(text, `<p class="lead lead--zwei">${esc(text)}</p>`)}
       <div class="knopfreihe">
         ${wenn(telefon, () => knopf({ text: telefonText ?? telefon, href: `tel:${telefon}`, art: 'wichtig' }))}
         ${wenn(email, () => knopf({ text: email, href: `mailto:${email}` }))}
@@ -238,9 +237,8 @@ export function heroBand({ ueber, titel, text, knoepfe = [], bild, bildAlt = '',
   return `
 <header class="abschnitt ${tief ? 'abschnitt--tief' : ''}" id="start">
   ${schale(`<div class="stapel-3" style="max-width:62ch">
-      ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
       <h1>${esc(titel)}</h1>
-      ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
+      ${wenn(text, () => `<p class="lead lead--zwei">${esc(text)}</p>`)}
       ${wenn(knoepfe.length, () => `<div class="knopfreihe">${knoepfe.map(knopf).join('')}</div>`)}
     </div>
     ${wenn(bild, () => `<div class="hero-band__bild"><img src="${esc(bild)}" alt="${esc(bildAlt)}"
@@ -264,7 +262,6 @@ export function logoband({ ueber, titel, logos, nachsatz, tief = false }) {
   return `
 <section class="abschnitt--eng ${wenn(tief, 'abschnitt--tief')}">
   ${schale(`<div class="stapel-3">
-    ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
     ${wenn(titel, () => `<h2 style="font-size:var(--t-l)">${esc(titel)}</h2>`)}
     <div class="logoband">${logos.map((l) =>
       `<img src="${esc(l.pfad)}" alt="${esc(l.name)}" loading="lazy">`).join('')}</div>
@@ -280,9 +277,8 @@ export function siegel({ ueber, titel, text, bilder, tief = false }) {
 <section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
   ${schale(`<div class="raster raster--2" style="align-items:center">
     <div class="stapel-3">
-      ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
       <h2>${esc(titel)}</h2>
-      ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
+      ${wenn(text, () => `<p class="lead lead--zwei">${esc(text)}</p>`)}
     </div>
     <div class="siegel">${bilder.map((b) =>
       `<img src="${esc(b.pfad)}" alt="${esc(b.name)}" loading="lazy">`).join('')}</div>
@@ -302,14 +298,15 @@ export function siegel({ ueber, titel, text, bilder, tief = false }) {
    verlaufSchmal     Lange Erklärtexte, ruhige Seite. Keine Konkurrenz durch
                      Bilder daneben. Trägt drei bis sechs Einträge.        */
 
-export function verlaufSeitlich({ ueber, titel, text, schritte, tief = false }) {
+export function verlaufSeitlich({ titel, text, schritte, tief = false }) {
+  if (schritte.length < 3)
+    throw new Error(`verlaufSeitlich: ${schritte.length} Schritt(e) — unter 3 ist es kein Verlauf.`);
   return `
 <section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
   ${schale(`<div class="verlauf-seitlich">
     <div class="stapel-3">
-      ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
       <h2>${esc(titel)}</h2>
-      ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
+      ${wenn(text, () => `<p class="lead lead--zwei">${esc(text)}</p>`)}
     </div>
     <ol class="verlauf-liste">
       ${schritte.map((s, i) => {
@@ -332,13 +329,20 @@ export function verlaufSeitlich({ ueber, titel, text, schritte, tief = false }) 
 
 /* bisHier: bis zu welcher Station der Verlauf als erreicht gilt. Bei einer
    Firmenhistorie sind das alle; bei einem laufenden Vorgang nur ein Teil. */
-export function verlaufWaagerecht({ ueber, titel, text, stationen, bisHier = stationen.length, tief = false }) {
+export function verlaufWaagerecht({ titel, text, stationen, bisHier = stationen.length, tief = false }) {
+  if (stationen.length < 3)
+    throw new Error(`verlaufWaagerecht: ${stationen.length} Station(en) — unter 3 ist es kein Verlauf.`);
+  if (stationen.length > 5)
+    throw new Error(`verlaufWaagerecht: ${stationen.length} Stationen — ueber 5 wird es eng; `
+      + 'dafuer ist verlaufSeitlich da.');
+  /* Unter den Punkten ist wenig Platz. Lange Texte brechen das Raster auf
+     und machen die Reihe unruhig. */
+  stationen = stationen.map((st) => ({ ...st, text: st.text ? kuerze(st.text, 90) : st.text }));
   return `
 <section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
   ${schale(`<div class="stapel-3" style="margin-bottom:var(--a-4);max-width:62ch">
-      ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
       ${wenn(titel, () => `<h2>${esc(titel)}</h2>`)}
-      ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
+      ${wenn(text, () => `<p class="lead lead--zwei">${esc(text)}</p>`)}
     </div>
     <ol class="verlauf-waagerecht">
       ${stationen.map((s, i) => `<li class="verlauf-punkt"${i < bisHier ? ' data-erreicht' : ''}>
@@ -406,7 +410,7 @@ export function heroMitte({ ueber, titel, text, knopfHaupt, knoepfe = [], bild, 
   ${schale(`<div class="hero-mitte__in">
     ${wenn(ueber, () => `<p class="plakette plakette--hell">${esc(ueber)}</p>`)}
     <h1>${esc(titel)}</h1>
-    ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
+    ${wenn(text, () => `<p class="lead lead--zwei">${esc(text)}</p>`)}
     ${wenn(knopfHaupt || knoepfe.length, () => `<div class="knopfreihe knopfreihe--breit" style="justify-content:center">
       ${wenn(knopfHaupt, () => knopfPille(knopfHaupt))}${knoepfe.map(knopf).join('')}</div>`)}
   </div>`)}
@@ -424,7 +428,7 @@ export function heroGeteilt({ plakette, titel, text, merkmale = [], knoepfe = []
   ${schale(`<div class="hero-geteilt__in stapel-3">
     ${wenn(plakette, () => `<span class="plakette" style="margin:0">${esc(plakette)}</span>`)}
     <h1>${esc(titel)}</h1>
-    ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
+    ${wenn(text, () => `<p class="lead lead--zwei">${esc(text)}</p>`)}
     ${wenn(merkmale.length, () => `<ul class="merkmale">${merkmale.map((m) =>
       `<li>${zeichen(m.icon ?? 'haken')}<span>${esc(m.text ?? m)}</span></li>`).join('')}</ul>`)}
     ${wenn(knoepfe.length, () => `<div class="knopfreihe">${knoepfe.map(knopf).join('')}</div>`)}
@@ -484,27 +488,30 @@ export const TIEFE_SKRIPT = `
 const logoBild = (l) => `<img src="${esc(l.pfad)}" alt="${esc(l.name)}"` +
   `${l.brauchtDunkel ? ' data-invers' : ''} loading="lazy">`;
 
-function logoKopf({ ueber, titel, titelLeise }) {
-  if (!ueber && !titel) return '';
+/* Keine Vorzeile mehr: Die gehoert in ein eigenes Modul, nicht in jedes. */
+function logoKopf({ titel, titelLeise }) {
+  if (!titel) return '';
   return `<div class="logowand-kopf">
-    ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
-    ${wenn(titel, () => `<h2>${wenn(titelLeise, () => `<em>${esc(titelLeise)}</em> `)}${esc(titel)}</h2>`)}
+    <h2>${wenn(titelLeise, () => `<em>${esc(titelLeise)}</em> `)}${esc(titel)}</h2>
   </div>`;
 }
 
-export function logowandGitter({ ueber, titel, titelLeise, logos, nachsatz, tief = false }) {
+export function logowandGitter({ titel, titelLeise, logos, nachsatz, tief = false }) {
   return `
 <section class="abschnitt--eng ${wenn(tief, 'abschnitt--tief')}">
-  ${schale(logoKopf({ ueber, titel, titelLeise }) +
+  ${schale(logoKopf({ titel, titelLeise }) +
     `<div class="logowand-gitter" data-erscheinen>${logos.map(logoBild).join('')}</div>` +
     wenn(nachsatz, () => `<p class="klein" style="text-align:center;margin-top:var(--a-3)">${esc(nachsatz)}</p>`))}
 </section>`;
 }
 
-export function logowandKarten({ ueber, titel, titelLeise, logos, nachsatz, tief = false }) {
+export function logowandKarten({ titel, titelLeise, logos, nachsatz, tief = false }) {
+  /* Mit zwei Logos wirkt eine Partnerwand wie eine Entschuldigung. */
+  if (logos.length < 4)
+    throw new Error(`logowandKarten: ${logos.length} Logo(s) — unter 4 lieber weglassen.`);
   return `
 <section class="abschnitt--eng ${wenn(tief, 'abschnitt--tief')}">
-  ${schale(logoKopf({ ueber, titel, titelLeise }) +
+  ${schale(logoKopf({ titel, titelLeise }) +
     `<div class="logowand-karten" style="--spalten:${Math.min(4, logos.length)};` +
       `--spalten-klein:${Math.min(2, logos.length)}">` +
       `${logos.map((l) => `<div>${logoBild(l)}</div>`).join('')}</div>` +
@@ -512,7 +519,7 @@ export function logowandKarten({ ueber, titel, titelLeise, logos, nachsatz, tief
 </section>`;
 }
 
-export function logowandLauf({ ueber, titel, titelLeise, logos, nachsatz, dauer = 38, tief = false }) {
+export function logowandLauf({ titel, titelLeise, logos, nachsatz, dauer = 38, tief = false }) {
   /* Zu wenige Logos reißen im Laufband eine Lücke. Deshalb so oft
      wiederholen, bis mindestens acht zusammenkommen, und das Ganze dann
      noch einmal für den nahtlosen Übergang. */
@@ -521,7 +528,7 @@ export function logowandLauf({ ueber, titel, titelLeise, logos, nachsatz, dauer 
   const spur = reihe.concat(reihe).map(logoBild).join('');
   return `
 <section class="abschnitt--eng ${wenn(tief, 'abschnitt--tief')}">
-  ${schale(logoKopf({ ueber, titel, titelLeise }))}
+  ${schale(logoKopf({ titel, titelLeise }))}
   <div class="logowand-lauf"><div class="logowand-lauf__spur" style="--dauer:${dauer}s"
        aria-label="${esc(logos.map((l) => l.name).join(', '))}">${spur}</div></div>
   ${wenn(nachsatz, () => schale(`<p class="klein" style="text-align:center;margin-top:var(--a-3)">${esc(nachsatz)}</p>`))}
@@ -562,7 +569,16 @@ export const ERSCHEINEN_SKRIPT = `
                     eine Seite schnell nach Baukasten aussehen lässt. Trägt
                     fünf bis neun Einträge.                                  */
 
-export function leistungenBento({ ueber, titel, text, mittig = false, eintraege, tief = false }) {
+const BENTO_MIN = 5;
+export function leistungenBento({ titel, text, mittig = false, eintraege, tief = false }) {
+  /* Mit vier Karten bleibt vom Bento nur eine grosse und drei kleine — das
+     ist kein Bento mehr, sondern ein unausgewogenes Raster. */
+  if (eintraege.length < BENTO_MIN)
+    throw new Error(`leistungenBento: ${eintraege.length} Leistungen — unter ${BENTO_MIN} `
+      + 'nimmt man leistungen mit gleichmaessigem Raster.');
+  /* Bei genau sechs stehen die Karten gleich gross nebeneinander. Eine
+     hervorgehobene bleibt hervorgehoben, sie wird nur nicht groesser. */
+  const gleich = eintraege.length === 6;
   const [erste, ...rest] = eintraege;
   const karte = (e, gross = false) => {
     const innen =
@@ -595,15 +611,16 @@ export function leistungenBento({ ueber, titel, text, mittig = false, eintraege,
 
   return `
 <section class="abschnitt ${wenn(tief, 'abschnitt--tief')}" id="leistungen">
-  ${schale(`<div class="stapel-3 ${wenn(mittig, 'kopf-mittig')}" style="margin-bottom:var(--a-4)">
-      ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
+  ${schale(`<div class="stapel-3 kopf-eng ${wenn(mittig, 'kopf-mittig')}" style="margin-bottom:var(--a-4)">
       <h2>${esc(titel)}</h2>
-      ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
+      ${wenn(text, () => `<p class="lead lead--zwei">${esc(kuerze(text, 150))}</p>`)}
     </div>
-    <div class="bento"${knapp}>
+    ${gleich
+      ? `<div class="bento bento--gleich">${eintraege.map((e) => `<div>${karte(e)}</div>`).join('')}</div>`
+      : `<div class="bento"${knapp}>
       <div class="bento__gross">${karte(erste, true)}</div>
       ${rest.map((e, i) => `<div${breiten[i]}>${karte(e)}</div>`).join('')}
-    </div>`)}
+    </div>`}`)}
 </section>`;
 }
 
@@ -766,7 +783,6 @@ export function vertrauenDuo({ ueber, titel, text, kacheln = [], bild, bildAlt =
     <div class="vertrauen__karte">
       <div class="vertrauen__kacheln" style="--spalten:${spalten}" data-erscheinen>${felder.join('')}</div>
       <div class="vertrauen__text stapel-3">
-        ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
         <h2 style="font-size:var(--t-l)">${esc(titel)}</h2>
         ${wenn(text, () => `<p>${esc(text)}</p>`)}
       </div>
@@ -838,9 +854,8 @@ export function vertrauenStreu({ ueber, titel, text, logos = [], nachsatz, tief 
 <section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
   ${schale(`<div class="raster raster--2" style="align-items:center">
     <div class="stapel-3">
-      ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
       <h2>${esc(titel)}</h2>
-      ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
+      ${wenn(text, () => `<p class="lead lead--zwei">${esc(text)}</p>`)}
       ${wenn(nachsatz, () => `<p class="klein">${esc(nachsatz)}</p>`)}
     </div>
     <div class="streu"${maske} style="--spalten:${spalten};--zeilen:${zeilen}" data-erscheinen>${felder}</div>
@@ -927,7 +942,7 @@ function stimmenKopf({ titel, text }) {
   if (!titel && !text) return '';
   return `<div class="stapel-3" style="text-align:center;max-width:46rem;margin-inline:auto">
     ${wenn(titel, () => `<h2>${esc(titel)}</h2>`)}
-    ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
+    ${wenn(text, () => `<p class="lead lead--zwei">${esc(text)}</p>`)}
   </div>`;
 }
 

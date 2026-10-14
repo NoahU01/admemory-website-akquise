@@ -839,3 +839,37 @@ blockquote,figure{margin:0}
 
 /* Mehr Luft zwischen Kachelfeld und Text in der Vertrauenskarte. */
 .vertrauen__karte{gap:var(--a-4)}
+
+/* ══ Nachbesserungen aus Noahs Durchsicht ════════════════════════ */
+
+/* Der Abstand zwischen Überschrift und Vorspann war so groß wie der
+   zwischen den Blöcken — halb so viel bindet die beiden zusammen. */
+.kopf-eng.kopf-eng > h2 + .lead{margin-top:calc(var(--a-3) / 2)}
+/* Zwei Zeilen, nicht mehr. Breiter Text unter einer Überschrift liest sich
+   wie ein Absatz und nimmt der Überschrift das Gewicht. */
+.lead--zwei{max-width:52ch}
+.kopf-mittig .lead--zwei{margin-inline:auto}
+
+/* Karten heben sich leicht an, wenn die Maus darüber steht. */
+.karte{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.karte:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(17,22,29,.10)}
+.auf-dunkel .karte:hover,.abschnitt--tief .karte:hover{
+  box-shadow:0 10px 26px rgba(0,0,0,.35)}
+@media(prefers-reduced-motion:reduce){.karte,.karte:hover{transition:none;transform:none}}
+
+/* Bento mit genau sechs Einträgen: alle gleich groß, drei je Zeile. */
+.bento--gleich{display:grid;gap:var(--a-3);grid-template-columns:1fr}
+@media(min-width:620px){.bento--gleich{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:980px){.bento--gleich{grid-template-columns:repeat(3,1fr)}}
+.bento--gleich > div{display:flex}
+.bento--gleich .karte{width:100%}
+
+/* Laufband: läuft nicht über die ganze Seitenbreite. */
+.logowand-lauf{max-width:62rem;margin-inline:auto}
+
+/* Schmaler Verlauf: Schritte heben sich beim Überfahren an. Die Schritte
+   sind <li>, nicht eine eigene Klasse — meine erste Regel zielte ins Leere
+   und wäre niemandem aufgefallen, weil eine Regel ohne Treffer nichts tut. */
+.verlauf-schmal li{transition:transform .18s ease}
+.verlauf-schmal li:hover{transform:translateX(3px)}
+@media(prefers-reduced-motion:reduce){.verlauf-schmal li,.verlauf-schmal li:hover{transition:none;transform:none}}
