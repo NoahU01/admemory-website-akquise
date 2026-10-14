@@ -36,6 +36,8 @@ const ICONS = {
   /* Kundenstimmen: Sprechblase mit zwei Zeilen. Nicht die Anführungs-
      zeichen aus dem Baukasten — als Strich gezeichnet werden daraus bei
      18 Pixeln zwei Kringel, die man nicht erkennt. */
+  /* Für den Aufklapper an den Bibliothekskarten. */
+  buch:       'M4 5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2zM4 19a2 2 0 0 1 2-2h13v4H6a2 2 0 0 1-2-2z',
   stimmen:    'M4 5h16v11H9l-4 4v-4H4zM8 9h8M8 12.5h5',
   logowand:   'M3 6h18v12H3zM7.6 12m-1.9 0a1.9 1.9 0 1 0 3.8 0a1.9 1.9 0 1 0-3.8 0M13 10h4.2v4h-4.2z',
   verlauf:    'M6 5.5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M6 18.5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M6 7.5v9M11 5.5h9M11 18.5h7',
@@ -599,11 +601,11 @@ function zeichneBibliothek(){
   if (!g) { el('inhalt').innerHTML = '<div class="hint">Diese Modulart gibt es nicht.</div>'; return; }
   const basis = 'https://entwuerfe.admemory.de/' + g.seite + '/';
 
+  /* In der Übersicht steht nur die Fassung selbst. Wann und Grenzen sind
+     beim Vergleichen im Weg und klappen deshalb auf. */
   el('inhalt').innerHTML =
-    '<p class="bibkopf">Stand ' + text(bibliothek.stand) +
-    '. Die Prüfseiten zeigen zusätzlich die Härtefälle: Überlänge, fehlende ' +
-    'Bilder, zu wenige und zu viele Einträge.</p>' +
-    '<div class="bibliste">' + g.bausteine.map((b) =>
+    '<p class="bibkopf">Stand ' + text(bibliothek.stand) + '.</p>' +
+    '<div class="bibliste">' + g.bausteine.map((b, i) =>
       '<article class="bib">' +
         (b.bild
           ? '<a class="bib__bild" href="' + basis + '" target="_blank" rel="noopener">' +
@@ -614,8 +616,15 @@ function zeichneBibliothek(){
             '<span class="bib__id">' + text(b.id) + '</span>' +
             (b.erste ? '<span class="pille pille--good">erste Wahl</span>' : '') +
           '</div>' +
-          '<div class="bib__zeile"><b>Wann</b><span>' + text(b.wann) + '</span></div>' +
-          '<div class="bib__zeile"><b>Grenzen</b><span>' + text(b.grenzen) + '</span></div>' +
+          '<button class="bibklappe" type="button" data-bib="' + i + '" aria-expanded="false"' +
+            ' aria-controls="bibdetail' + i + '">' +
+            ic('buch') + '<span>Wann und Grenzen</span>' +
+            '<svg class="ic bibpfeil" viewBox="0 0 24 24" aria-hidden="true"><path d="' + PFEIL + '"/></svg>' +
+          '</button>' +
+          '<div class="bibdetail" id="bibdetail' + i + '" hidden>' +
+            '<div class="bib__zeile">' + ic('uhr') + '<div><b>Wann</b>' + text(b.wann) + '</div></div>' +
+            '<div class="bib__zeile">' + ic('befund') + '<div><b>Grenzen</b>' + text(b.grenzen) + '</div></div>' +
+          '</div>' +
           '<div class="bib__fuss">' +
             '<a href="' + basis + '" target="_blank" rel="noopener">' +
               ic('pfeilauf') + 'Prüfseite öffnen</a>' +
@@ -624,3 +633,14 @@ function zeichneBibliothek(){
       '</article>').join('') +
     '</div>';
 }
+
+/* Aufklappen der Einzelheiten. Ein Zuhörer am Container, damit er das
+   Neuzeichnen der Liste überlebt. */
+el('inhalt').addEventListener('click', (e) => {
+  const k = e.target.closest('button[data-bib]');
+  if (!k) return;
+  const auf = k.getAttribute('aria-expanded') === 'true';
+  k.setAttribute('aria-expanded', String(!auf));
+  const ziel = el(k.getAttribute('aria-controls'));
+  if (ziel) ziel.hidden = auf;
+});

@@ -296,8 +296,21 @@ textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86r
 .bib__kopf h3{font-size:.95rem;font-weight:600;margin:0;letter-spacing:-.01em;
   text-transform:none;color:var(--ink)}  /* h3 ist global eine Großbuchstaben-Marke */
 .bib__id{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-3)}
-.bib__zeile{display:flex;gap:.5rem;margin-top:.7rem;font-size:.8rem;color:var(--ink-2);line-height:1.5}
-.bib__zeile b{color:var(--ink);font-weight:600;flex:none;min-width:4.2rem}
+.bib__zeile{display:flex;gap:.55rem;margin-top:.8rem;font-size:.8rem;color:var(--ink-2);line-height:1.55}
+.bib__zeile b{display:block;color:var(--ink);font-weight:600;margin-bottom:.1rem}
+.bib__zeile .ic{width:15px;height:15px;margin-top:.15rem;color:var(--ink-3)}
+.bibklappe{all:unset;cursor:pointer;display:flex;align-items:center;gap:.5rem;width:100%;
+  box-sizing:border-box;margin-top:.9rem;padding:.5rem .65rem;border-radius:8px;
+  background:var(--sunk);color:var(--ink-2);font-size:.8rem;font-weight:500;min-height:36px}
+.bibklappe:hover{color:var(--accent)}
+.bibklappe:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.bibklappe span{flex:1}
+.bibklappe .ic{width:15px;height:15px;color:var(--ink-3)}
+.bibpfeil{transition:transform .15s}
+.bibklappe[aria-expanded="true"] .bibpfeil{transform:rotate(180deg)}
+.bibklappe[aria-expanded="true"]{color:var(--accent);background:var(--accent-soft)}
+.bibklappe[aria-expanded="true"] .ic{color:var(--accent)}
+.bibdetail{padding:.2rem .15rem 0}
 .bib__fuss{margin-top:.95rem;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
 .bib__fuss a{color:var(--accent);font-size:.78rem;text-decoration:none;
   display:inline-flex;align-items:center;gap:.3rem}
