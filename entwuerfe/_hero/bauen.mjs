@@ -1,100 +1,96 @@
-/* Prüfseite für die Hero-Varianten. Echte Bilder von Roll Truckservice,
-   damit sichtbar wird, wie sie mit dem Material umgehen, das wir wirklich
-   bekommen: Panoramabanner, keine Hochformate, mittlere Qualität. */
+/* Prüfseite für die Kopfbereiche. Die mit bsp() ausgezeichneten Beispiele
+   sind allgemein: freie Bilder, erfundener Betrieb. Daneben dieselben
+   Fassungen mit echtem Material von Roll Truckservice — weil nur das zeigt,
+   wie sie mit verwaschenen Panoramabannern und breiten Schriftzug-Logos
+   umgehen, die wir von alten Seiten wirklich bekommen. */
 import fs from 'node:fs';
 import { seite } from '../baukasten/seite.mjs';
 import { bsp } from '../baukasten/katalog.mjs';
-import { heroMitte, heroGeteilt, heroVoll, heroBand, heroTiefe, TIEFE_SKRIPT } from '../baukasten/bausteine.mjs';
+import { ALLGEMEIN, MARKEN } from '../baukasten/beispiele.mjs';
+import { heroMitte, heroGeteilt, heroVoll } from '../baukasten/bausteine.mjs';
 
-const B = {
-  trucks: '../rolltruck/bilder/trucks.jpg',
-  team: '../rolltruck/bilder/team.jpg',
-  werkstatt: '../rolltruck/bilder/werkstatt.jpg',
-};
-const partner = [
-  { name: 'Schmitz Cargobull', pfad: '../rolltruck/bilder/partner_SchmitzCargobull.png' },
-  { name: 'Vergölst', pfad: '../rolltruck/bilder/partner_Verglst.png' },
-  { name: 'Krone', pfad: '../rolltruck/bilder/partner_Krone.png' },
+const R = '../rolltruck/bilder/';
+const partnerEcht = [
+  { name: 'Schmitz Cargobull', pfad: R + 'partner_SchmitzCargobull.png' },
+  { name: 'Vergölst', pfad: R + 'partner_Verglst.png' },
+  { name: 'Krone', pfad: R + 'partner_Krone.png' },
 ];
 const marke = (t) => `<div class="schale" style="padding-block:var(--a-3)"><p class="ueber">${t}</p></div>`;
 
 const html = seite({
-  titel: 'Prüfseite für die Hero-Varianten im Baukasten',
-  beschreibung: 'Interne Prüfseite: Die drei Hero-Fassungen mit echtem Bildmaterial und mit Überlänge.',
+  titel: 'Prüfseite für die Kopfbereiche im Baukasten',
+  beschreibung: 'Interne Prüfseite: Die Hero-Fassungen allgemein und mit echtem Material.',
   betrieb: 'Baukasten', nav: [], fuss: '<div><p class="klein">Interne Prüfseite</p></div>',
   inhalt: [
-    marke('heroMitte · mit Partnerlogos'),
-
+    marke('heroMitte · allgemein · erste Wahl'),
     bsp('heroMitte', heroMitte({
-      ueber: 'Werkstatt & Notdienst für Nutzfahrzeuge',
-      titel: 'Wenn der Lkw steht, zählt jede Stunde.',
-      text: 'Werkstatt für alle Nutzfahrzeugmarken in Crailsheim. Der Notdienst rückt rund um die Uhr aus, von Crailsheim, Wörnitz und Burgoberbach.',
+      ueber: 'Elektrotechnik für Gewerbe und Privat',
+      titel: 'Strom ist kein Thema, bis er es ist.',
+      text: 'Installation, Prüfung und Störungsdienst aus einer Hand. '
+        + 'Im Notfall sind wir innerhalb von zwei Stunden da.',
       knopfHaupt: { text: 'Unsere Leistungen', href: '#leistungen' },
-      knoepfe: [{ text: 'Kontakt', href: '#kontakt' }],
-      bild: B.trucks, bildAlt: 'Lastwagen von Roll Truck-Service',
-      marken: partner,
+      knoepfe: [{ text: 'Kontakt aufnehmen', href: '#kontakt' }],
+      bild: ALLGEMEIN.handwerk, bildAlt: 'Elektriker bei der Arbeit an einer Steckdose',
+      marken: MARKEN,
     })),
 
-    marke('heroMitte · Überlänge, ohne Logos'),
+    marke('heroMitte · mit echtem Material von Roll Truckservice'),
     heroMitte({
-      ueber: 'Eine ungewöhnlich lange Vorzeile, die prüft, ob sie umbricht',
-      titel: 'Eine Überschrift mit deutlich mehr Wörtern als vorgesehen, die über drei Zeilen laufen muss',
-      text: 'Kurz.',
-      knopfHaupt: { text: 'Mit einem sehr langen Knopftext', href: '#' },
-      bild: B.werkstatt, bildAlt: 'Werkstatt',
+      ueber: 'Werkstatt & Notdienst für Nutzfahrzeuge',
+      titel: 'Wenn der Lkw steht, zählt jede Stunde.',
+      text: 'Werkstatt für alle Nutzfahrzeugmarken in Crailsheim. Der Notdienst rückt rund um die Uhr aus.',
+      knopfHaupt: { text: 'Unsere Leistungen', href: '#leistungen' },
+      knoepfe: [{ text: 'Kontakt aufnehmen', href: '#kontakt' }],
+      bild: R + 'trucks.jpg', bildAlt: 'Lastwagen von Roll Truck-Service',
+      marken: partnerEcht,
     }),
 
-    marke('heroGeteilt · mit Merkmalen'),
-
+    marke('heroGeteilt · allgemein · mit Merkmalen'),
     bsp('heroGeteilt', heroGeteilt({
-      plakette: 'Seit 1876',
-      titel: 'Alles für das Nutzfahrzeug an einem Ort',
-      text: 'Von der planbaren Wartung bis zur Bergung mitten in der Nacht. Vertragswerkstatt für sechs Marken, mit eigenem Lager und eigener Mannschaft.',
+      plakette: 'Elektrotechnik seit 1984',
+      titel: 'Alles rund um Strom an einem Ort',
+      text: 'Von der Hausinstallation bis zur Anlagenprüfung im Betrieb. '
+        + 'Eigene Mannschaft, eigenes Lager, feste Ansprechpartner.',
       merkmale: [
-        { icon: 'notruf', text: 'Notdienst rund um die Uhr' },
-        { icon: 'werkzeug', text: 'Vertragswerkstatt für sechs Marken' },
-        { icon: 'haus', text: 'Drei Abschlepp-Standorte an A6 und A7' },
+        { icon: 'notruf', text: 'Störungsdienst rund um die Uhr' },
+        { icon: 'werkzeug', text: 'Meisterbetrieb mit zwölf Monteuren' },
+        { icon: 'pruefung', text: 'Prüfung ortsfester Anlagen nach DGUV V3' },
       ],
       knoepfe: [
         { text: 'Unsere Leistungen', href: '#leistungen', art: 'wichtig' },
-        { text: 'Kontakt', href: '#kontakt' },
+        { text: 'Kontakt aufnehmen', href: '#kontakt' },
       ],
-      bild: B.trucks, bildAlt: 'Lastwagen von Roll Truck-Service',
+      bild: ALLGEMEIN.werkzeug, bildAlt: 'Werkbank mit Werkzeug',
     })),
 
-    marke('heroTiefe · Bild wandert beim Scrollen'),
-    heroTiefe({
-      ueber: 'Rund um die Uhr',
-      titel: 'Notdienst',
-      text: 'Abschleppen und Bergung für Lkw und Pkw. Nachts, am Wochenende, an Feiertagen.',
-      knopfHaupt: { text: 'Jetzt anrufen', href: 'tel:+4979516048' },
-      bild: B.trucks, bildAlt: 'Bergungsfahrzeug',
+    marke('heroGeteilt · auf dunklem Grund'),
+    heroGeteilt({
+      plakette: 'Elektrotechnik seit 1984',
+      titel: 'Alles rund um Strom an einem Ort',
+      text: 'Dieselbe Fassung auf dunklem Grund.',
+      merkmale: [
+        { icon: 'notruf', text: 'Störungsdienst rund um die Uhr' },
+        { icon: 'werkzeug', text: 'Meisterbetrieb mit zwölf Monteuren' },
+      ],
+      knoepfe: [{ text: 'Unsere Leistungen', href: '#leistungen', art: 'wichtig' }],
+      bild: ALLGEMEIN.handwerk, bildAlt: 'Elektriker bei der Arbeit',
+      tief: true,
     }),
-    '<div class="abschnitt"><div class="schale"><p class="lead">Scrollbereich, damit die Tiefenwirkung sichtbar wird.</p></div></div>',
-    TIEFE_SKRIPT,
-    marke('heroVoll · Bild über die volle Breite'),
+
+    marke('heroVoll · allgemein · Bild über die volle Breite'),
     bsp('heroVoll', heroVoll({
-      ueber: 'Werkstatt & Notdienst für Nutzfahrzeuge',
-      titel: 'Rund um die Uhr erreichbar.',
-      text: 'Drei Abschlepp-Standorte an A6 und A7. Wer nachts um zwei liegen bleibt, '
-        + 'erreicht hier jemanden, der ausrückt.',
+      ueber: 'Bauunternehmen im Hohenlohekreis',
+      titel: 'Wir bauen, was stehen bleibt.',
+      text: 'Rohbau, Sanierung und Außenanlagen für Privat und Gewerbe. '
+        + 'Seit drei Generationen im Familienbesitz.',
       knoepfe: [
-        { text: 'Notdienst anrufen', href: 'tel:+4979514400', art: 'wichtig' },
-        { text: 'Unsere Leistungen', href: '#leistungen' },
+        { text: 'Projekte ansehen', href: '#projekte', art: 'wichtig' },
+        { text: 'Kontakt aufnehmen', href: '#kontakt' },
       ],
-      bild: B.trucks, bildAlt: 'Lastwagen von Roll Truck-Service',
+      bild: ALLGEMEIN.bau, bildAlt: 'Handwerker auf einer Baustelle',
     })),
-
-    marke('heroBand · schmales Band für Unterseiten'),
-    bsp('heroBand', heroBand({
-      ueber: 'Leistungen',
-      titel: 'Werkstatt für alle Nutzfahrzeugmarken',
-      text: 'Wartung, Reparatur, Hauptuntersuchung und Reifendienst unter einem Dach.',
-      knoepfe: [{ text: 'Termin anfragen', href: '#kontakt' }],
-      bild: B.werkstatt, bildAlt: 'Werkstatthalle',
-    })),
-
   ].join('\n'),
 });
-fs.writeFileSync(new URL('./index.html', import.meta.url), html);
+
+fs.writeFileSync(new URL('index.html', import.meta.url), html);
 console.log('Hero-Prüfseite:', (html.length / 1024).toFixed(1), 'kB');

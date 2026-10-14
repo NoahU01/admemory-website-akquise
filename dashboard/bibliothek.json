@@ -13,33 +13,25 @@
           "name": "Mittig mit Bild darunter",
           "erste": true,
           "wann": "Erste Wahl. Trägt jedes Gewerbe und kommt mit einem einzigen Querformat aus.",
-          "grenzen": "Braucht ein Bild im Breitformat. Partnerlogos darunter sind möglich, aber nicht nötig.",
+          "grenzen": "Braucht ein Bild im Breitformat. Die Logoleiste darunter läuft und sitzt auf der Breite der Navigation; unter acht Logos wird die Liste wiederholt, sonst klafft eine Lücke.",
           "bild": "assets/bibliothek/heroMitte.jpg",
-          "bytes": 137815
+          "bytes": 94639
         },
         {
           "id": "heroGeteilt",
-          "wann": "Wenn es drei bis vier harte Merkmale gibt, die sofort stehen sollen.",
+          "wann": "Wenn es drei bis vier harte Merkmale gibt, die sofort stehen sollen. Gibt es hell und dunkel.",
           "name": "Geteilt mit Merkmalen",
           "grenzen": "Die Merkmale brauchen Zeichen aus ZEICHEN. Bei nur einem Merkmal wirkt die Spalte leer.",
           "bild": "assets/bibliothek/heroGeteilt.jpg",
-          "bytes": 119073
+          "bytes": 138876
         },
         {
           "id": "heroVoll",
           "name": "Bild über die volle Breite",
           "wann": "Nur bei einem wirklich guten, großen Foto.",
-          "grenzen": "Hat einen dunklen Grund hinterlegt, falls das Bild nicht lädt. Schlechte Fotos fallen hier am meisten auf.",
+          "grenzen": "Inhalt steht senkrecht mittig. Hat einen dunklen Grund hinterlegt, falls das Bild nicht lädt — schlechte Fotos fallen hier am meisten auf.",
           "bild": "assets/bibliothek/heroVoll.jpg",
-          "bytes": 114006
-        },
-        {
-          "id": "heroBand",
-          "name": "Schmales Band",
-          "wann": "Für Unterseiten, nicht für die Startseite.",
-          "grenzen": "Trägt keine lange Erklärung.",
-          "bild": "assets/bibliothek/heroBand.jpg",
-          "bytes": 103830
+          "bytes": 84446
         }
       ]
     },
@@ -54,18 +46,18 @@
           "id": "vertrauenDuo",
           "name": "Kachelkarte neben Bildkarte",
           "erste": true,
-          "wann": "Erste Wahl, sobald ein brauchbares Foto vom Betrieb da ist.",
-          "grenzen": "Drei bis neun Kacheln. Ohne Bild läuft die linke Karte auf volle Breite. Sterne nur, wenn eine Note vorliegt — sonst steht nur die Anzahl.",
+          "wann": "Erste Wahl, sobald ein brauchbares Foto vom Betrieb da ist. Gibt es hell und dunkel.",
+          "grenzen": "Drei bis neun Kacheln. Auf der Bildkarte steht die Bewertung groß: Note, Sterne, Anzahl. Ohne Note bleibt die Anzahl, geraten wird nichts.",
           "bild": "assets/bibliothek/vertrauenDuo.jpg",
-          "bytes": 79799
+          "bytes": 55596
         },
         {
           "id": "vertrauenStreu",
           "name": "Streufeld mit Lücken",
-          "wann": "Wenn kein Foto da ist, aber genug Logos.",
-          "grenzen": "Fünf bis vierzehn Logos sitzen am besten. Das Raster wächst mit der Anzahl; ab etwa der Hälfte belegt fällt die Maske weg, damit sie kein Logo verschluckt.",
+          "wann": "Wenn kein Foto da ist, aber genug Logos. Die Kacheln heben sich beim Überfahren leicht an.",
+          "grenzen": "Fünf bis vierundzwanzig Logos — darunter und darüber bricht der Baustein ab. Das Raster wächst mit der Anzahl; ab etwa der Hälfte belegt fällt die Maske weg, damit sie kein Logo verschluckt.",
           "bild": "assets/bibliothek/vertrauenStreu.jpg",
-          "bytes": 40250
+          "bytes": 38154
         }
       ]
     },
@@ -159,7 +151,7 @@
           "wann": "Wenn viele Marken da sind und Bewegung passt.",
           "grenzen": "Braucht mindestens sechs Logos, sonst klafft eine Lücke. Die Liste wird dafür wiederholt.",
           "bild": "assets/bibliothek/logowandLauf.jpg",
-          "bytes": 21385
+          "bytes": 21192
         }
       ]
     },

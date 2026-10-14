@@ -4,5 +4,77 @@
     "geholt": "2026-10-14",
     "wer": "Noah Hermanns, AdMemory",
     "zweck": "Platzhalter-Porträt für die Bibliothek. Eigenes Bild von der eigenen Seite — fremde Gesichter kommen hier nicht hinein, auch nicht die anderen Porträts auf admemory.de."
+  },
+  "werkstatt.jpg": {
+    "quelle": "https://stocksnap.io/photo/beetle-buggy-A0737DFF83",
+    "anbieter": "stocksnap",
+    "urheber": "Ryan McGuire",
+    "lizenz": "cc0 1.0",
+    "titel": "Beetle Buggy",
+    "geholt": "2026-10-14",
+    "bytes": 313495
+  },
+  "handwerk.jpg": {
+    "quelle": "https://stocksnap.io/photo/electrician-electricity-QJ55PI34SY",
+    "anbieter": "stocksnap",
+    "urheber": "Michal Jarmoluk",
+    "lizenz": "cc0 1.0",
+    "titel": "Electrician Electricity",
+    "geholt": "2026-10-14",
+    "bytes": 180094
+  },
+  "team.jpg": {
+    "quelle": "https://stocksnap.io/photo/team-meeting-JBW2PXDOL6",
+    "anbieter": "stocksnap",
+    "urheber": "Startup Stock Photos",
+    "lizenz": "cc0 1.0",
+    "titel": "Team Meeting",
+    "geholt": "2026-10-14",
+    "bytes": 228715
+  },
+  "bau.jpg": {
+    "quelle": "https://stocksnap.io/photo/construction-worker-6B70C91911",
+    "anbieter": "stocksnap",
+    "urheber": "Leeroy",
+    "lizenz": "cc0 1.0",
+    "titel": "Construction Worker",
+    "geholt": "2026-10-14",
+    "bytes": 251842
+  },
+  "lkw.jpg": {
+    "quelle": "https://stocksnap.io/photo/truck-transportation-L05LPK1M02",
+    "anbieter": "stocksnap",
+    "urheber": "Seb Creativo",
+    "lizenz": "cc0 1.0",
+    "titel": "Truck Transportation",
+    "geholt": "2026-10-14",
+    "bytes": 192979
+  },
+  "buero.jpg": {
+    "quelle": "https://stocksnap.io/photo/home-office-QUU0AQABSN",
+    "anbieter": "stocksnap",
+    "urheber": "Design by Matt",
+    "lizenz": "cc0 1.0",
+    "titel": "Home Office",
+    "geholt": "2026-10-14",
+    "bytes": 173964
+  },
+  "werkzeug.jpg": {
+    "quelle": "https://stocksnap.io/photo/workbench-machinery-RKR8CFTODQ",
+    "anbieter": "stocksnap",
+    "urheber": "Lisa Fotios",
+    "lizenz": "cc0 1.0",
+    "titel": "Workbench Machinery",
+    "geholt": "2026-10-14",
+    "bytes": 442641
+  },
+  "beratung.jpg": {
+    "quelle": "https://stocksnap.io/photo/work-business-J5LXKNDREC",
+    "anbieter": "stocksnap",
+    "urheber": "Kristin Hardwick",
+    "lizenz": "cc0 1.0",
+    "titel": "Work Business",
+    "geholt": "2026-10-14",
+    "bytes": 192459
   }
 }

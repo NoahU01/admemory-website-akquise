@@ -137,3 +137,24 @@ Beispiel ist.
 
 Bevor gebaut wird, bekommt Noah die geplanten Fassungen als kurze Liste.
 Dann kann er vorher Feedback geben, statt hinterher.
+
+## Logoleisten sitzen auf Navigationsbreite
+
+Eine Logoleiste unter dem Kopfbereich ist bündig mit dem Inhalt der
+Navigation — auch dann, wenn der Entwurf noch keine Navigation hat. Sonst
+springt die Kante, sobald eine dazukommt. Sie läuft, und sie braucht
+mindestens acht Logos; sind weniger da, wird die Liste wiederholt.
+
+## Beispielbilder sind CC0
+
+Freie Bilder für die Bibliothek kommen über `bilder-holen.mjs` aus
+Openverse, ausschließlich CC0. Bei CC-BY müsste auf jeder Seite eine
+Namensnennung stehen, die in einem Entwurf nichts zu suchen hat. Herkunft,
+Urheber und Lizenz stehen trotzdem in `beispiel-bilder/herkunft.json` —
+nicht weil die Lizenz es verlangt, sondern damit nachvollziehbar bleibt,
+woher ein Bild kam.
+
+## Streufeld: fünf bis vierundzwanzig Logos
+
+Darunter ist es mehr Lücke als Inhalt, darüber eine Wand — dafür gibt es
+die Logowand. Das Feld wächst mit der Anzahl, aber nicht endlos.

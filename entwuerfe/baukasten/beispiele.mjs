@@ -47,3 +47,33 @@ export const STIMMEN_OHNE_NOTE = STIMMEN.slice(0, 3).map(({ note, ...r }) => r);
    Stimmen macht außerdem sofort klar, dass es ein Beispiel ist. */
 export const PORTRAET = '../baukasten/beispiel-bilder/noah.webp';
 export const STIMMEN_MIT_BILD = STIMMEN.map((s) => ({ ...s, bild: PORTRAET }));
+
+/* Freie Bilder für die allgemeinen Beispiele. Alle CC0, Herkunft und
+   Urheber stehen in beispiel-bilder/herkunft.json. Geholt mit
+   bilder-holen.mjs, damit es nachvollziehbar bleibt. */
+const BV = '../baukasten/beispiel-bilder/';
+export const ALLGEMEIN = {
+  werkstatt: BV + 'werkstatt.jpg',
+  handwerk:  BV + 'handwerk.jpg',
+  team:      BV + 'team.jpg',
+  bau:       BV + 'bau.jpg',
+  lkw:       BV + 'lkw.jpg',
+  buero:     BV + 'buero.jpg',
+  werkzeug:  BV + 'werkzeug.jpg',
+  beratung:  BV + 'beratung.jpg',
+};
+
+/* Platzhalter-Marken für Logoleisten. Echte fremde Logos gehören nicht in
+   eine allgemeine Bibliothek — diese sind als Schrift gezeichnet und
+   offensichtlich erfunden. */
+const wortmarke = (wort) => {
+  /* Ein rohes & macht das SVG als XML ungültig — "Brandt & Co" lud gar
+     nicht, und im Laufband klaffte eine Lücke. */
+  const sauber = String(wort).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 56">`
+    + `<text x="110" y="38" text-anchor="middle" font-family="Inter,Arial,sans-serif" `
+    + `font-size="26" font-weight="700" fill="#11161d" letter-spacing="-0.5">${sauber}</text></svg>`);
+};
+export const MARKEN = ['Nordhaus', 'Vektor', 'Stellar', 'Brandt & Co', 'Aurum',
+  'Lindner', 'Pfeil', 'Keramos'].map((w) => ({ name: w, pfad: wortmarke(w) }));

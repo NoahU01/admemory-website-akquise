@@ -192,9 +192,11 @@ a{color:inherit}
 /* Hintergrundfarbe als Rückfall: Lädt das Bild nicht, stünde weißer Text auf
    weißem Grund und die Seite wäre leer. Genau dieser Fall ist uns bei einer
    fremden Seite begegnet, deren Stylesheet fehlte. */
+/* Der Inhalt stand am unteren Rand und wirkte abgerutscht. Senkrecht
+   mittig steht er ruhiger, auch wenn das Bild unten mehr zeigt. */
 .hero-voll{background:var(--tief);color:#fff;
   position:relative;isolation:isolate;min-height:min(78vh,640px);
-  display:flex;align-items:flex-end;padding-block:var(--a-6) var(--a-5);overflow:hidden}
+  display:flex;align-items:center;padding-block:var(--a-6);overflow:hidden}
 .hero-voll__bild{position:absolute;inset:0;z-index:-2}
 .hero-voll__bild img{width:100%;height:100%;object-fit:cover}
 .hero-voll::after{content:"";position:absolute;inset:0;z-index:-1;
@@ -295,6 +297,11 @@ a{color:inherit}
 .plakette{display:inline-block;font-size:var(--t-xs);font-weight:600;
   padding:.3rem .8rem;border:1px solid var(--linie);border-radius:999px;
   color:var(--text-2);margin-bottom:var(--a-2)}
+/* Auf einem Foto war die Vorzeile als blasse Schrift kaum zu sehen. Als
+   hinterlegte Plakette hält sie sich gegen jeden Bildhintergrund. */
+.plakette--hell{margin-bottom:0;color:#fff;border-color:rgba(255,255,255,.34);
+  background:rgba(255,255,255,.12);backdrop-filter:blur(6px);letter-spacing:.06em;
+  text-transform:uppercase}
 
 /* ── V1: zwei Spalten, Karten an einer Linie ────────────────────
    Links steht der Text still, rechts hat die Liste Rhythmus. Die
@@ -371,9 +378,13 @@ a{color:inherit}
 /* ── Mittig über ganzflächigem Bild ──────────────────────────────
    Die einnehmendste Fassung. Braucht ein Bild, das auch abgedunkelt
    trägt, und eine Überschrift, die kurz genug für zwei Zeilen ist. */
+/* Zwei Reihen: Inhalt mittig, Logoleiste unten. Mit place-items:center
+   landete die Leiste als zweite mittige Zeile und klebte am Rand. */
 .hero-mitte{position:relative;isolation:isolate;min-height:min(88vh,760px);
-  display:grid;place-items:center;text-align:center;overflow:hidden;
-  background:var(--tief);color:#fff;padding-block:var(--a-6)}
+  display:grid;grid-template-rows:1fr auto;justify-items:center;align-items:center;
+  text-align:center;overflow:hidden;
+  background:var(--tief);color:#fff;padding-block:var(--a-6) var(--a-4)}
+.hero-mitte > .schale{width:100%}
 .hero-mitte__bild{position:absolute;inset:0;z-index:-2}
 .hero-mitte__bild img{width:100%;height:100%;object-fit:cover}
 .hero-mitte::after{content:"";position:absolute;inset:0;z-index:-1;
@@ -525,7 +536,10 @@ a{color:inherit}
 .auf-dunkel .logowand-gitter img:not([data-invers]),
 .abschnitt--tief .logowand-gitter img:not([data-invers]),
 .auf-dunkel .logowand-lauf img:not([data-invers]),
-.abschnitt--tief .logowand-lauf img:not([data-invers]){
+.abschnitt--tief .logowand-lauf img:not([data-invers]),
+/* Der Kopfbereich ist immer dunkel — ohne diese Zeile standen die Logos
+   dunkel auf dunklem Foto und waren nicht zu erkennen. */
+.hero-mitte .logowand-lauf img:not([data-invers]){
   background:rgba(255,255,255,.94);padding:.45rem .7rem;border-radius:7px}
 .auf-dunkel .logowand-karten,.abschnitt--tief .logowand-karten{background:var(--linie-tief)}
 .auf-dunkel .logowand-karten > div,.abschnitt--tief .logowand-karten > div{background:#fff}
@@ -789,3 +803,39 @@ blockquote,figure{margin:0}
   background:color-mix(in srgb,#fff 8%,transparent);border-color:color-mix(in srgb,#fff 16%,transparent)}
 .auf-dunkel .buehne__knopf svg,.abschnitt--tief .buehne__knopf svg{stroke:#fff}
 @media(prefers-reduced-motion:reduce){.buehne__bild{transition:none}}
+
+/* ── Kopfbereich: laufende Logoleiste auf Navigationsbreite ──────── */
+.hero-mitte__lauf{margin-top:var(--a-5)}
+.hero-mitte__lauf img{height:2rem}
+/* Der Kontaktknopf war schmaler als der Hauptknopf und wirkte zweitrangig. */
+.knopfreihe--breit .knopf{min-width:11rem;justify-content:center;text-align:center}
+@media(max-width:560px){.knopfreihe--breit .knopf{min-width:0;width:100%}}
+
+/* ── Geteilter Kopfbereich auf dunklem Grund ─────────────────────── */
+.hero-geteilt--tief{background:var(--tief)}
+.hero-geteilt--tief .plakette{color:#fff;border-color:rgba(255,255,255,.3);
+  background:rgba(255,255,255,.1)}
+
+/* ── Bewertung groß auf der Bildkarte ───────────────────────────── */
+.wertung-gross{display:flex;flex-direction:column;align-items:flex-start;gap:.4rem}
+.wertung-gross__zahl{font-size:clamp(2.6rem,6vw,3.8rem);font-weight:800;line-height:1;
+  letter-spacing:-.04em;color:#fff}
+.wertung-gross__zahl span{font-size:.4em;font-weight:600;opacity:.6;margin-left:.1em}
+.wertung-gross .sterne svg{width:1.25rem;height:1.25rem}
+.wertung-gross__text{font-size:var(--t-s);color:rgba(255,255,255,.88);margin:0}
+
+/* ── Streufeld: Kacheln heben sich beim Überfahren ───────────────── */
+.streu__feld{transition:transform .45s cubic-bezier(.3,1.3,.4,1),box-shadow .45s}
+.streu:hover .streu__feld{transform:translateY(-3px)}
+.streu:hover .streu__feld:nth-child(3n){transform:translateY(3px)}
+.streu:hover .streu__feld:nth-child(4n){transform:translateY(-6px)}
+.streu:hover .streu__feld:nth-child(5n){transform:translateY(2px)}
+.streu__feld:hover{transform:translateY(-7px) scale(1.06);
+  box-shadow:0 8px 20px rgba(17,22,29,.14);z-index:2}
+.streu:hover .streu__feld:hover{transform:translateY(-7px) scale(1.06)}
+@media(prefers-reduced-motion:reduce){
+  .streu__feld,.streu:hover .streu__feld,.streu__feld:hover{transition:none;transform:none}
+}
+
+/* Mehr Luft zwischen Kachelfeld und Text in der Vertrauenskarte. */
+.vertrauen__karte{gap:var(--a-4)}

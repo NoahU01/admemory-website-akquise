@@ -395,24 +395,31 @@ export function knopfPille({ text, href, neu = false }) {
 }
 
 export function heroMitte({ ueber, titel, text, knopfHaupt, knoepfe = [], bild, bildAlt = '', marken = [] }) {
+  /* Die Logoleiste läuft und sitzt auf der Breite der Navigation, nicht auf
+     der des Textblocks — sonst springt die Kante. Unter acht Logos wirkt ein
+     Laufband leer, deshalb wird die Liste bis dahin wiederholt. */
+  let spur = marken;
+  if (spur.length) { while (spur.length < 8) spur = spur.concat(marken); }
   return `
 <header class="hero-mitte" id="start">
   <div class="hero-mitte__bild"><img src="${esc(bild)}" alt="${esc(bildAlt)}" fetchpriority="high"></div>
   ${schale(`<div class="hero-mitte__in">
-    ${wenn(ueber, () => `<p class="ueber" style="color:#ffb4b4;margin:0">${esc(ueber)}</p>`)}
+    ${wenn(ueber, () => `<p class="plakette plakette--hell">${esc(ueber)}</p>`)}
     <h1>${esc(titel)}</h1>
     ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
-    ${wenn(knopfHaupt || knoepfe.length, () => `<div class="knopfreihe" style="justify-content:center">
+    ${wenn(knopfHaupt || knoepfe.length, () => `<div class="knopfreihe knopfreihe--breit" style="justify-content:center">
       ${wenn(knopfHaupt, () => knopfPille(knopfHaupt))}${knoepfe.map(knopf).join('')}</div>`)}
-    ${wenn(marken.length, () => `<div class="logoband" style="justify-content:center;margin-top:var(--a-2)">
-      ${marken.map((m) => `<img src="${esc(m.pfad)}" alt="${esc(m.name)}" loading="lazy">`).join('')}</div>`)}
   </div>`)}
+  ${wenn(spur.length, () => schale(`<div class="logowand-lauf hero-mitte__lauf">
+    <div class="logowand-lauf__spur" style="--dauer:44s">${
+      [...spur, ...spur].map(logoBild).join('')}</div>
+  </div>`))}
 </header>`;
 }
 
-export function heroGeteilt({ plakette, titel, text, merkmale = [], knoepfe = [], bild, bildAlt = '' }) {
+export function heroGeteilt({ plakette, titel, text, merkmale = [], knoepfe = [], bild, bildAlt = '', tief = false }) {
   return `
-<header class="hero-geteilt" id="start">
+<header class="hero-geteilt${tief ? ' auf-dunkel hero-geteilt--tief' : ''}" id="start">
   <div class="hero-geteilt__bild"><img src="${esc(bild)}" alt="${esc(bildAlt)}" fetchpriority="high"></div>
   ${schale(`<div class="hero-geteilt__in stapel-3">
     ${wenn(plakette, () => `<span class="plakette" style="margin:0">${esc(plakette)}</span>`)}
@@ -721,6 +728,28 @@ export function bewertung({ note, anzahl, quelle }) {
 
 const kachel = (l) => `<div class="vertrauen__kachel">${logoBild(l)}</div>`;
 
+/* Große Fassung für die Bildkarte: Die Note trägt den Block, Sterne und
+   Anzahl stehen darunter. Eine nackte Zahl neben einem Foto übersieht man. */
+export function bewertungGross({ note, anzahl, quelle }) {
+  if (typeof note !== 'number' && !anzahl) return '';
+  if (typeof note !== 'number') {
+    return `<div class="wertung-gross">
+      <div class="wertung-gross__zahl">${esc(Number(anzahl).toLocaleString('de-DE'))}</div>
+      <p class="wertung-gross__text">Bewertungen${wenn(quelle, () => ` bei ${esc(quelle)}`)}</p>
+    </div>`;
+  }
+  const anteil = Math.max(0, Math.min(1, note / 5));
+  return `<div class="wertung-gross">
+    <div class="wertung-gross__zahl">${esc(note.toLocaleString('de-DE'))}<span>/5</span></div>
+    <span class="sterne" role="img" aria-label="${esc(note.toLocaleString('de-DE'))} von 5 Sternen">
+      <span class="sterne__leer">${sternReihe(5).replace(/<svg /g, '<svg class="leer" ')}</span>
+      <span class="sterne__voll" style="width:${(anteil * 100).toFixed(1)}%">${sternReihe(5)}</span>
+    </span>
+    <p class="wertung-gross__text">${wenn(anzahl, () => `aus ${esc(Number(anzahl).toLocaleString('de-DE'))} Bewertungen`)}${
+      wenn(quelle, () => ` bei ${esc(quelle)}`)}</p>
+  </div>`;
+}
+
 export function vertrauenDuo({ ueber, titel, text, kacheln = [], bild, bildAlt = '',
   bildTitel, note, anzahl, quelle, tief = false }) {
   if (!kacheln.length) throw new Error('vertrauenDuo braucht mindestens eine Kachel.');
@@ -746,7 +775,7 @@ export function vertrauenDuo({ ueber, titel, text, kacheln = [], bild, bildAlt =
       <img class="hintergrund" src="${esc(bild)}" alt="${esc(bildAlt)}" loading="lazy">
       <div class="vertrauen__bildText">
         ${wenn(bildTitel, () => `<h3>${esc(bildTitel)}</h3>`)}
-        ${bewertung({ note, anzahl, quelle })}
+        ${bewertungGross({ note, anzahl, quelle })}
       </div>
     </div>`)}
   </div>`)}
@@ -782,8 +811,17 @@ function maskeWaehlen(spalten, zeilen, folge, anzahl) {
   return ' data-offen';
 }
 
+const STREU_MIN = 5, STREU_MAX = 24;
 export function vertrauenStreu({ ueber, titel, text, logos = [], nachsatz, tief = false }) {
-  if (!logos.length) throw new Error('vertrauenStreu braucht mindestens ein Logo.');
+  /* Unter fünf Logos ist das Feld mehr Lücke als Inhalt — das sieht nicht
+     luftig aus, sondern dünn. Über vierundzwanzig wird es eine Wand, und
+     dafür gibt es logowandGitter. Das Feld wächst, aber nicht endlos. */
+  if (logos.length < STREU_MIN)
+    throw new Error(`vertrauenStreu: ${logos.length} Logo(s) — unter ${STREU_MIN} `
+      + 'nimmt man logowandKarten.');
+  if (logos.length > STREU_MAX)
+    throw new Error(`vertrauenStreu: ${logos.length} Logos — über ${STREU_MAX} `
+      + 'wird das Feld eine Wand; dafür ist logowandGitter da.');
   /* Das Feld wächst und schrumpft mit der Anzahl. Bei zwei Logos sollen
      nicht dreiundzwanzig leere Kacheln daneben stehen; Ziel sind rund
      40 % belegte Felder. Gekürzt wird nie — nur das Raster wird größer. */
