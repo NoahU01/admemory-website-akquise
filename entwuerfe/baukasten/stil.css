@@ -970,3 +970,39 @@ img[data-einfarbig]{filter:brightness(0)}
 .reihe__logo[data-einfarbig],
 .auf-dunkel .logoband img[data-einfarbig],
 .abschnitt--tief .logoband img[data-einfarbig]{filter:brightness(0) invert(1)}
+
+/* ══ Termin ══════════════════════════════════════════════════════ */
+
+.termin{display:grid;gap:var(--a-4);align-items:start}
+@media(min-width:860px){.termin{grid-template-columns:1.1fr .9fr;gap:var(--a-5)}}
+.termin__schritte{list-style:none;margin:var(--a-3) 0 0;padding:0;display:grid;gap:var(--a-3)}
+.termin__schritte li{display:flex;gap:.9rem;align-items:flex-start}
+.termin__nummer{flex:none;width:1.9rem;height:1.9rem;border-radius:50%;display:grid;
+  place-items:center;font-size:.82rem;font-weight:700;
+  background:color-mix(in srgb,var(--akzent) 13%,var(--grund));color:var(--text)}
+.auf-dunkel .termin__nummer,.abschnitt--tief .termin__nummer{
+  background:color-mix(in srgb,#fff 14%,transparent);color:#fff}
+.termin__schritte b{display:block;font-weight:600;line-height:1.4}
+.termin__schritte span{display:block;font-size:var(--t-s);color:var(--text-2);margin-top:.15rem}
+
+.termin__karte{background:var(--gedaempft);border:1px solid var(--linie);border-radius:16px;
+  padding:var(--a-4) var(--a-3);display:grid;gap:var(--a-3);justify-items:stretch}
+.auf-dunkel .termin__karte,.abschnitt--tief .termin__karte{
+  background:color-mix(in srgb,#fff 6%,transparent);border-color:color-mix(in srgb,#fff 13%,transparent)}
+/* Die Telefonnummer ist auf einer Handwerkerseite der kürzeste Weg zum
+   Auftrag — deshalb steht sie groß und zuerst, nicht als Fußnote. */
+.termin__ruf{display:flex;align-items:center;justify-content:center;gap:.6rem;
+  font-size:clamp(1.15rem,2.4vw,1.5rem);font-weight:700;letter-spacing:-.02em;
+  color:var(--text);text-decoration:none}
+.termin__ruf svg{width:1.3rem;height:1.3rem;stroke:var(--akzent-schrift);fill:none;stroke-width:1.8;flex:none}
+.termin__ruf:hover{text-decoration:underline;text-underline-offset:4px}
+.termin__zeiten{margin:0;display:grid;gap:.35rem;font-size:var(--t-s)}
+.termin__zeiten > div{display:flex;justify-content:space-between;gap:1rem;
+  padding-block:.3rem;border-top:1px solid var(--linie)}
+.auf-dunkel .termin__zeiten > div,.abschnitt--tief .termin__zeiten > div{
+  border-color:color-mix(in srgb,#fff 13%,transparent)}
+.termin__zeiten dt{color:var(--text-2)}
+.termin__zeiten dd{margin:0;font-weight:600}
+.knopf--voll{width:100%;justify-content:center;text-align:center}
+.termin__hinweis{text-align:center;margin:0}
+.termin__einbettung{min-height:18rem;display:grid;place-items:center}

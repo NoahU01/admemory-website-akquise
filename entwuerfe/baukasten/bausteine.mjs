@@ -1256,3 +1256,55 @@ export const REIHE_SKRIPT = `
   });
 })();
 </script>`;
+
+/* ══ Termin ══════════════════════════════════════════════════════
+   terminAnfrage  Links die Überschrift und was nach der Anfrage passiert,
+                  rechts eine Karte mit Telefonnummer, Zeiten und dem
+                  Hauptknopf.
+
+   Bewusst kein Kalender: Ein eingebettetes Buchungswerkzeug in einem
+   Entwurf bucht in unseren Kalender, nicht in den des Betriebs, und zieht
+   ein fremdes Werkzeug samt Zustimmungspflicht auf die Seite. Harmonia
+   Swingers macht es genauso — die Seite heißt Booking und führt auf eine
+   Anfrage. Wird jemand Kunde, kommt an dieselbe Stelle sein eigener
+   Kalender; dafür ist `einbettung` da.                                    */
+
+export function terminAnfrage({ titel, text, schritte = [], telefon, telefonText,
+  knopf, zeiten = [], hinweis, einbettung, tief = false }) {
+  if (!telefon && !knopf && !einbettung)
+    throw new Error('terminAnfrage: ohne Telefonnummer, Knopf oder Einbettung '
+      + 'führt der Block nirgendwohin.');
+  if (schritte.length && schritte.length < 2)
+    throw new Error('terminAnfrage: ein einzelner Schritt ist kein Ablauf.');
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}" id="termin">
+  ${schale(`<div class="termin">
+    <div class="stapel-3 kopf-eng">
+      <h2>${esc(titel)}</h2>
+      ${wenn(text, () => `<p class="lead lead--zwei">${esc(kuerze(text, 150))}</p>`)}
+      ${wenn(schritte.length, () => `<ol class="termin__schritte">
+        ${schritte.map((s, i) => `<li>
+          <span class="termin__nummer">${i + 1}</span>
+          <div><b>${esc(s.titel)}</b>${wenn(s.text, () => `<span>${esc(s.text)}</span>`)}</div>
+        </li>`).join('')}
+      </ol>`)}
+    </div>
+    <div class="termin__karte">
+      ${wenn(einbettung, () => `<div class="termin__einbettung">${einbettung}</div>`)}
+      ${wenn(!einbettung, () => `
+        ${wenn(telefon, () => `<a class="termin__ruf" href="tel:${esc(telefon)}">
+          ${zeichen('telefon')}<span>${esc(telefonText ?? telefon)}</span></a>`)}
+        ${wenn(zeiten.length, () => `<dl class="termin__zeiten">
+          ${zeiten.map((z) => `<div><dt>${esc(z.tag)}</dt><dd>${esc(z.zeit)}</dd></div>`).join('')}
+        </dl>`)}
+        ${wenn(knopf, () => knopf.art === 'pille' ? knopfPille(knopf) : knopf2(knopf))}
+        ${wenn(hinweis, () => `<p class="klein termin__hinweis">${esc(hinweis)}</p>`)}`)}
+    </div>
+  </div>`)}
+</section>`;
+}
+
+/* Der Hauptknopf im Terminblock füllt die Karte. */
+const knopf2 = ({ text, href, neu = false }) =>
+  `<a class="knopf knopf--wichtig knopf--voll" href="${esc(href)}"` +
+  `${neu ? ' target="_blank" rel="noopener"' : ''}>${esc(text)}</a>`;

@@ -12,6 +12,8 @@ export const GRUPPEN = [
     zweck: 'Auszeichnungen, Siegel, Partnermarken, Bewertungen. Kundenstimmen kommen getrennt.' },
   { id: 'stimmen', icon: 'stimmen', name: 'Kundenstimmen', seite: '_stimmen',
     zweck: 'Was Kunden sagen. Aus den Google-Bewertungen übernommen, nie umgeschrieben.' },
+  { id: 'termin', icon: 'uhr', name: 'Termin', seite: '_termin',
+    zweck: 'Terminanfrage statt Kalender. Ein eingebettetes Buchungswerkzeug im Entwurf bucht in unseren Kalender, nicht in den des Betriebs.' },
   { id: 'leistungen', icon: 'bento', name: 'Leistungen', seite: '_leistungen',
     zweck: 'Was der Betrieb anbietet. Nie kürzen, auch wenn es nicht ins Raster passt.' },
   { id: 'logos', icon: 'logowand', name: 'Logowände', seite: '_logos',
@@ -56,6 +58,10 @@ export const BAUSTEINE = [
   { id: 'stimmenReihe', gruppe: 'stimmen', name: 'Waagerechter Schieber',
     wann: 'Wenn es zu den Stimmen harte Zahlen gibt — Dauer, Ersparnis, Jahre. Die Zahl trägt die Karte, das Zitat belegt sie.',
     grenzen: 'Braucht Bilder und mindestens drei Stimmen. Ohne Kennzahl rücken die Sterne an ihre Stelle; ohne beides ist es die falsche Fassung.' },
+
+  { id: 'terminAnfrage', gruppe: 'termin', name: 'Anfrage mit Ablauf', erste: true,
+    wann: 'Überall da, wo ein Termin der nächste Schritt ist. Links was nach der Anfrage passiert, rechts Telefonnummer, Zeiten und der Knopf.',
+    grenzen: 'Bricht ab, wenn weder Telefonnummer noch Knopf noch Einbettung da ist — ein Block, der nirgendwohin führt, ist schlimmer als keiner. Kein Kalender im Entwurf; wird jemand Kunde, kommt sein eigener an dieselbe Stelle.' },
 
   { id: 'leistungenBento', gruppe: 'leistungen', name: 'Bento-Raster', erste: true,
     wann: 'Erste Wahl bei fünf bis neun Leistungen.',

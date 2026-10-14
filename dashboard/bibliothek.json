@@ -15,7 +15,7 @@
           "wann": "Erste Wahl. Trägt jedes Gewerbe und kommt mit einem einzigen Querformat aus.",
           "grenzen": "Braucht ein Bild im Breitformat. Die Logoleiste darunter läuft und sitzt auf der Breite der Navigation; unter acht Logos wird die Liste wiederholt, sonst klafft eine Lücke.",
           "bild": "assets/bibliothek/heroMitte.jpg",
-          "bytes": 91923
+          "bytes": 91858
         },
         {
           "id": "heroGeteilt",
@@ -75,7 +75,7 @@
           "wann": "Erste Wahl. Die einzige Fassung ohne Bilder — und damit die einzige, die allein aus Google-Bewertungen entsteht. Ab sechs Stimmen am besten.",
           "grenzen": "Unter drei Stimmen bricht der Baustein ab, darunter gibt es kein Modul. Beim Überfahren hält der Lauf an; wer Bewegung abgestellt hat, bekommt die Liste ohne Deckel.",
           "bild": "assets/bibliothek/stimmenSpalten.jpg",
-          "bytes": 115796
+          "bytes": 115617
         },
         {
           "id": "stimmenBuehne",
@@ -108,6 +108,24 @@
           "grenzen": "Braucht Bilder und mindestens drei Stimmen. Ohne Kennzahl rücken die Sterne an ihre Stelle; ohne beides ist es die falsche Fassung.",
           "bild": "assets/bibliothek/stimmenReihe.jpg",
           "bytes": 134986
+        }
+      ]
+    },
+    {
+      "id": "termin",
+      "icon": "uhr",
+      "name": "Termin",
+      "seite": "_termin",
+      "zweck": "Terminanfrage statt Kalender. Ein eingebettetes Buchungswerkzeug im Entwurf bucht in unseren Kalender, nicht in den des Betriebs.",
+      "bausteine": [
+        {
+          "id": "terminAnfrage",
+          "name": "Anfrage mit Ablauf",
+          "erste": true,
+          "wann": "Überall da, wo ein Termin der nächste Schritt ist. Links was nach der Anfrage passiert, rechts Telefonnummer, Zeiten und der Knopf.",
+          "grenzen": "Bricht ab, wenn weder Telefonnummer noch Knopf noch Einbettung da ist — ein Block, der nirgendwohin führt, ist schlimmer als keiner. Kein Kalender im Entwurf; wird jemand Kunde, kommt sein eigener an dieselbe Stelle.",
+          "bild": "assets/bibliothek/terminAnfrage.jpg",
+          "bytes": 51252
         }
       ]
     },
