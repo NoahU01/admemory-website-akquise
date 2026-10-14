@@ -63,20 +63,30 @@ export const ALLGEMEIN = {
   beratung:  BV + 'beratung.jpg',
 };
 
-/* Platzhalter-Marken für Logoleisten. Echte fremde Logos gehören nicht in
-   eine allgemeine Bibliothek — diese sind als Schrift gezeichnet und
-   offensichtlich erfunden. */
-const wortmarke = (wort) => {
-  /* Ein rohes & macht das SVG als XML ungültig — "Brandt & Co" lud gar
-     nicht, und im Laufband klaffte eine Lücke. */
-  const sauber = String(wort).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  return 'data:image/svg+xml;utf8,' + encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 56">`
-    + `<text x="110" y="38" text-anchor="middle" font-family="Inter,Arial,sans-serif" `
-    + `font-size="26" font-weight="700" fill="#11161d" letter-spacing="-0.5">${sauber}</text></svg>`);
-};
-export const MARKEN = ['Nordhaus', 'Vektor', 'Stellar', 'Brandt & Co', 'Aurum',
-  'Lindner', 'Pfeil', 'Keramos'].map((w) => ({ name: w, pfad: wortmarke(w) }));
+/* Echte Logos statt Platzhaltertext: die Kundenlogos von admemory.de und
+   das AdMemory-Logo selbst. Reicht die Zahl nicht, wird die Liste von vorn
+   wiederholt — ein zweites Mal dieselbe Marke ist immer noch besser als ein
+   Kasten mit Text darin.
+
+   einfarbig und brauchtDunkel stehen in marken/herkunft.json und sind beim
+   Holen gemessen worden, nicht geraten. */
+const MV = '../baukasten/beispiel-bilder/marken/';
+const ECHTE_MARKEN = [
+  { name: 'Meiser Hotels',     pfad: MV + 'meiser.png',    einfarbig: true },
+  { name: 'blewatec',          pfad: MV + 'blewatec.png' },
+  { name: 'empiria',           pfad: MV + 'empiria.webp',  einfarbig: true },
+  { name: 'HUPPIETZ',          pfad: MV + 'huppietz.webp', einfarbig: true },
+  { name: 'becoa',             pfad: MV + 'becoa.webp',    einfarbig: true },
+  { name: 'Vertriebsmaschine', pfad: MV + 'vm.webp',       einfarbig: true },
+  { name: 'AdMemory',          pfad: MV + 'admemory.png' },
+];
+
+/* Wiederholt die Liste, bis die gewünschte Anzahl erreicht ist. Dadurch
+   steht eine Marke nie direkt neben sich selbst. */
+export const marken = (n = 8) => Array.from({ length: n },
+  (_, i) => ECHTE_MARKEN[i % ECHTE_MARKEN.length]);
+export const MARKEN = marken(8);
+
 
 /* Leistungen eines erfundenen Elektrobetriebs — breit genug, dass jede
    Rasterfassung damit vorführbar ist. */

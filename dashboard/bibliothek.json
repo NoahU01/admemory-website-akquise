@@ -15,7 +15,7 @@
           "wann": "Erste Wahl. Trägt jedes Gewerbe und kommt mit einem einzigen Querformat aus.",
           "grenzen": "Braucht ein Bild im Breitformat. Die Logoleiste darunter läuft und sitzt auf der Breite der Navigation; unter acht Logos wird die Liste wiederholt, sonst klafft eine Lücke.",
           "bild": "assets/bibliothek/heroMitte.jpg",
-          "bytes": 93810
+          "bytes": 91923
         },
         {
           "id": "heroGeteilt",
@@ -49,7 +49,7 @@
           "wann": "Erste Wahl, sobald ein brauchbares Foto vom Betrieb da ist. Gibt es hell und dunkel.",
           "grenzen": "Drei bis neun Kacheln. Auf der Bildkarte steht die Bewertung groß: Note, Sterne, Anzahl. Ohne Note bleibt die Anzahl, geraten wird nichts.",
           "bild": "assets/bibliothek/vertrauenDuo.jpg",
-          "bytes": 51345
+          "bytes": 66376
         },
         {
           "id": "vertrauenStreu",
@@ -57,7 +57,7 @@
           "wann": "Wenn kein Foto da ist, aber genug Logos. Die Logos liegen versetzt, nie zwei nebeneinander, und die Ecken bleiben frei — das macht aus dem Rechteck eine Raute. Die Kacheln heben sich beim Überfahren an.",
           "grenzen": "Fünf bis vierundzwanzig Logos — darunter und darüber bricht der Baustein ab. Das Raster wächst mit der Anzahl; ab etwa der Hälfte belegt fällt die Maske weg, damit sie kein Logo verschluckt.",
           "bild": "assets/bibliothek/vertrauenStreu.jpg",
-          "bytes": 33284
+          "bytes": 44041
         }
       ]
     },
@@ -75,7 +75,7 @@
           "wann": "Erste Wahl. Die einzige Fassung ohne Bilder — und damit die einzige, die allein aus Google-Bewertungen entsteht. Ab sechs Stimmen am besten.",
           "grenzen": "Unter drei Stimmen bricht der Baustein ab, darunter gibt es kein Modul. Beim Überfahren hält der Lauf an; wer Bewegung abgestellt hat, bekommt die Liste ohne Deckel.",
           "bild": "assets/bibliothek/stimmenSpalten.jpg",
-          "bytes": 115912
+          "bytes": 115796
         },
         {
           "id": "stimmenBuehne",
@@ -99,7 +99,7 @@
           "wann": "Die einzige Fassung ohne einzelne Stimmen — sie braucht nur Partnerlogos und eine Gesamtnote. Damit die Wahl bei jedem Betrieb, dessen Bewertungen keine brauchbaren Texte hergeben.",
           "grenzen": "Mindestens vier Logos, am besten acht: dann füllen Wand und Notenkarte zusammen ein sauberes Rechteck. Ohne Note bricht der Baustein ab. Quelle ist Google oder Trustpilot, die Zahl verlinkt dorthin.",
           "bild": "assets/bibliothek/stimmenNote.jpg",
-          "bytes": 55121
+          "bytes": 58520
         },
         {
           "id": "stimmenReihe",
@@ -151,7 +151,7 @@
           "wann": "Erste Wahl bei vier bis sechs Marken, die in eine Zeile passen.",
           "grenzen": "Unter vier bricht der Baustein ab — zwei Partner wirken wie eine Entschuldigung. Weiße Grafik auf Transparenz bekommt dunklen Grund, gemessen und nicht geraten.",
           "bild": "assets/bibliothek/logowandKarten.jpg",
-          "bytes": 17558
+          "bytes": 19627
         },
         {
           "id": "logowandLauf",
@@ -159,7 +159,7 @@
           "wann": "Sobald mehr Logos da sind, als in eine Zeile passen. Hält beim Überfahren an.",
           "grenzen": "Läuft nicht über die ganze Seitenbreite, sondern in einem begrenzten Band. Unter sechs Logos wird die Liste wiederholt, sonst klafft eine Lücke.",
           "bild": "assets/bibliothek/logowandLauf.jpg",
-          "bytes": 11072
+          "bytes": 16310
         }
       ]
     },

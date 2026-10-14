@@ -489,10 +489,17 @@ export const TIEFE_SKRIPT = `
                    klafft eine Lücke. Die Liste wird dafür so oft wiederholt,
                    bis genug zusammenkommt.                                 */
 
-/* brauchtDunkel kommt aus herkunft.json: beim Holen gemessen, weil weiße
-   Grafik auf Transparenz sonst auf hellem Grund unsichtbar bleibt. */
+/* Zwei gemessene Eigenschaften aus herkunft.json, keine geratenen:
+
+   einfarbig    Das Logo hat keine Farbe (Sättigung nahe null). Dann darf es
+                umgefärbt werden und nimmt die Schriftfarbe an — vier der
+                Kundenlogos sind weiße Grafik und wären sonst auf hellem
+                Grund unsichtbar. Dunkle Kacheln für vier von sieben Logos
+                hätten die Wand fleckig gemacht.
+   brauchtDunkel Das Logo ist hell, aber farbig — umfärben würde die Marke
+                verfälschen. Dann bekommt es eine dunkle Fläche. */
 const logoBild = (l) => `<img src="${esc(l.pfad)}" alt="${esc(l.name)}"` +
-  `${l.brauchtDunkel ? ' data-invers' : ''} loading="lazy">`;
+  `${l.einfarbig ? ' data-einfarbig' : l.brauchtDunkel ? ' data-invers' : ''} loading="lazy">`;
 
 /* Keine Vorzeile mehr: Die gehoert in ein eigenes Modul, nicht in jedes. */
 function logoKopf({ titel, titelLeise }) {

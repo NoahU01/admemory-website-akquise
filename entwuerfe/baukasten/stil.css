@@ -959,3 +959,14 @@ blockquote,figure{margin:0}
 .reihe__pfeil svg{width:1.05rem;height:1.05rem;stroke:#fff;fill:none;stroke-width:1.8}
 .reihe__pfeil:hover{background:rgba(255,255,255,.3);transform:translateY(-2px)}
 @media(prefers-reduced-motion:reduce){.reihe{scroll-behavior:auto}.reihe__pfeil{transition:none}}
+
+/* ── Einfarbige Logos nehmen die Schriftfarbe an ──────────────────
+   Gemessen beim Holen: Sättigung nahe null heißt, die Marke hat keine
+   Farbe, die man verfälschen könnte. Alle Logoflächen im Baukasten sind
+   hell — auch in dunklen Abschnitten, wo die Kacheln weiß werden —,
+   deshalb werden einfarbige Logos durchgehend dunkel eingefärbt. */
+img[data-einfarbig]{filter:brightness(0)}
+/* Ausnahme: Wo ein Logo ohne Kachel direkt auf dunklem Grund steht. */
+.reihe__logo[data-einfarbig],
+.auf-dunkel .logoband img[data-einfarbig],
+.abschnitt--tief .logoband img[data-einfarbig]{filter:brightness(0) invert(1)}

@@ -207,3 +207,18 @@ Baustein bricht ab, wenn ein Schritt ohne Zeichen kommt.
 Keine zwei Logos nebeneinander, die vier Ecken bleiben leer. Aus dem
 Rechteck wird dadurch eine Raute, und zwischen zwei Logos liegt immer eine
 leere Kachel. Logos dicht an dicht sind kein Streufeld, sondern ein Raster.
+
+## Keine Platzhalter-Logos
+
+In der Bibliothek stehen echte Marken: die Kundenlogos von admemory.de und
+das AdMemory-Logo selbst. Reicht die Zahl nicht, wird die Liste wiederholt —
+dieselbe Marke zweimal ist besser als ein Kasten mit Text darin.
+
+## Einfarbige Logos werden umgefärbt, farbige nicht
+
+Beim Holen wird die Sättigung gemessen. Liegt sie nahe null, hat die Marke
+keine Farbe, die man verfälschen könnte — dann nimmt das Logo die
+Schriftfarbe an. Vier der sieben Kundenlogos sind weiße Grafik und wären auf
+hellem Grund unsichtbar; dunkle Kacheln für vier von sieben hätten die Wand
+fleckig gemacht. blewatec und AdMemory haben echte Farbe und bleiben, wie
+sie geliefert wurden.

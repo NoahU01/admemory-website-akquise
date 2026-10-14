@@ -1,0 +1,121 @@
+{
+  "meiser.png": {
+    "name": "Meiser Hotels",
+    "quelle": "https://meiser-hotels.de/wp-content/uploads/2025/07/Meiser_Hotels_Logo_4_Sterne_S_Anthrazit.png",
+    "geholt": "2026-10-14",
+    "bytes": 32160,
+    "hinweis": "Kundenlogo von admemory.de — fremde Marke, nur als Beispiel in der Bibliothek.",
+    "anteile": {
+      "dunkel": 1,
+      "hell": 0
+    },
+    "brauchtDunkel": false,
+    "saettigung": {
+      "mittel": 0.03,
+      "hoechste": 0.059
+    },
+    "einfarbig": true
+  },
+  "blewatec.png": {
+    "name": "blewatec",
+    "quelle": "https://static.wixstatic.com/media/ee3ede_7092265e297e41acb3fd7fe7ccaf0b63~mv2.png",
+    "geholt": "2026-10-14",
+    "bytes": 57106,
+    "hinweis": "Kundenlogo von admemory.de — fremde Marke, nur als Beispiel in der Bibliothek.",
+    "anteile": {
+      "dunkel": 1,
+      "hell": 0
+    },
+    "brauchtDunkel": false,
+    "saettigung": {
+      "mittel": 0.484,
+      "hoechste": 1
+    },
+    "einfarbig": false
+  },
+  "empiria.webp": {
+    "name": "empiria",
+    "quelle": "https://admemory.de/images/empiria.webp",
+    "geholt": "2026-10-14",
+    "bytes": 6624,
+    "hinweis": "Kundenlogo von admemory.de — fremde Marke, nur als Beispiel in der Bibliothek.",
+    "anteile": {
+      "dunkel": 0,
+      "hell": 1
+    },
+    "brauchtDunkel": true,
+    "saettigung": {
+      "mittel": 0,
+      "hoechste": 0
+    },
+    "einfarbig": true
+  },
+  "huppietz.webp": {
+    "name": "HUPPIETZ",
+    "quelle": "https://admemory.de/images/hup.webp",
+    "geholt": "2026-10-14",
+    "bytes": 4174,
+    "hinweis": "Kundenlogo von admemory.de — fremde Marke, nur als Beispiel in der Bibliothek.",
+    "anteile": {
+      "dunkel": 0,
+      "hell": 1
+    },
+    "brauchtDunkel": true,
+    "saettigung": {
+      "mittel": 0,
+      "hoechste": 0
+    },
+    "einfarbig": true
+  },
+  "becoa.webp": {
+    "name": "becoa",
+    "quelle": "https://admemory.de/images/becoa.webp",
+    "geholt": "2026-10-14",
+    "bytes": 1764,
+    "hinweis": "Kundenlogo von admemory.de — fremde Marke, nur als Beispiel in der Bibliothek.",
+    "anteile": {
+      "dunkel": 0,
+      "hell": 1
+    },
+    "brauchtDunkel": true,
+    "saettigung": {
+      "mittel": 0,
+      "hoechste": 0
+    },
+    "einfarbig": true
+  },
+  "vm.webp": {
+    "name": "Vertriebsmaschine",
+    "quelle": "https://admemory.de/images/vm.webp",
+    "geholt": "2026-10-14",
+    "bytes": 4542,
+    "hinweis": "Kundenlogo von admemory.de — fremde Marke, nur als Beispiel in der Bibliothek.",
+    "anteile": {
+      "dunkel": 0,
+      "hell": 1
+    },
+    "brauchtDunkel": true,
+    "saettigung": {
+      "mittel": 0,
+      "hoechste": 0
+    },
+    "einfarbig": true
+  },
+  "admemory.png": {
+    "name": "AdMemory",
+    "quelle": "https://admemory.de/images/admemory-logo-dark.png",
+    "geholt": "2026-10-14",
+    "bytes": 15705,
+    "hinweis": "Kundenlogo von admemory.de — fremde Marke, nur als Beispiel in der Bibliothek.",
+    "anteile": {
+      "dunkel": 0.962,
+      "hell": 0.036
+    },
+    "brauchtDunkel": false,
+    "saettigung": {
+      "mittel": 0.269,
+      "hoechste": 0.853
+    },
+    "einfarbig": false
+  }
+}
