@@ -1100,3 +1100,152 @@ export const BUEHNE_SKRIPT = `
   });
 })();
 </script>`;
+
+/* ══ Kundenstimmen: zwei Fassungen nach Vorbildern ════════════════
+   stimmenNote   Logowand, in der eine Kachel durch eine dunkle Karte mit
+                 der Gesamtnote ersetzt ist. Am besten mit acht Logos: Dann
+                 füllen Wand und Karte zusammen ein sauberes Rechteck.
+                 Nach dem Vorbild von
+                 kl-unternehmerberatung.de. Erschlägt Partnermarken und
+                 Bewertung in einem Block und braucht keine einzelnen
+                 Stimmen — damit die einzige Fassung, die auch bei einem
+                 Betrieb ohne Rezensionstexte funktioniert.
+   stimmenReihe  Waagerechter Schieber mit hohen Fotokarten, nach dem
+                 Vorbild von webflow.com. Jede Karte trägt eine Kennzahl,
+                 ein Zitat und einen Namen. Braucht Bilder.               */
+
+const QUELLEN = {
+  google:     { name: 'Google',     link: (u) => u },
+  trustpilot: { name: 'Trustpilot', link: (u) => u },
+};
+
+/* Halbkreis als Anzeige. Die Länge des Bogens wird gerechnet, nicht
+   geschätzt: Bei r = 55 sind es π·55 Einheiten. */
+const BOGEN_R = 55;
+const BOGEN_LAENGE = Math.PI * BOGEN_R;
+
+export function notenkarte({ note, anzahl, quelle = 'google', href, satz }) {
+  if (typeof note !== 'number')
+    throw new Error('notenkarte braucht eine Note — geraten wird keine.');
+  const q = QUELLEN[quelle];
+  if (!q) throw new Error(`notenkarte: unbekannte Quelle "${quelle}". `
+    + `Vorhanden: ${Object.keys(QUELLEN).join(', ')}`);
+  const anteil = Math.max(0, Math.min(1, note / 5));
+  const zahl = esc(note.toLocaleString('de-DE'));
+  const anzahlText = anzahl
+    ? `${Number(anzahl).toLocaleString('de-DE')} Bewertungen`
+    : null;
+  return `<div class="notenkarte">
+  <div class="notenkarte__anzeige">
+    <svg viewBox="0 0 140 84" aria-hidden="true">
+      <path class="notenkarte__grund" d="M15 72 A${BOGEN_R} ${BOGEN_R} 0 0 1 125 72"/>
+      <path class="notenkarte__wert" d="M15 72 A${BOGEN_R} ${BOGEN_R} 0 0 1 125 72"
+            style="stroke-dasharray:${BOGEN_LAENGE.toFixed(2)};stroke-dashoffset:${
+              (BOGEN_LAENGE * (1 - anteil)).toFixed(2)}"/>
+    </svg>
+    <span class="notenkarte__zahl">${zahl}</span>
+  </div>
+  <p class="notenkarte__text">${esc(satz ?? 'Unsere Kunden bewerten die Zusammenarbeit mit')}
+    <b>${zahl} von 5,0 Sternen</b>${wenn(anzahlText, () => ' aus ' + (href
+      ? `<a href="${esc(q.link(href))}" target="_blank" rel="noopener">${esc(anzahlText)}</a>`
+      : esc(anzahlText)) + ` bei ${esc(q.name)}`)}.</p>
+</div>`;
+}
+
+export function stimmenNote({ titel, text, logos = [], note, anzahl,
+  quelle = 'google', href, satz, tief = false }) {
+  if (logos.length < 4)
+    throw new Error(`stimmenNote: ${logos.length} Logo(s) — unter 4 trägt die Wand nicht.`);
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(`<div class="stapel-3 kopf-eng" style="margin-bottom:var(--a-4)">
+      ${wenn(titel, () => `<h2>${esc(titel)}</h2>`)}
+      ${wenn(text, () => `<p class="lead lead--zwei">${esc(kuerze(text, 150))}</p>`)}
+    </div>
+    <div class="wand-note" style="--zeile:${Math.max(1, Math.ceil((logos.length + 4) / 4) - 1)}">
+      ${logos.map((l) => `<div class="wand-note__kachel">${logoBild(l)}</div>`).join('')}
+      ${notenkarte({ note, anzahl, quelle, href, satz })}
+    </div>`)}
+</section>`;
+}
+
+export function stimmenReihe({ titel, text, stimmen = [], tief = false }) {
+  pruefeStimmen('stimmenReihe', stimmen);
+  pruefeBilder('stimmenReihe', stimmen);
+  const id = 'reihe' + Math.random().toString(36).slice(2, 7);
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(`<div class="reihe__kopf">
+      <div class="stapel-3 kopf-eng">
+        ${wenn(titel, () => `<h2>${esc(titel)}</h2>`)}
+        ${wenn(text, () => `<p class="lead lead--zwei">${esc(kuerze(text, 150))}</p>`)}
+      </div>
+      ${wenn(stimmen.length > 1, () => `<div class="reihe__knoepfe">
+        <button class="buehne__knopf" type="button" data-reihe-zurueck="${id}"
+          aria-label="Vorherige Stimme">${zeichen('pfeillinks')}</button>
+        <button class="buehne__knopf" type="button" data-reihe-vor="${id}"
+          aria-label="Nächste Stimme">${zeichen('pfeilrechts')}</button>
+      </div>`)}
+    </div>`)}
+  <div class="reihe" id="${id}" tabindex="0" role="group" aria-label="Kundenstimmen, waagerecht blätterbar">
+    ${`<div class="reihe__spur">
+      ${stimmen.map((s) => `<figure class="reihe__karte">
+        <img src="${esc(s.bild)}" alt="" loading="lazy">
+        ${wenn(s.logo, () => `<img class="reihe__logo" src="${esc(s.logo)}" alt="${esc(s.firma ?? '')}" loading="lazy">`)}
+        <div class="reihe__in">
+          ${wenn(s.zahl, () => `<div class="reihe__zahl">${esc(s.zahl)}</div>`)}
+          ${wenn(s.zahlLabel, () => `<p class="reihe__label">${esc(s.zahlLabel)}</p>`)}
+          ${wenn(!s.zahl && typeof s.note === 'number', () => `<div class="stimme__noten">${
+            sternReihe(Math.round(s.note))}</div>`)}
+          <blockquote>${esc(kuerze(s.text, 240))}</blockquote>
+          <figcaption class="stimme__kopf">
+            <span class="stimme__wer"><b>${esc(s.name)}</b>${
+              wenn(s.rolle, () => `<span>${esc(s.rolle)}</span>`)}</span>
+          </figcaption>
+        </div>
+        ${wenn(s.href, () => `<a class="reihe__pfeil" href="${esc(s.href)}"
+          aria-label="Mehr zu ${esc(s.name)}">${zeichen('pfeilauf')}</a>`)}
+      </figure>`).join('')}
+    </div>`}
+  </div>
+</section>`;
+}
+
+export const REIHE_SKRIPT = `
+<script>
+(function () {
+  document.querySelectorAll('[data-reihe-vor]').forEach(function (knopf) {
+    verdrahte(knopf, 1);
+  });
+  document.querySelectorAll('[data-reihe-zurueck]').forEach(function (knopf) {
+    verdrahte(knopf, -1);
+  });
+  function verdrahte(knopf, richtung) {
+    var id = knopf.getAttribute('data-reihe-vor') || knopf.getAttribute('data-reihe-zurueck');
+    var reihe = document.getElementById(id);
+    if (!reihe) return;
+    knopf.addEventListener('click', function () {
+      var karte = reihe.querySelector('.reihe__karte');
+      if (!karte) return;
+      /* Um genau eine Karte weiter, Abstand eingerechnet. Eine feste
+         Pixelzahl ginge bei jeder Bildschirmbreite daneben. */
+      var spur = reihe.querySelector('.reihe__spur');
+      var abstand = parseFloat(getComputedStyle(spur).columnGap) || 0;
+      reihe.scrollBy({ left: richtung * (karte.getBoundingClientRect().width + abstand),
+                       behavior: 'smooth' });
+    });
+  }
+  /* Knöpfe abschalten, wo es nicht weitergeht. */
+  document.querySelectorAll('.reihe').forEach(function (reihe) {
+    var vor = document.querySelector('[data-reihe-vor="' + reihe.id + '"]');
+    var zurueck = document.querySelector('[data-reihe-zurueck="' + reihe.id + '"]');
+    function stand() {
+      if (zurueck) zurueck.disabled = reihe.scrollLeft < 8;
+      if (vor) vor.disabled = reihe.scrollLeft + reihe.clientWidth >= reihe.scrollWidth - 8;
+    }
+    reihe.addEventListener('scroll', stand, { passive: true });
+    window.addEventListener('resize', stand);
+    stand();
+  });
+})();
+</script>`;

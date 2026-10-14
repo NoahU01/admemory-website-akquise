@@ -50,6 +50,13 @@ export const BAUSTEINE = [
     wann: 'Wenn es gute Bilder gibt. Das Foto ist die Karte, unten steht nur der Name.',
     grenzen: 'Ohne Bilder bricht der Baustein ab. Hochformate und Szenen aus dem Betrieb sitzen besser als quadratische Porträts, die unten angeschnitten werden.' },
 
+  { id: 'stimmenNote', gruppe: 'stimmen', name: 'Logowand mit Gesamtnote',
+    wann: 'Die einzige Fassung ohne einzelne Stimmen — sie braucht nur Partnerlogos und eine Gesamtnote. Damit die Wahl bei jedem Betrieb, dessen Bewertungen keine brauchbaren Texte hergeben.',
+    grenzen: 'Mindestens vier Logos, am besten acht: dann füllen Wand und Notenkarte zusammen ein sauberes Rechteck. Ohne Note bricht der Baustein ab. Quelle ist Google oder Trustpilot, die Zahl verlinkt dorthin.' },
+  { id: 'stimmenReihe', gruppe: 'stimmen', name: 'Waagerechter Schieber',
+    wann: 'Wenn es zu den Stimmen harte Zahlen gibt — Dauer, Ersparnis, Jahre. Die Zahl trägt die Karte, das Zitat belegt sie.',
+    grenzen: 'Braucht Bilder und mindestens drei Stimmen. Ohne Kennzahl rücken die Sterne an ihre Stelle; ohne beides ist es die falsche Fassung.' },
+
   { id: 'leistungenBento', gruppe: 'leistungen', name: 'Bento-Raster', erste: true,
     wann: 'Erste Wahl bei fünf bis neun Leistungen.',
     grenzen: 'Unter fünf bricht der Baustein ab — dafür ist das gleichmäßige Raster da. Bei genau sechs stehen alle Karten gleich groß nebeneinander, die hervorgehobene bleibt hervorgehoben. Karten heben sich beim Überfahren an.' },

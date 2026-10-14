@@ -15,7 +15,7 @@
           "wann": "Erste Wahl. Trägt jedes Gewerbe und kommt mit einem einzigen Querformat aus.",
           "grenzen": "Braucht ein Bild im Breitformat. Die Logoleiste darunter läuft und sitzt auf der Breite der Navigation; unter acht Logos wird die Liste wiederholt, sonst klafft eine Lücke.",
           "bild": "assets/bibliothek/heroMitte.jpg",
-          "bytes": 93731
+          "bytes": 93810
         },
         {
           "id": "heroGeteilt",
@@ -75,7 +75,7 @@
           "wann": "Erste Wahl. Die einzige Fassung ohne Bilder — und damit die einzige, die allein aus Google-Bewertungen entsteht. Ab sechs Stimmen am besten.",
           "grenzen": "Unter drei Stimmen bricht der Baustein ab, darunter gibt es kein Modul. Beim Überfahren hält der Lauf an; wer Bewegung abgestellt hat, bekommt die Liste ohne Deckel.",
           "bild": "assets/bibliothek/stimmenSpalten.jpg",
-          "bytes": 116202
+          "bytes": 115912
         },
         {
           "id": "stimmenBuehne",
@@ -83,7 +83,7 @@
           "wann": "Bei drei bis sechs ausgesuchten Stimmen, wenn es Porträts gibt.",
           "grenzen": "Ohne Bilder bricht der Baustein ab. Bei gleichen Bildern wirkt der Stapel flach — er lebt von verschiedenen Gesichtern.",
           "bild": "assets/bibliothek/stimmenBuehne.jpg",
-          "bytes": 35024
+          "bytes": 35096
         },
         {
           "id": "stimmenBilder",
@@ -91,7 +91,23 @@
           "wann": "Wenn es gute Bilder gibt. Das Foto ist die Karte, unten steht nur der Name.",
           "grenzen": "Ohne Bilder bricht der Baustein ab. Hochformate und Szenen aus dem Betrieb sitzen besser als quadratische Porträts, die unten angeschnitten werden.",
           "bild": "assets/bibliothek/stimmenBilder.jpg",
-          "bytes": 78717
+          "bytes": 78495
+        },
+        {
+          "id": "stimmenNote",
+          "name": "Logowand mit Gesamtnote",
+          "wann": "Die einzige Fassung ohne einzelne Stimmen — sie braucht nur Partnerlogos und eine Gesamtnote. Damit die Wahl bei jedem Betrieb, dessen Bewertungen keine brauchbaren Texte hergeben.",
+          "grenzen": "Mindestens vier Logos, am besten acht: dann füllen Wand und Notenkarte zusammen ein sauberes Rechteck. Ohne Note bricht der Baustein ab. Quelle ist Google oder Trustpilot, die Zahl verlinkt dorthin.",
+          "bild": "assets/bibliothek/stimmenNote.jpg",
+          "bytes": 55121
+        },
+        {
+          "id": "stimmenReihe",
+          "name": "Waagerechter Schieber",
+          "wann": "Wenn es zu den Stimmen harte Zahlen gibt — Dauer, Ersparnis, Jahre. Die Zahl trägt die Karte, das Zitat belegt sie.",
+          "grenzen": "Braucht Bilder und mindestens drei Stimmen. Ohne Kennzahl rücken die Sterne an ihre Stelle; ohne beides ist es die falsche Fassung.",
+          "bild": "assets/bibliothek/stimmenReihe.jpg",
+          "bytes": 134986
         }
       ]
     },
@@ -143,7 +159,7 @@
           "wann": "Sobald mehr Logos da sind, als in eine Zeile passen. Hält beim Überfahren an.",
           "grenzen": "Läuft nicht über die ganze Seitenbreite, sondern in einem begrenzten Band. Unter sechs Logos wird die Liste wiederholt, sonst klafft eine Lücke.",
           "bild": "assets/bibliothek/logowandLauf.jpg",
-          "bytes": 10886
+          "bytes": 11072
         }
       ]
     },
