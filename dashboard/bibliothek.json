@@ -80,26 +80,26 @@
           "id": "stimmenSpalten",
           "name": "Laufende Spalten",
           "erste": true,
-          "wann": "Erste Wahl. Trägt ab sechs Stimmen und braucht keine Fotos.",
-          "grenzen": "Unter sechs Stimmen wiederholt sich der Lauf zu offensichtlich; die Spaltenzahl geht dann auf zwei oder eine zurück. Beim Überfahren hält der Lauf an, und wer Bewegung abgestellt hat, bekommt die Liste ohne Deckel.",
+          "wann": "Erste Wahl. Die einzige Fassung ohne Bilder — und damit die einzige, die allein aus Google-Bewertungen entsteht. Ab sechs Stimmen am besten.",
+          "grenzen": "Unter drei Stimmen bricht der Baustein ab, darunter gibt es kein Modul. Beim Überfahren hält der Lauf an; wer Bewegung abgestellt hat, bekommt die Liste ohne Deckel.",
           "bild": "assets/bibliothek/stimmenSpalten.jpg",
-          "bytes": 97399
+          "bytes": 116001
         },
         {
           "id": "stimmenBuehne",
           "name": "Eine nach der anderen",
-          "wann": "Bei drei bis sechs ausgesuchten Stimmen, wenn es echte Porträts gibt.",
-          "grenzen": "Ohne Porträts bleibt eine einzelne Kachel mit Initialen — dann sind die Spalten besser. Bei nur einer Stimme fallen die Knöpfe weg.",
+          "wann": "Bei drei bis sechs ausgesuchten Stimmen, wenn es Porträts gibt.",
+          "grenzen": "Ohne Bilder bricht der Baustein ab. Bei gleichen Bildern wirkt der Stapel flach — er lebt von verschiedenen Gesichtern.",
           "bild": "assets/bibliothek/stimmenBuehne.jpg",
-          "bytes": 27707
+          "bytes": 35024
         },
         {
           "id": "stimmenBilder",
           "name": "Zitat über Foto",
-          "wann": "Wenn es gute Bilder aus dem Betrieb gibt.",
-          "grenzen": "Das Foto ist die Karte, unten steht nur der Name. Ohne Bild läuft es auf einen Verlauf aus der Markenfarbe hinaus — tragfähig, aber kein Grund, diese Fassung zu wählen.",
+          "wann": "Wenn es gute Bilder gibt. Das Foto ist die Karte, unten steht nur der Name.",
+          "grenzen": "Ohne Bilder bricht der Baustein ab. Hochformate und Szenen aus dem Betrieb sitzen besser als quadratische Porträts, die unten angeschnitten werden.",
           "bild": "assets/bibliothek/stimmenBilder.jpg",
-          "bytes": 89502
+          "bytes": 78660
         }
       ]
     },
@@ -159,7 +159,7 @@
           "wann": "Wenn viele Marken da sind und Bewegung passt.",
           "grenzen": "Braucht mindestens sechs Logos, sonst klafft eine Lücke. Die Liste wird dafür wiederholt.",
           "bild": "assets/bibliothek/logowandLauf.jpg",
-          "bytes": 21047
+          "bytes": 21385
         }
       ]
     },

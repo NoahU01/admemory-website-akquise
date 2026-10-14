@@ -696,7 +696,12 @@ a{color:inherit}
 .stimme__wer{min-width:0;line-height:1.3}
 .stimme__wer b{display:block;font-weight:600}
 .stimme__wer span{display:block;font-size:var(--t-s);color:var(--text-2)}
-.stimme blockquote{margin:0;font-size:1rem;line-height:1.55}
+/* Der Browser gibt blockquote und figure je 40 Pixel Rand links und rechts.
+   Beim blockquote stand der Text dadurch eingerückt statt bündig; beim
+   figure wurden die Karten schmal und zwischen den Spalten klaffte eine
+   Lücke von 97 statt 14 Pixeln — die Lücke kam gar nicht vom gap. */
+blockquote,figure{margin:0}
+.stimme blockquote{font-size:1rem;line-height:1.55}
 .stimme__noten{display:flex;gap:.1rem;margin-bottom:.6rem}
 .stimme__noten svg{width:.95rem;height:.95rem;fill:#ffc53d;stroke:none}
 
@@ -704,7 +709,9 @@ a{color:inherit}
    Ohne Abstand per gap, sondern mit margin an der Karte: Nur dann sind
    zwei gleich hohe Hälften exakt -50 % auseinander und der Übergang
    springt nicht. */
-.stimmen-spalten{display:grid;gap:var(--a-3);grid-template-columns:1fr;
+/* Breiter Abstand ließ die Karten schmal und verloren wirken. Enger
+   Abstand heißt bei gleicher Gesamtbreite automatisch breitere Karten. */
+.stimmen-spalten{display:grid;gap:.9rem;grid-template-columns:1fr;
   max-height:38rem;overflow:hidden;
   -webkit-mask-image:linear-gradient(to bottom,transparent,#000 16%,#000 84%,transparent);
   mask-image:linear-gradient(to bottom,transparent,#000 16%,#000 84%,transparent)}
@@ -714,7 +721,7 @@ a{color:inherit}
 .stimmen-spalten:hover .stimmen-spalte,
 .stimmen-spalten:focus-within .stimmen-spalte{animation-play-state:paused}
 @keyframes stimmenLauf{from{transform:translateY(0)}to{transform:translateY(-50%)}}
-.stimmen-spalte .stimme{margin-bottom:var(--a-3)}
+.stimmen-spalte .stimme{margin-bottom:.9rem}
 .stimme{background:var(--grund);border:1px solid var(--linie);border-radius:14px;
   padding:var(--a-3);box-shadow:0 1px 2px rgba(17,22,29,.04)}
 .auf-dunkel .stimme,.abschnitt--tief .stimme{background:color-mix(in srgb,#fff 6%,transparent);
@@ -727,48 +734,49 @@ a{color:inherit}
 }
 
 /* ── Bildkarten: Zitat über einem Foto ──────────────────────────── */
-.stimmen-bilder{display:grid;gap:var(--a-3);grid-template-columns:1fr}
+.stimmen-bilder{display:grid;gap:.9rem;grid-template-columns:1fr}
 @media(min-width:720px){.stimmen-bilder{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:1020px){.stimmen-bilder{grid-template-columns:repeat(3,1fr)}}
 /* Feste Seitenverhältnisse schneiden ab: Bei langen Zitaten lag das
    Anführungszeichen außerhalb der Karte. Mindesthöhe statt Verhältnis —
    die Karte wächst mit dem Text. */
 .stimme-bild{position:relative;border-radius:14px;overflow:hidden;isolation:isolate;
-  min-height:24rem;display:flex;align-items:flex-end;background:var(--tief)}
-.stimme-bild>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
-/* Der Verlauf begann erst bei 35 % — auf einem hellen Foto stand das Zitat
-   dadurch auf Weiß. Jetzt deckt er die ganze Karte ab und wird nach unten
-   dichter, damit das Bild oben noch zu sehen ist. */
+  min-height:26rem;display:flex;align-items:flex-end;background:var(--tief)}
+/* Köpfe sitzen im oberen Bilddrittel; mittig beschnitten fehlt oben das
+   halbe Gesicht. */
+.stimme-bild>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  object-position:center 22%;z-index:-2}
+/* Zwei Anläufe: Erst begann der Verlauf bei 35 % Höhe, dann stand das Zitat
+   auf einem hellen Foto auf Weiß. Dann lag er über der ganzen Karte und
+   fraß das Gesicht. Jetzt trägt die Karte nur einen leichten Hauch, und der
+   dunkle Grund hängt am Textblock — der ist genau so hoch wie der Text,
+   also stimmt es bei jeder Zitatlänge. */
 .stimme-bild::after{content:"";position:absolute;inset:0;z-index:-1;
-  background:linear-gradient(180deg,rgba(10,14,20,.5) 0%,rgba(10,14,20,.66) 42%,rgba(10,14,20,.93) 100%)}
-.stimme-bild__in{padding:var(--a-3);color:#fff;width:100%}
+  background:linear-gradient(180deg,rgba(10,14,20,.04),rgba(10,14,20,.22))}
+.stimme-bild__in{padding:var(--a-4) var(--a-3) var(--a-3);color:#fff;width:100%;
+  background:linear-gradient(180deg,rgba(10,14,20,0) 0%,rgba(10,14,20,.5) 22%,
+    rgba(10,14,20,.88) 44%,rgba(10,14,20,.96) 100%)}
 .stimme-bild__in blockquote{color:#fff}
 .stimme-bild__in .stimme__wer span{color:rgba(255,255,255,.78)}
 .stimme-bild__zeichen{width:2rem;height:2rem;fill:rgba(255,255,255,.42);stroke:none;
   margin-bottom:.6rem}
-/* Ohne Foto wird die Karte kein leerer schwarzer Kasten, sondern ein
-   ruhiger Verlauf aus der Markenfarbe. */
-.stimme-bild--ohne{background:
-  linear-gradient(155deg,color-mix(in srgb,var(--akzent) 82%,#000) 0%,var(--tief) 72%)}
-.stimme-bild--ohne::after{background:linear-gradient(180deg,transparent 45%,rgba(10,14,20,.45))}
-
 /* ── Bühne: eine Stimme, Porträtstapel daneben ──────────────────── */
 .buehne{display:grid;gap:var(--a-4);align-items:center}
 @media(min-width:860px){.buehne{grid-template-columns:1fr 1fr}}
-.buehne__stapel{position:relative;height:17rem;perspective:1000px}
-.buehne__bild{position:absolute;inset:0;margin:auto;width:min(58%,13rem);height:13rem;
-  border-radius:16px;overflow:hidden;transition:transform .7s cubic-bezier(.4,1.4,.3,1),opacity .7s;
-  box-shadow:0 10px 30px rgba(17,22,29,.18);background:var(--gedaempft);
+.buehne__stapel{position:relative;height:21rem}
+.buehne__bild{position:absolute;inset:0;margin:auto;width:min(74%,17rem);height:17rem;
+  border-radius:20px;overflow:hidden;transition:transform .7s cubic-bezier(.4,1.2,.3,1),opacity .5s;
+  box-shadow:0 14px 40px rgba(17,22,29,.22);background:var(--gedaempft);
   display:grid;place-items:center}
 .buehne__bild img{width:100%;height:100%;object-fit:cover}
-.buehne__bild span{font-size:2.6rem;font-weight:600;color:var(--text-2)}
-.buehne__bild[data-wo="mitte"]{z-index:3;opacity:1;transform:translateX(0) scale(1) rotateY(0)}
-/* 32 % Versatz hieß: Von den Nachbarn ragte nur der Rand hervor, ihre
-   Initialen lagen hinter der mittleren Kachel. Bei 56 % ist die Mitte
-   jedes Nachbarn frei. */
-.buehne__bild[data-wo="links"]{z-index:2;opacity:.92;transform:translateX(-56%) translateY(-6%) scale(.8) rotateY(16deg)}
-.buehne__bild[data-wo="rechts"]{z-index:2;opacity:.92;transform:translateX(56%) translateY(-6%) scale(.8) rotateY(-16deg)}
-.buehne__bild[data-wo="weg"]{z-index:1;opacity:0;pointer-events:none;transform:scale(.8)}
+.buehne__bild span{font-size:2.8rem;font-weight:600;color:var(--text-2)}
+/* Die Nachbarn sind fast so groß wie die Mitte und schauen oben und seitlich
+   heraus — bei 32 % Versatz und 0,84 Größe lag von ihnen nur ein Rand frei,
+   die Karten wirkten wie ein Fehler statt wie ein Stapel. */
+.buehne__bild[data-wo="mitte"]{z-index:3;opacity:1;transform:translate(0,0) rotate(0) scale(1)}
+.buehne__bild[data-wo="links"]{z-index:2;opacity:1;transform:translate(-13%,-9%) rotate(-5deg) scale(.97)}
+.buehne__bild[data-wo="rechts"]{z-index:1;opacity:1;transform:translate(13%,-9%) rotate(5deg) scale(.97)}
+.buehne__bild[data-wo="weg"]{z-index:0;opacity:0;pointer-events:none;transform:scale(.9)}
 .buehne__text blockquote{font-size:clamp(1.05rem,2vw,1.3rem);line-height:1.5}
 .buehne__knoepfe{display:flex;gap:.7rem;margin-top:var(--a-3)}
 .buehne__knopf{width:2.6rem;height:2.6rem;border-radius:50%;border:1px solid var(--linie);
@@ -780,9 +788,4 @@ a{color:inherit}
 .auf-dunkel .buehne__knopf,.abschnitt--tief .buehne__knopf{
   background:color-mix(in srgb,#fff 8%,transparent);border-color:color-mix(in srgb,#fff 16%,transparent)}
 .auf-dunkel .buehne__knopf svg,.abschnitt--tief .buehne__knopf svg{stroke:#fff}
-/* Ohne Porträts ist der Stapel ein Haufen grauer Kästen, deren Buchstaben
-   sich gegenseitig verdecken. Dann lieber eine Kachel, größer und ruhig. */
-.buehne[data-nurinitialen] .buehne__bild[data-wo="links"],
-.buehne[data-nurinitialen] .buehne__bild[data-wo="rechts"]{opacity:0;transform:scale(.8)}
-.buehne[data-nurinitialen] .buehne__bild{width:min(72%,15rem);height:15rem}
 @media(prefers-reduced-motion:reduce){.buehne__bild{transition:none}}

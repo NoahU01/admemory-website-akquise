@@ -202,65 +202,42 @@ Abstände sitzen nur falsch. Die anderen fünf Prüfseiten sind sauber.
 
 ## Kundenstimmen
 
-Drei Fassungen, Prüfseite `_stimmen`. Die Beispiele dort sind erfunden und
-branchenneutral: Die Bibliothek soll zeigen, wie ein Modul allgemein aussieht,
-nicht wie es bei einem bestimmten Kunden aussieht. Das echte Material steht
-daneben in den Härtefällen, wo es gegen die Wirklichkeit testet.
+Drei Fassungen, Prüfseite `_stimmen`. Beispiele erfunden und
+branchenneutral, als Porträt das Platzhalterbild.
 
-### Fotos von Kunden haben wir nie
-
-Aus einer Google-Bewertung kommen Name, Text und manchmal eine Note. Kein
-Porträt. Alle drei Fassungen kommen deshalb ohne Bild aus und setzen an die
-Stelle des Gesichts die Initialen. Das ist kein Notbehelf, sondern der
-Normalfall — die Vorlagen von 21st.dev sind um Porträts herum gebaut, wir
-bauen um ihr Fehlen herum.
+Unter drei Stimmen gibt es kein Modul — die Bausteine brechen ab. Zu lange
+Bewertungen werden am Satzende gekürzt. Keine Vorzeile; die bekommt eine
+eigene Kategorie.
 
 `stimmenSpalten` — drei langsam laufende Spalten, oben und unten
-ausgeblendet. Erste Wahl ab sechs Stimmen. Hält beim Überfahren an. Wer
-Bewegung abgestellt hat, bekommt die vollständige Liste ohne Deckel und ohne
-Maske, statt eines eingefrorenen Ausschnitts.
+ausgeblendet. Die einzige Fassung ohne Bilder und damit die einzige, die
+allein aus Google-Bewertungen entsteht. Hält beim Überfahren an.
 
-`stimmenBuehne` — eine Stimme auf einmal, daneben ein Stapel Porträts, mit
-Vor und Zurück. Lohnt sich nur mit echten Bildern. Ohne sie wären es graue
-Kästen, deren Buchstaben sich gegenseitig verdecken; dann bleibt eine
-einzelne, größere Kachel.
+`stimmenBuehne` — eine Stimme auf einmal, daneben ein Stapel Porträts.
+Braucht Bilder.
 
-`stimmenBilder` — Zitat über einem Foto aus dem Betrieb. Das Foto ist die
-Karte, unten steht nur der Name.
+`stimmenBilder` — Zitat über einem Foto. Braucht Bilder.
 
-### Was beim Messen herauskam
+### Was der Browser mitbringt, und was es kostet
 
-Der Verlauf über dem Foto begann erst bei 35 Prozent Höhe. Auf einem hellen
-Bild stand das Zitat damit auf Weiß. Er deckt jetzt die ganze Karte.
+`blockquote` und `figure` bekommen vom Browser je 40 Pixel Rand links und
+rechts. Beim Zitat stand der Text dadurch eingerückt statt bündig. Bei den
+Karten war die Wirkung größer und schwerer zu sehen: Die Lücke zwischen den
+Spalten war 97 Pixel breit, obwohl `gap` auf 14 stand — die Lücke kam gar
+nicht vom `gap`, sondern vom Rand der Karten, und die Karten waren
+entsprechend schmal. Nach `blockquote,figure{margin:0}` sind die Karten 362
+statt 282 Pixel breit.
 
-Ein festes Seitenverhältnis von 3:4 schnitt lange Zitate ab — das
-Anführungszeichen lag außerhalb der Karte. Mindesthöhe statt Verhältnis.
+### Der Schleier über dem Foto, zweimal falsch
 
-Die Initialen standen in Akzentrot auf einem Akzent-Hauch: Kontrast 3,03 bei
-13 Pixeln. Jetzt normale Schriftfarbe auf dem getönten Kreis.
+Erst begann der Verlauf bei 35 Prozent Höhe — auf einem hellen Foto stand
+das Zitat damit auf Weiß. Dann lag er über der ganzen Karte und fraß das
+Gesicht. Jetzt trägt die Karte nur einen Hauch, und der dunkle Grund hängt
+am Textblock: Der ist genau so hoch wie der Text, also stimmt es bei jeder
+Zitatlänge.
 
-### Drei Fehler im Werkzeug, nicht im Baustein
+### Der Stapel
 
-`pruefen.mjs` hat zweimal falsch gemessen, bevor es die echten Fehler fand:
-
-Farben kommen aus Chrome als `rgb(0..255)` oder als `color(srgb 0..1)`. Wer
-beides durch 255 teilt, hält Weiß für Schwarz — dunkle Schrift auf hellem
-Grund kam auf Kontrast 1,15 statt 17.
-
-Ein Hintergrund ist oft durchsichtig: eine Stimme auf dunklem Abschnitt ist
-6 Prozent Weiß über Dunkel. Wer diese Schicht für sich nimmt, hält sie für
-fast Weiß und meldet hellen Text als unlesbar. Jetzt werden alle Schichten
-bis zur ersten deckenden übereinandergerechnet.
-
-Was hinter einem Verlauf oder Bild liegt, kann diese Rechnung nicht bewerten.
-Das wird jetzt getrennt als „nicht messbar" gemeldet, statt stillschweigend
-für bestanden erklärt zu werden — und genau an diesen neun Stellen saßen die
-Fehler oben.
-
-### Und einer im Seitengerüst
-
-`seite()` kannte den Parameter `skripte` gar nicht und hat ihn verschluckt.
-Auf `_vertrauen` und `_stimmen` lief deshalb kein einziges Skript. Aufgefallen
-ist es erst, als die Bühne nur eine Kachel zeigte; beim Erscheinen der Logos
-hatte ich vorher das Symptom behandelt und im Export `data-sichtbar` von Hand
-gesetzt. `seite()` bricht jetzt bei jeder unbekannten Angabe ab.
+Bei 32 Prozent Versatz und 0,84 Größe ragte von den hinteren Karten nur ein
+Rand hervor, ihre Initialen lagen hinter der mittleren. Jetzt sind sie fast
+so groß wie die Mitte, leicht gedreht, und schauen oben und seitlich heraus.

@@ -812,24 +812,50 @@ export function vertrauenStreu({ ueber, titel, text, logos = [], nachsatz, tief 
 
 
 /* ══ Kundenstimmen ═══════════════════════════════════════════════
-   Was wir wirklich haben: Name, Text, oft eine Note — aus Google-
-   Bewertungen oder von der alten Seite. Was wir fast nie haben: ein Foto
-   des Kunden. Deshalb kommt jeder dieser Bausteine ohne Bild aus und
-   setzt an die Stelle des Porträts die Initialen.
+   Unter drei Stimmen gibt es kein Modul. Zwei Karten nebeneinander sehen
+   nicht nach Zuspruch aus, sondern nach Mangel — und ein laufendes Band
+   aus zwei Karten wiederholt sich sichtbar. Die Bausteine brechen
+   deshalb ab, statt etwas Schwaches zu bauen.
+
+   Keine Vorzeile. Die gehört in eine eigene Kategorie, nicht in jedes
+   Modul.
 
    stimmenSpalten  Drei langsam laufende Spalten, oben und unten
-                   ausgeblendet. Braucht mindestens sechs Stimmen, sonst
-                   wiederholt sich zu offensichtlich.
+                   ausgeblendet. Die einzige Fassung, die ohne Bilder
+                   auskommt — und damit die einzige, die allein aus
+                   Google-Bewertungen entsteht. Ab sechs Stimmen am besten.
    stimmenBilder   Zitat über einem Foto. Das Foto ist die Karte, deshalb
-                   steht unten nur der Name — ein Kreis mit demselben Bild
-                   daneben wäre doppelt. Nur nehmen, wenn es echte Bilder
-                   gibt — ohne Bild läuft es auf einen Farbverlauf hinaus,
-                   der trägt, aber nicht begeistert.
+                   steht unten nur der Name. Ohne Bilder gibt es diese
+                   Fassung nicht; der Baustein bricht ab.
    stimmenBuehne   Eine Stimme auf einmal, daneben ein Stapel Porträts, mit
-                   Vor und Zurück. Lohnt sich nur mit echten Bildern; ohne
-                   sie bleibt eine einzelne Kachel mit Initialen, und dann
-                   sind die Spalten die bessere Wahl. Drei bis sechs
-                   ausgesuchte Stimmen.                                      */
+                   Vor und Zurück. Braucht Bilder, sonst bricht sie ab.
+                   Drei bis sechs ausgesuchte Stimmen.                       */
+
+/* Unter drei Stimmen kein Modul. */
+const MINDEST_STIMMEN = 3;
+function pruefeStimmen(name, stimmen) {
+  if (stimmen.length < MINDEST_STIMMEN)
+    throw new Error(`${name}: ${stimmen.length} Stimme(n) — unter ${MINDEST_STIMMEN} `
+      + 'wird kein Kundenstimmen-Modul gebaut.');
+}
+function pruefeBilder(name, stimmen) {
+  const ohne = stimmen.filter((s) => !s.bild).length;
+  if (ohne) throw new Error(`${name}: ${ohne} Stimme(n) ohne Bild. `
+    + 'Diese Fassung braucht Bilder — sonst stimmenSpalten nehmen.');
+}
+
+/* Eine sehr lange Bewertung wird gekürzt, nicht umgeschrieben: Schnitt am
+   Satzende, danach ein Auslassungszeichen. Das ist etwas anderes als
+   Einträge wegzulassen — keine Stimme fällt weg, nur ihr Ende. */
+export function kuerze(text, max = 300) {
+  const t = String(text ?? '').trim();
+  if (t.length <= max) return t;
+  const bis = t.slice(0, max);
+  const satz = Math.max(bis.lastIndexOf('. '), bis.lastIndexOf('! '), bis.lastIndexOf('? '));
+  if (satz > max * 0.5) return bis.slice(0, satz + 1) + ' …';
+  const wort = bis.lastIndexOf(' ');
+  return (wort > 0 ? bis.slice(0, wort) : bis).replace(/[,;:]$/, '') + ' …';
+}
 
 const ANFUEHRUNG = 'M4.6 17.3C3.6 16.2 3 15 3 13c0-3.5 2.5-6.6 6-8.2l.9 1.4c-3.3 1.8-4 4.2-4.2 5.6'
   + 'c.5-.3 1.2-.4 1.9-.3c1.8.2 3.2 1.7 3.2 3.5a3.5 3.5 0 0 1-3.5 3.5c-1.1 0-2.1-.5-2.7-1.2z'
@@ -855,21 +881,20 @@ const noten = (n) => (typeof n === 'number' && n > 0)
 
 const stimmeKarte = (s) => `<figure class="stimme">
   ${noten(s.note)}
-  <blockquote>${esc(s.text)}</blockquote>
+  <blockquote>${esc(kuerze(s.text))}</blockquote>
   <figcaption>${kopf(s)}</figcaption>
 </figure>`;
 
-function stimmenKopf({ ueber, titel, text }) {
-  if (!ueber && !titel && !text) return '';
+function stimmenKopf({ titel, text }) {
+  if (!titel && !text) return '';
   return `<div class="stapel-3" style="text-align:center;max-width:46rem;margin-inline:auto">
-    ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
     ${wenn(titel, () => `<h2>${esc(titel)}</h2>`)}
     ${wenn(text, () => `<p class="lead">${esc(text)}</p>`)}
   </div>`;
 }
 
-export function stimmenSpalten({ ueber, titel, text, stimmen = [], tief = false }) {
-  if (!stimmen.length) throw new Error('stimmenSpalten braucht mindestens eine Stimme.');
+export function stimmenSpalten({ titel, text, stimmen = [], tief = false }) {
+  pruefeStimmen('stimmenSpalten', stimmen);
   /* Drei Spalten, aber nie mehr als es Stimmen gibt — zwei Stimmen auf drei
      Spalten hieße: jede Spalte zeigt eine einzige Karte im Kreis. */
   const anzahl = Math.min(3, stimmen.length);
@@ -879,7 +904,7 @@ export function stimmenSpalten({ ueber, titel, text, stimmen = [], tief = false 
   const dauer = [46, 58, 52];
   return `
 <section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
-  ${schale(stimmenKopf({ ueber, titel, text }) +
+  ${schale(stimmenKopf({ titel, text }) +
     `<div class="stimmen-spalten" style="margin-top:var(--a-4)">` +
     spalten.map((sp, i) =>
       `<div class="stimmen-spalte" style="--dauer:${dauer[i]}s">` +
@@ -891,18 +916,19 @@ export function stimmenSpalten({ ueber, titel, text, stimmen = [], tief = false 
 </section>`;
 }
 
-export function stimmenBilder({ ueber, titel, text, stimmen = [], tief = false }) {
-  if (!stimmen.length) throw new Error('stimmenBilder braucht mindestens eine Stimme.');
+export function stimmenBilder({ titel, text, stimmen = [], tief = false }) {
+  pruefeStimmen('stimmenBilder', stimmen);
+  pruefeBilder('stimmenBilder', stimmen);
   return `
 <section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
-  ${schale(stimmenKopf({ ueber, titel, text }) +
+  ${schale(stimmenKopf({ titel, text }) +
     `<div class="stimmen-bilder" style="margin-top:var(--a-4)">` +
-    stimmen.map((s) => `<figure class="stimme-bild${s.bild ? '' : ' stimme-bild--ohne'}">
-      ${wenn(s.bild, () => `<img src="${esc(s.bild)}" alt="" loading="lazy">`)}
+    stimmen.map((s) => `<figure class="stimme-bild">
+      <img src="${esc(s.bild)}" alt="" loading="lazy">
       <div class="stimme-bild__in">
         <svg class="stimme-bild__zeichen" viewBox="0 0 24 24" aria-hidden="true"><path d="${ANFUEHRUNG}"/></svg>
         ${noten(s.note)}
-        <blockquote>${esc(s.text)}</blockquote>
+        <blockquote>${esc(kuerze(s.text))}</blockquote>
         <figcaption class="stimme__kopf">
           <span class="stimme__wer"><b>${esc(s.name)}</b>${
             wenn(s.rolle, () => `<span>${esc(s.rolle)}</span>`)}</span>
@@ -913,15 +939,13 @@ export function stimmenBilder({ ueber, titel, text, stimmen = [], tief = false }
 </section>`;
 }
 
-export function stimmenBuehne({ ueber, titel, stimmen = [], tief = false }) {
-  if (!stimmen.length) throw new Error('stimmenBuehne braucht mindestens eine Stimme.');
+export function stimmenBuehne({ titel, stimmen = [], tief = false }) {
+  pruefeStimmen('stimmenBuehne', stimmen);
+  pruefeBilder('stimmenBuehne', stimmen);
   const id = 'buehne' + Math.random().toString(36).slice(2, 7);
-  /* Ohne ein einziges Porträt wird aus dem Stapel eine einzelne Kachel —
-     siehe Stil. Vorgetäuschte Tiefe aus grauen Kästen hilft niemandem. */
-  const nurInitialen = !stimmen.some((s) => s.bild);
   return `
 <section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
-  ${schale(`<div class="buehne" data-buehne${nurInitialen ? ' data-nurinitialen' : ''} id="${id}">
+  ${schale(`<div class="buehne" data-buehne id="${id}">
     <div class="buehne__stapel">
       ${stimmen.map((s, i) => `<div class="buehne__bild" data-wo="${i === 0 ? 'mitte' : 'weg'}">
         ${s.bild
@@ -930,11 +954,10 @@ export function stimmenBuehne({ ueber, titel, stimmen = [], tief = false }) {
       </div>`).join('')}
     </div>
     <div class="buehne__text stapel-3">
-      ${wenn(ueber, () => `<p class="ueber">${esc(ueber)}</p>`)}
       ${wenn(titel, () => `<h2 style="font-size:var(--t-l)">${esc(titel)}</h2>`)}
       <div data-buehne-inhalt aria-live="polite">
         ${noten(stimmen[0].note)}
-        <blockquote>${esc(stimmen[0].text)}</blockquote>
+        <blockquote>${esc(kuerze(stimmen[0].text))}</blockquote>
         ${kopf(stimmen[0])}
       </div>
       ${wenn(stimmen.length > 1, () => `<div class="buehne__knoepfe">
@@ -946,7 +969,7 @@ export function stimmenBuehne({ ueber, titel, stimmen = [], tief = false }) {
     </div>
   </div>`)}
   <script type="application/json" data-buehne-daten="${id}">${
-    JSON.stringify(stimmen.map((s) => ({ text: s.text, name: s.name, rolle: s.rolle ?? null,
+    JSON.stringify(stimmen.map((s) => ({ text: kuerze(s.text), name: s.name, rolle: s.rolle ?? null,
       note: s.note ?? null, bild: s.bild ?? null }))).replace(/</g, '\\u003c')}</script>
 </section>`;
 }

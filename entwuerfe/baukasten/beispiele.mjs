@@ -40,3 +40,10 @@ export const STIMMEN = [
 /* Ohne Noten — der Normalfall, wenn wir die Stimmen aus einem alten
    Gästebuch oder von der bestehenden Seite übernehmen. */
 export const STIMMEN_OHNE_NOTE = STIMMEN.slice(0, 3).map(({ note, ...r }) => r);
+
+/* Platzhalter-Porträt für die Bibliothek: Noahs eigenes Bild von
+   admemory.de. Fremde Gesichter kommen hier nicht hinein — die anderen
+   Porträts auf der Seite gehören anderen Leuten. Dasselbe Bild für alle
+   Stimmen macht außerdem sofort klar, dass es ein Beispiel ist. */
+export const PORTRAET = '../baukasten/beispiel-bilder/noah.webp';
+export const STIMMEN_MIT_BILD = STIMMEN.map((s) => ({ ...s, bild: PORTRAET }));

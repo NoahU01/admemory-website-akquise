@@ -107,3 +107,33 @@ Weder im Vertrauens-Modul noch bei den Stimmen werden Sterne geraten. Ohne
 Note steht die Zahl der Bewertungen allein. Wo die Note fehlt, holt
 `sterne-nachholen.mjs` sie bei Google nach — und übernimmt sie nur, wenn der
 Hostname der gefundenen Website zu unserem passt.
+
+## Kundenstimmen erst ab drei
+
+Unter drei Stimmen wird kein Kundenstimmen-Modul gebaut. Zwei Karten
+nebeneinander sehen nicht nach Zuspruch aus, sondern nach Mangel, und ein
+laufendes Band aus zwei Karten wiederholt sich sichtbar. Die Bausteine
+brechen ab, statt etwas Schwaches zu bauen.
+
+## Zu lange Bewertungen werden gekürzt
+
+Am Satzende, mit Auslassungszeichen. Das ist etwas anderes als Einträge
+wegzulassen: Keine Stimme fällt weg, nur ihr Ende. Umgeschrieben wird nie.
+
+## Keine Vorzeile in jedem Modul
+
+Die kleine Zeile über der Überschrift gehört nicht in jedes Modul. Sie
+bekommt eine eigene Kategorie. Wo sie steht, nennt sie das Kerngeschäft —
+aber sie steht nicht überall.
+
+## Beispielbilder in der Bibliothek
+
+Als Platzhalter-Porträt kommt Noahs eigenes Bild von admemory.de hinein.
+Fremde Gesichter nicht, auch nicht die anderen Porträts auf derselben Seite.
+Dasselbe Bild für alle Stimmen macht außerdem sofort klar, dass es ein
+Beispiel ist.
+
+## Vor jedem neuen Modul: Varianten ankündigen
+
+Bevor gebaut wird, bekommt Noah die geplanten Fassungen als kurze Liste.
+Dann kann er vorher Feedback geben, statt hinterher.
