@@ -285,59 +285,40 @@ textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86r
 
 /* ── Bibliothek ─────────────────────────────────────────────────── */
 .bibkopf{margin:0 0 1.2rem;color:var(--ink-2);font-size:.86rem;max-width:62ch}
-.bibliste{display:grid;gap:1.1rem}
-@media(min-width:1100px){.bibliste{grid-template-columns:repeat(2,1fr)}}
-.bib{background:var(--panel);border-radius:var(--r);overflow:hidden;
-  display:flex;flex-direction:column;box-shadow:var(--schatten,0 1px 2px rgba(17,22,29,.05))}
-.bib__bild{display:block;width:100%;background:var(--sunk);border-bottom:1px solid var(--line)}
-.bib__bild img{display:block;width:100%;height:auto}
-.bib__text{padding:1.1rem 1.25rem 1.25rem}
-.bib__kopf{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.1rem}
-.bib__kopf h3{font-size:.95rem;font-weight:600;margin:0;letter-spacing:-.01em;
-  text-transform:none;color:var(--ink)}  /* h3 ist global eine Großbuchstaben-Marke */
-.bib__id{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-3)}
-.bib__zeile{display:flex;gap:.55rem;margin-top:.8rem;font-size:.8rem;color:var(--ink-2);line-height:1.55}
+.bibgitter{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr))}
+.bibkachel{all:unset;cursor:pointer;display:flex;flex-direction:column;
+  background:var(--panel);border-radius:var(--r);overflow:hidden;
+  box-shadow:0 1px 2px rgba(17,22,29,.05);transition:box-shadow .15s,transform .15s}
+.bibkachel:hover{box-shadow:0 10px 30px rgba(17,22,29,.11);transform:translateY(-2px)}
+.bibkachel:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bibkachel__bild{display:block;aspect-ratio:16/10;background:var(--sunk);overflow:hidden}
+.bibkachel__bild img{width:100%;height:100%;object-fit:cover;object-position:top center}
+.bibkachel__fuss{display:flex;align-items:center;gap:.5rem;padding:.8rem 1rem;flex-wrap:wrap}
+.bibkachel__name{font-size:.88rem;font-weight:600;flex:1;min-width:0}
+
+/* Pop-up */
+#bausteinblatt{position:fixed;inset:0;z-index:60;background:rgba(17,22,29,.55);
+  display:flex;align-items:center;justify-content:center;padding:1.2rem;
+  padding-top:calc(1.2rem + var(--oben));padding-bottom:calc(1.2rem + var(--unten))}
+.bsinhalt{background:var(--panel);border-radius:var(--r);width:min(100%,1080px);
+  max-height:100%;display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 30px 80px rgba(17,22,29,.3)}
+.bs-kopf{display:flex;align-items:flex-start;gap:1rem;padding:1.1rem 1.3rem;
+  border-bottom:1px solid var(--line)}
+.bs-kopf h2{font-size:1.05rem;font-weight:600;margin:0}
+.bs-kopf .lede{font-family:"IBM Plex Mono",monospace;font-size:.74rem;margin:.1rem 0 0}
+.bs-rumpf{padding:1.3rem;overflow:auto}
+.bsrahmen{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.bsrahmen iframe{display:block;width:100%;height:min(62vh,620px);border:0}
+.bszeilen{margin-top:1.1rem}
+.bib__zeile{display:flex;gap:.55rem;margin-top:.8rem;font-size:.82rem;color:var(--ink-2);line-height:1.55}
 .bib__zeile b{display:block;color:var(--ink);font-weight:600;margin-bottom:.1rem}
 .bib__zeile .ic{width:15px;height:15px;margin-top:.15rem;color:var(--ink-3)}
-.bibklappe{all:unset;cursor:pointer;display:flex;align-items:center;gap:.5rem;width:100%;
-  box-sizing:border-box;margin-top:.9rem;padding:.5rem .65rem;border-radius:8px;
-  background:var(--sunk);color:var(--ink-2);font-size:.8rem;font-weight:500;min-height:36px}
-.bibklappe:hover{color:var(--accent)}
-.bibklappe:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-.bibklappe span{flex:1}
-.bibklappe .ic{width:15px;height:15px;color:var(--ink-3)}
-.bibpfeil{transition:transform .15s}
-.bibklappe[aria-expanded="true"] .bibpfeil{transform:rotate(180deg)}
-.bibklappe[aria-expanded="true"]{color:var(--accent);background:var(--accent-soft)}
-.bibklappe[aria-expanded="true"] .ic{color:var(--accent)}
-.bibdetail{padding:.2rem .15rem 0}
-.bib__fuss{margin-top:.95rem;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
-.bib__fuss a{color:var(--accent);font-size:.78rem;text-decoration:none;
+.bib__fuss{margin-top:1.2rem;display:flex;gap:1.2rem;align-items:center;flex-wrap:wrap}
+.bib__fuss a{color:var(--accent);font-size:.8rem;text-decoration:none;
   display:inline-flex;align-items:center;gap:.3rem}
 .bib__fuss a:hover{text-decoration:underline}
 .bib__fuss .ic{width:14px;height:14px}
-
-/* ── Klappbare Navigationsgruppe ────────────────────────────────── */
-.navklappe{all:unset;cursor:pointer;display:flex;align-items:center;gap:.4rem;
-  font-size:.7rem;font-weight:600;letter-spacing:.05em;color:var(--ink-3);
-  text-transform:uppercase;padding:1.1rem .85rem .4rem;min-height:0;
-  border-top:1px solid var(--nav-linie);margin-top:.6rem}
-.navklappe:hover{color:var(--nav-ink-hell)}
-.navklappe:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-radius:6px}
-.navklappe .navtext{flex:1}
-.navpfeil{width:14px;height:14px;transition:transform .15s}
-.navklappe[aria-expanded="false"] .navpfeil{transform:rotate(-90deg)}
-.navklappe--aktiv{color:var(--nav-ink-hell)}
-.navklappe--aktiv::after{content:"";width:5px;height:5px;border-radius:50%;
-  background:var(--accent);flex:none;margin-left:.1rem}
-.navunter{display:flex;flex-direction:column;gap:2px}
-@media(max-width:900px){
-  /* Waagerechte Leiste: Die Gruppe wird dort nicht geklappt, sonst wären
-     die Unterpunkte hinter einem ausgeblendeten Kopf verschwunden. */
-  .navklappe{display:none}
-  .navunter{display:contents}
-  .navunter[hidden]{display:contents}
-}
 </style>
 </head>
 <body>
@@ -380,6 +361,21 @@ textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86r
     </div>
     <div id="inhalt"></div>
   </main>
+</div>
+
+<div id="bausteinblatt" hidden>
+  <div class="bsinhalt">
+    <div class="bs-kopf">
+      <div style="flex:1;min-width:0">
+        <h2 id="bsName"></h2>
+        <p class="lede" id="bsUnter"></p>
+      </div>
+      <button class="zu" id="bsZu" aria-label="Schließen">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="bs-rumpf" id="bsRumpf"></div>
+  </div>
 </div>
 
 <div id="blatt" hidden>

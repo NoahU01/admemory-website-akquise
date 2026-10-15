@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<title>Mehrspaltig · Baukasten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="../baukasten/stil.css">
+<style>body{margin:0}</style>
+</head>
+<body>
+
+<footer class="fuss auf-dunkel">
+  <div class="schale">
+    <div class="fuss__gitter fuss__gitter--spalten" style="--fuss-spalten:4">
+      <div>
+        <img class="fuss__logo" src="file:///Users/noahu01/Downloads/admemory-website-akquise/entwuerfe/rolltruck/bilder/logoWeiss.png" alt="Roll Truckservice GmbH" loading="eager">
+        <p class="klein" style="max-width:34ch">Werkstatt für alle Nutzfahrzeugmarken in Crailsheim, mit Notdienst rund um die Uhr.</p>
+        <div class="fuss__sozial" style="margin-top:var(--a-3)"><a href="#" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg></a></div>
+      </div>
+      <div><h3>Leistungen</h3>
+        <nav class="fuss__liste"><a href="#">Kundendienst</a><a href="#">Reifenservice</a><a href="#">Ersatzteile</a><a href="#">Prüfservice</a></nav></div><div><h3>Betrieb</h3>
+        <nav class="fuss__liste"><a href="#">Geschichte</a><a href="#">Jobs</a><a href="#">Ausbildung</a></nav></div>
+      <div>
+        <h3>Kontakt</h3>
+        <p class="klein" style="margin-bottom:var(--a-2)">Ludwig-Erhard-Straße 102<br>74564 Crailsheim</p>
+        <div class="fuss__zeilen">
+          <div class="fuss__zeile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 4.5l2 3.5l-2 1.5a11 11 0 0 0 6 6l1.5-2l3.5 2l-1 3a2 2 0 0 1-2 1.3A16 16 0 0 1 4.2 7.5A2 2 0 0 1 5.5 5.5z"></path></svg><span><a href="tel:+497951297930">07951 29793-0</a></span></div>
+          <div class="fuss__zeile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l9 6l9-6M3 7v10h18V7z"></path></svg><span><a href="mailto:info@rolltruck.de">info@rolltruck.de</a></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="fuss__unten">
+    <span style="opacity:.75">© Roll Truckservice GmbH 2026</span>
+    <nav class="fuss__recht"><a href="#">Impressum</a><a href="#">Datenschutz</a></nav>
+  </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var teile = document.querySelectorAll('[data-erscheinen]');
+  if (!teile.length) return;
+  if (!('IntersectionObserver' in window) ||
+      matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    teile.forEach(function (t) { t.setAttribute('data-sichtbar', ''); });
+    return;
+  }
+  var w = new IntersectionObserver(function (eintraege) {
+    eintraege.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.setAttribute('data-sichtbar', '');
+      w.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -12% 0px' });
+  teile.forEach(function (t) { w.observe(t); });
+})();
+</script>
+
+<script>
+(function () {
+  var sterne = 'M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4 6.2 20.5l1.1-6.5L2.6 9.4l6.5-.9z';
+  function kuerzel(n) {
+    return String(n || '').split(/[\s.]+/).filter(Boolean).slice(0, 2)
+      .map(function (w) { return w[0].toUpperCase(); }).join('');
+  }
+  function sicher(t) {
+    var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML;
+  }
+  document.querySelectorAll('[data-buehne]').forEach(function (b) {
+    var quelle = document.querySelector('[data-buehne-daten="' + b.id + '"]');
+    if (!quelle) return;
+    var stimmen; try { stimmen = JSON.parse(quelle.textContent); } catch (e) { return; }
+    if (!stimmen.length) return;
+    var bilder = b.querySelectorAll('.buehne__bild');
+    var inhalt = b.querySelector('[data-buehne-inhalt]');
+    var i = 0, n = stimmen.length;
+
+    function zeichne() {
+      bilder.forEach(function (el, k) {
+        var wo = 'weg';
+        if (k === i) wo = 'mitte';
+        else if (k === (i - 1 + n) % n) wo = 'links';
+        else if (k === (i + 1) % n) wo = 'rechts';
+        el.setAttribute('data-wo', wo);
+      });
+      var s = stimmen[i];
+      var note = '';
+      if (typeof s.note === 'number' && s.note > 0) {
+        var r = '';
+        for (var k = 0; k < Math.round(s.note); k++)
+          r += '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + sterne + '"/></svg>';
+        note = '<div class="stimme__noten" role="img" aria-label="' + Math.round(s.note) +
+               ' von 5 Sternen">' + r + '</div>';
+      }
+      var kopf = '<div class="stimme__kopf">' + (s.bild
+        ? '<img class="stimme__bild" src="' + sicher(s.bild) + '" alt="">'
+        : '<span class="stimme__initialen" aria-hidden="true">' + sicher(kuerzel(s.name)) + '</span>')
+        + '<span class="stimme__wer"><b>' + sicher(s.name) + '</b>'
+        + (s.rolle ? '<span>' + sicher(s.rolle) + '</span>' : '') + '</span></div>';
+      inhalt.innerHTML = note + '<blockquote>' + sicher(s.text) + '</blockquote>' + kopf;
+    }
+    var vor = b.querySelector('[data-buehne-vor]');
+    var zurueck = b.querySelector('[data-buehne-zurueck]');
+    if (vor) vor.addEventListener('click', function () { i = (i + 1) % n; zeichne(); });
+    if (zurueck) zurueck.addEventListener('click', function () { i = (i - 1 + n) % n; zeichne(); });
+    zeichne();
+  });
+})();
+</script>
+
+<script>
+(function () {
+  document.querySelectorAll('[data-reihe-vor]').forEach(function (knopf) {
+    verdrahte(knopf, 1);
+  });
+  document.querySelectorAll('[data-reihe-zurueck]').forEach(function (knopf) {
+    verdrahte(knopf, -1);
+  });
+  function verdrahte(knopf, richtung) {
+    var id = knopf.getAttribute('data-reihe-vor') || knopf.getAttribute('data-reihe-zurueck');
+    var reihe = document.getElementById(id);
+    if (!reihe) return;
+    knopf.addEventListener('click', function () {
+      var karte = reihe.querySelector('.reihe__karte');
+      if (!karte) return;
+      /* Um genau eine Karte weiter, Abstand eingerechnet. Eine feste
+         Pixelzahl ginge bei jeder Bildschirmbreite daneben. */
+      var spur = reihe.querySelector('.reihe__spur');
+      var abstand = parseFloat(getComputedStyle(spur).columnGap) || 0;
+      reihe.scrollBy({ left: richtung * (karte.getBoundingClientRect().width + abstand),
+                       behavior: 'smooth' });
+    });
+  }
+  /* Knöpfe abschalten, wo es nicht weitergeht. */
+  document.querySelectorAll('.reihe').forEach(function (reihe) {
+    var vor = document.querySelector('[data-reihe-vor="' + reihe.id + '"]');
+    var zurueck = document.querySelector('[data-reihe-zurueck="' + reihe.id + '"]');
+    function stand() {
+      if (zurueck) zurueck.disabled = reihe.scrollLeft < 8;
+      if (vor) vor.disabled = reihe.scrollLeft + reihe.clientWidth >= reihe.scrollWidth - 8;
+    }
+    reihe.addEventListener('scroll', stand, { passive: true });
+    window.addEventListener('resize', stand);
+    stand();
+  });
+})();
+</script>
+
+<script>
+(function () {
+  var el = document.querySelector('[data-tiefe] .hero-tiefe__bild');
+  if (!el) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var laeuft = false;
+  function schieben() {
+    var y = window.scrollY;
+    if (y < window.innerHeight * 1.2) el.style.transform = 'translate3d(0,' + (y * 0.28) + 'px,0)';
+    laeuft = false;
+  }
+  addEventListener('scroll', function () {
+    if (!laeuft) { laeuft = true; requestAnimationFrame(schieben); }
+  }, { passive: true });
+  schieben();
+})();
+</script>
+
+<script>
+document.querySelectorAll('[data-ankuendigung]').forEach(function (k) {
+  k.addEventListener('click', function () {
+    var b = document.getElementById(k.getAttribute('data-ankuendigung'));
+    if (b) b.hidden = true;
+  });
+});
+</script>
+</body>
+</html>

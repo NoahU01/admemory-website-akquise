@@ -10,6 +10,8 @@ export const GRUPPEN = [
     zweck: 'Die Maße stammen aus zwölf Vorbildseiten: 44 px hoch, 8 px Radius, Schriftgewicht 500.' },
   { id: 'navigation', icon: 'navigation', name: 'Navigationen', seite: '_navigation',
     zweck: 'Fünf Fassungen aus zwölf Vorbildseiten. Durchgehend: Logo links, rechts zwei Wege — einer leise, einer laut.' },
+  { id: 'baender', icon: 'band', name: 'Ankündigungsbänder', seite: '_navigation',
+    zweck: 'Eine Zeile über der Navigation: Betriebsferien, Notdienst, eine Aktion. Schließbar.' },
   { id: 'hero', icon: 'kopfbereich', name: 'Kopfbereiche', seite: '_hero',
     zweck: 'Der erste Bildschirm. Vorzeile mit dem Kerngeschäft, Überschrift, ein Satz, Knöpfe.' },
   { id: 'vertrauen', icon: 'siegel', name: 'Vertrauen', seite: '_vertrauen',
@@ -54,7 +56,7 @@ export const BAUSTEINE = [
   { id: 'navSchlicht', gruppe: 'navigation', name: 'Nur Wortmarken',
     wann: 'Wenn der Rest der Seite sehr aufgeräumt ist.',
     grenzen: 'Kein Knopf heißt: kein Weg zum Termin aus der Navigation. Nur nehmen, wenn der Kopfbereich das übernimmt.' },
-  { id: 'ankuendigung', gruppe: 'navigation', name: 'Ankündigungsband',
+  { id: 'ankuendigung', gruppe: 'baender', name: 'Band über der Navigation', erste: true,
     wann: 'Betriebsferien, Notdienst, eine Aktion. Eine Zeile über der Navigation, schließbar.',
     grenzen: 'Eine Zeile, nicht zwei. Ohne Text bricht der Baustein ab. Dunkel oder in der Akzentfarbe.' },
 

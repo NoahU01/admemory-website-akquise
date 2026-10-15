@@ -15,7 +15,8 @@
           "wann": "Der Normalfall. Zehn von zwölf Vorbildseiten stellen genau zwei Knöpfe nebeneinander — einer führt, einer bietet an.",
           "grenzen": "Der leise Knopf bekommt einen Pfeil, der beim Überfahren wandert. Mit gross: true für Kopfbereiche. Drei Knöpfe nebeneinander sind keiner.",
           "bild": "assets/bibliothek/knopfPaar.jpg",
-          "bytes": 10158
+          "bytes": 10158,
+          "seite": "_bib/knopfPaar.html"
         },
         {
           "id": "knopfRund",
@@ -23,7 +24,8 @@
           "wann": "Wenn die Seite weicher wirken soll. sofortsichtbar.de macht es durchgehend so.",
           "grenzen": "Dieselben Maße wie der eckige, nur mit vollem Radius und etwas mehr Polsterung an den Seiten. Entweder die ganze Seite rund oder keine — gemischt wirkt es unentschieden.",
           "bild": "assets/bibliothek/knopfRund.jpg",
-          "bytes": 10408
+          "bytes": 10408,
+          "seite": "_bib/knopfRund.html"
         },
         {
           "id": "knopfPille",
@@ -31,7 +33,8 @@
           "wann": "Der betonte Knopf für Kopfbereiche.",
           "grenzen": "Nur einmal je Seite, sonst verliert er seine Wirkung. Nur 12 von 49 vermessenen Knöpfen auf den Vorbildseiten waren überhaupt vollrund.",
           "bild": "assets/bibliothek/knopfPille.jpg",
-          "bytes": 10796
+          "bytes": 10796,
+          "seite": "_bib/knopfPille.html"
         }
       ]
     },
@@ -49,7 +52,8 @@
           "wann": "Der Normalfall. Logo links, Menü mittig, rechts ein leiser und ein lauter Weg.",
           "grenzen": "Rechts stehen höchstens zwei Wege — drei sind keiner mehr. Ab etwa sechs Menüpunkten wird die Leiste eng.",
           "bild": "assets/bibliothek/navStandard.jpg",
-          "bytes": 10565
+          "bytes": 10565,
+          "seite": "_bib/navStandard.html"
         },
         {
           "id": "navKnopf",
@@ -57,7 +61,8 @@
           "wann": "Für kleine Betriebe mit drei Unterseiten die ehrlichere Fassung. Der Knopf ist groß und führt zum Termin.",
           "grenzen": "Bricht ab fünf Menüpunkten ab — dann ist es navStandard.",
           "bild": "assets/bibliothek/navKnopf.jpg",
-          "bytes": 8221
+          "bytes": 8221,
+          "seite": "_bib/navKnopf.html"
         },
         {
           "id": "navTelefon",
@@ -65,7 +70,8 @@
           "wann": "Für Handwerk und Mittelstand. Oben eine dünne Zeile mit Nummer und Zeiten, unten die Navigation.",
           "grenzen": "Ohne Telefonnummer bricht der Baustein ab. Die Zeitenzeile verschwindet auf schmalen Bildschirmen.",
           "bild": "assets/bibliothek/navTelefon.jpg",
-          "bytes": 15378
+          "bytes": 15378,
+          "seite": "_bib/navTelefon.html"
         },
         {
           "id": "navSchwebend",
@@ -73,7 +79,8 @@
           "wann": "Über einem großen Bild. Die Leiste steht als Karte mit Abstand zum Rand.",
           "grenzen": "Auf dunklem Grund wird sie durchscheinend mit Unschärfe dahinter. Braucht ein Bild, sonst schwebt sie über nichts.",
           "bild": "assets/bibliothek/navSchwebend.jpg",
-          "bytes": 12689
+          "bytes": 12689,
+          "seite": "_bib/navSchwebend.html"
         },
         {
           "id": "navSchlicht",
@@ -81,15 +88,27 @@
           "wann": "Wenn der Rest der Seite sehr aufgeräumt ist.",
           "grenzen": "Kein Knopf heißt: kein Weg zum Termin aus der Navigation. Nur nehmen, wenn der Kopfbereich das übernimmt.",
           "bild": "assets/bibliothek/navSchlicht.jpg",
-          "bytes": 7545
-        },
+          "bytes": 7545,
+          "seite": "_bib/navSchlicht.html"
+        }
+      ]
+    },
+    {
+      "id": "baender",
+      "icon": "band",
+      "name": "Ankündigungsbänder",
+      "seite": "_navigation",
+      "zweck": "Eine Zeile über der Navigation: Betriebsferien, Notdienst, eine Aktion. Schließbar.",
+      "bausteine": [
         {
           "id": "ankuendigung",
-          "name": "Ankündigungsband",
+          "name": "Band über der Navigation",
+          "erste": true,
           "wann": "Betriebsferien, Notdienst, eine Aktion. Eine Zeile über der Navigation, schließbar.",
           "grenzen": "Eine Zeile, nicht zwei. Ohne Text bricht der Baustein ab. Dunkel oder in der Akzentfarbe.",
           "bild": "assets/bibliothek/ankuendigung.jpg",
-          "bytes": 5839
+          "bytes": 5839,
+          "seite": "_bib/ankuendigung.html"
         }
       ]
     },
@@ -107,7 +126,8 @@
           "wann": "Erste Wahl. Trägt jedes Gewerbe und kommt mit einem einzigen Querformat aus.",
           "grenzen": "Braucht ein Bild im Breitformat. Die Logoleiste darunter läuft und sitzt auf der Breite der Navigation; unter acht Logos wird die Liste wiederholt, sonst klafft eine Lücke.",
           "bild": "assets/bibliothek/heroMitte.jpg",
-          "bytes": 91479
+          "bytes": 91479,
+          "seite": "_bib/heroMitte.html"
         },
         {
           "id": "heroGeteilt",
@@ -115,7 +135,8 @@
           "name": "Geteilt mit Merkmalen",
           "grenzen": "Die Merkmale brauchen Zeichen aus ZEICHEN. Bei nur einem Merkmal wirkt die Spalte leer.",
           "bild": "assets/bibliothek/heroGeteilt.jpg",
-          "bytes": 134978
+          "bytes": 134978,
+          "seite": "_bib/heroGeteilt.html"
         },
         {
           "id": "heroVoll",
@@ -123,7 +144,8 @@
           "wann": "Nur bei einem wirklich guten, großen Foto.",
           "grenzen": "Inhalt steht senkrecht mittig. Hat einen dunklen Grund hinterlegt, falls das Bild nicht lädt — schlechte Fotos fallen hier am meisten auf.",
           "bild": "assets/bibliothek/heroVoll.jpg",
-          "bytes": 84311
+          "bytes": 84311,
+          "seite": "_bib/heroVoll.html"
         }
       ]
     },
@@ -141,7 +163,8 @@
           "wann": "Erste Wahl, sobald ein brauchbares Foto vom Betrieb da ist. Gibt es hell und dunkel.",
           "grenzen": "Drei bis neun Kacheln. Auf der Bildkarte steht die Bewertung groß: Note, Sterne, Anzahl. Ohne Note bleibt die Anzahl, geraten wird nichts.",
           "bild": "assets/bibliothek/vertrauenDuo.jpg",
-          "bytes": 66376
+          "bytes": 66376,
+          "seite": "_bib/vertrauenDuo.html"
         },
         {
           "id": "vertrauenStreu",
@@ -149,7 +172,8 @@
           "wann": "Wenn kein Foto da ist, aber genug Logos. Die Logos liegen versetzt, nie zwei nebeneinander, und die Ecken bleiben frei — das macht aus dem Rechteck eine Raute. Die Kacheln heben sich beim Überfahren an.",
           "grenzen": "Fünf bis vierundzwanzig Logos — darunter und darüber bricht der Baustein ab. Das Raster wächst mit der Anzahl; ab etwa der Hälfte belegt fällt die Maske weg, damit sie kein Logo verschluckt.",
           "bild": "assets/bibliothek/vertrauenStreu.jpg",
-          "bytes": 44041
+          "bytes": 44041,
+          "seite": "_bib/vertrauenStreu.html"
         }
       ]
     },
@@ -167,7 +191,8 @@
           "wann": "Erste Wahl. Die einzige Fassung ohne Bilder — und damit die einzige, die allein aus Google-Bewertungen entsteht. Ab sechs Stimmen am besten.",
           "grenzen": "Unter drei Stimmen bricht der Baustein ab, darunter gibt es kein Modul. Beim Überfahren hält der Lauf an; wer Bewegung abgestellt hat, bekommt die Liste ohne Deckel.",
           "bild": "assets/bibliothek/stimmenSpalten.jpg",
-          "bytes": 115912
+          "bytes": 116197,
+          "seite": "_bib/stimmenSpalten.html"
         },
         {
           "id": "stimmenBuehne",
@@ -175,7 +200,8 @@
           "wann": "Bei drei bis sechs ausgesuchten Stimmen, wenn es Porträts gibt.",
           "grenzen": "Ohne Bilder bricht der Baustein ab. Bei gleichen Bildern wirkt der Stapel flach — er lebt von verschiedenen Gesichtern.",
           "bild": "assets/bibliothek/stimmenBuehne.jpg",
-          "bytes": 35096
+          "bytes": 35096,
+          "seite": "_bib/stimmenBuehne.html"
         },
         {
           "id": "stimmenBilder",
@@ -183,7 +209,8 @@
           "wann": "Wenn es gute Bilder gibt. Das Foto ist die Karte, unten steht nur der Name.",
           "grenzen": "Ohne Bilder bricht der Baustein ab. Hochformate und Szenen aus dem Betrieb sitzen besser als quadratische Porträts, die unten angeschnitten werden.",
           "bild": "assets/bibliothek/stimmenBilder.jpg",
-          "bytes": 78495
+          "bytes": 78495,
+          "seite": "_bib/stimmenBilder.html"
         },
         {
           "id": "stimmenNote",
@@ -191,7 +218,8 @@
           "wann": "Die einzige Fassung ohne einzelne Stimmen — sie braucht nur Partnerlogos und eine Gesamtnote. Damit die Wahl bei jedem Betrieb, dessen Bewertungen keine brauchbaren Texte hergeben.",
           "grenzen": "Mindestens vier Logos, am besten acht: dann füllen Wand und Notenkarte zusammen ein sauberes Rechteck. Ohne Note bricht der Baustein ab. Quelle ist Google oder Trustpilot, die Zahl verlinkt dorthin.",
           "bild": "assets/bibliothek/stimmenNote.jpg",
-          "bytes": 58520
+          "bytes": 58520,
+          "seite": "_bib/stimmenNote.html"
         },
         {
           "id": "stimmenReihe",
@@ -199,7 +227,8 @@
           "wann": "Wenn es zu den Stimmen harte Zahlen gibt — Dauer, Ersparnis, Jahre. Die Zahl trägt die Karte, das Zitat belegt sie.",
           "grenzen": "Braucht Bilder und mindestens drei Stimmen. Ohne Kennzahl rücken die Sterne an ihre Stelle; ohne beides ist es die falsche Fassung.",
           "bild": "assets/bibliothek/stimmenReihe.jpg",
-          "bytes": 134986
+          "bytes": 134986,
+          "seite": "_bib/stimmenReihe.html"
         }
       ]
     },
@@ -217,7 +246,8 @@
           "wann": "Überall da, wo ein Termin der nächste Schritt ist. Links was nach der Anfrage passiert, rechts Telefonnummer, Zeiten und der Knopf.",
           "grenzen": "Bricht ab, wenn weder Telefonnummer noch Knopf noch Einbettung da ist — ein Block, der nirgendwohin führt, ist schlimmer als keiner. Kein Kalender im Entwurf; wird jemand Kunde, kommt sein eigener an dieselbe Stelle.",
           "bild": "assets/bibliothek/terminAnfrage.jpg",
-          "bytes": 52059
+          "bytes": 52059,
+          "seite": "_bib/terminAnfrage.html"
         }
       ]
     },
@@ -235,7 +265,8 @@
           "wann": "Erste Wahl bei fünf bis neun Leistungen.",
           "grenzen": "Unter fünf bricht der Baustein ab — dafür ist das gleichmäßige Raster da. Bei genau sechs stehen alle Karten gleich groß nebeneinander, die hervorgehobene bleibt hervorgehoben. Karten heben sich beim Überfahren an.",
           "bild": "assets/bibliothek/leistungenBento.jpg",
-          "bytes": 100188
+          "bytes": 100188,
+          "seite": "_bib/leistungenBento.html"
         },
         {
           "id": "leistungen",
@@ -243,7 +274,8 @@
           "wann": "Bei sehr vielen Leistungen oder wenn alle gleich wichtig sind.",
           "grenzen": "Spaltenzahl einstellbar, Icon im Kreis oder im Kasten. Lässt keinen Eintrag weg. Karten heben sich beim Überfahren an.",
           "bild": "assets/bibliothek/leistungen.jpg",
-          "bytes": 66225
+          "bytes": 66225,
+          "seite": "_bib/leistungen.html"
         }
       ]
     },
@@ -261,7 +293,8 @@
           "wann": "Erste Wahl bei vier bis sechs Marken, die in eine Zeile passen.",
           "grenzen": "Unter vier bricht der Baustein ab — zwei Partner wirken wie eine Entschuldigung. Weiße Grafik auf Transparenz bekommt dunklen Grund, gemessen und nicht geraten.",
           "bild": "assets/bibliothek/logowandKarten.jpg",
-          "bytes": 19627
+          "bytes": 19627,
+          "seite": "_bib/logowandKarten.html"
         },
         {
           "id": "logowandLauf",
@@ -269,7 +302,8 @@
           "wann": "Sobald mehr Logos da sind, als in eine Zeile passen. Hält beim Überfahren an.",
           "grenzen": "Läuft nicht über die ganze Seitenbreite, sondern in einem begrenzten Band. Unter sechs Logos wird die Liste wiederholt, sonst klafft eine Lücke.",
           "bild": "assets/bibliothek/logowandLauf.jpg",
-          "bytes": 16332
+          "bytes": 16103,
+          "seite": "_bib/logowandLauf.html"
         }
       ]
     },
@@ -287,7 +321,8 @@
           "wann": "Vier bis sieben Schritte mit je zwei bis drei Zeilen Text.",
           "grenzen": "Unter drei Schritten bricht der Baustein ab. Der Vorspann links darf lang sein, er trägt die Spalte.",
           "bild": "assets/bibliothek/verlaufSeitlich.jpg",
-          "bytes": 100260
+          "bytes": 100260,
+          "seite": "_bib/verlaufSeitlich.html"
         },
         {
           "id": "verlaufWaagerecht",
@@ -295,7 +330,8 @@
           "wann": "Drei bis fünf Stationen mit sehr kurzem Text.",
           "grenzen": "Unter drei und über fünf bricht der Baustein ab. Die Texte unter den Punkten werden auf 90 Zeichen gekürzt, sonst wird die Reihe unruhig.",
           "bild": "assets/bibliothek/verlaufWaagerecht.jpg",
-          "bytes": 37193
+          "bytes": 37193,
+          "seite": "_bib/verlaufWaagerecht.html"
         },
         {
           "id": "verlaufSchmal",
@@ -303,7 +339,8 @@
           "wann": "Wenn der Verlauf neben anderem Inhalt stehen soll.",
           "grenzen": "Trägt keine langen Absätze. Jeder Schritt braucht ein eigenes Zeichen, sonst bricht der Baustein ab. Die Schritte rücken beim Überfahren zur Seite.",
           "bild": "assets/bibliothek/verlaufSchmal.jpg",
-          "bytes": 41561
+          "bytes": 41561,
+          "seite": "_bib/verlaufSchmal.html"
         }
       ]
     },
@@ -321,7 +358,8 @@
           "wann": "Erste Wahl. Anschrift, Telefon, Zeiten direkt im Fuß.",
           "grenzen": "Logo auf dunklem Grund braucht die weiße Fassung, wenn es eine gibt.",
           "bild": "assets/bibliothek/fussKontakt.jpg",
-          "bytes": 35073
+          "bytes": 35073,
+          "seite": "_bib/fussKontakt.html"
         },
         {
           "id": "fussSpalten",
@@ -329,7 +367,8 @@
           "wann": "Bei vielen Unterseiten, die verlinkt werden sollen.",
           "grenzen": "Bei zwei Unterseiten wirken die Spalten leer.",
           "bild": "assets/bibliothek/fussSpalten.jpg",
-          "bytes": 24845
+          "bytes": 24845,
+          "seite": "_bib/fussSpalten.html"
         }
       ]
     }

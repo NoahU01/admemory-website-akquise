@@ -8,6 +8,11 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import puppeteer from 'puppeteer-core';
 import { GRUPPEN, BAUSTEINE } from './katalog.mjs';
+import { ERSCHEINEN_SKRIPT, BUEHNE_SKRIPT, REIHE_SKRIPT, TIEFE_SKRIPT,
+         ANKUENDIGUNG_SKRIPT } from './bausteine.mjs';
+
+const SKRIPTE = [ERSCHEINEN_SKRIPT, BUEHNE_SKRIPT, REIHE_SKRIPT, TIEFE_SKRIPT,
+                 ANKUENDIGUNG_SKRIPT].join('\n');
 
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const WURZEL = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../..');
@@ -17,6 +22,31 @@ fs.mkdirSync(ZIEL, { recursive: true });
 /* Prüfseiten frisch bauen, damit die Bilder zum Stand der Bausteine passen. */
 for (const g of GRUPPEN) {
   execFileSync('node', [path.join(WURZEL, 'entwuerfe', g.seite, 'bauen.mjs')], { stdio: 'pipe' });
+}
+
+/* Das Gerüst für die Einzelseiten. Bewusst dasselbe Stylesheet und
+   dieselben Skripte wie die Entwürfe — was hier anders aussähe, wäre
+   wertlos. Die Skripte sind alle enthalten; jedes prüft selbst, ob es
+   auf der Seite etwas zu tun gibt. */
+function einzelseite(b, inhalt) {
+  return `<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<title>${b.name} · Baukasten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="../baukasten/stil.css">
+<style>body{margin:0}</style>
+</head>
+<body>
+${inhalt}
+${SKRIPTE}
+</body>
+</html>`;
 }
 
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: 'new',
@@ -41,6 +71,15 @@ for (const g of GRUPPEN) {
   for (const b of BAUSTEINE.filter((x) => x.gruppe === g.id)) {
     const el = await page.$(`[data-bsp="${b.id}"]`);
     if (!el) { fehlend.push(b.id); continue; }
+
+    /* Je Fassung eine eigene, aufgeräumte Seite. Eine Prüfseite mit neun
+       Abschnitten ist zum Prüfen gut und zum Ansehen schlecht — im
+       Dashboard wird genau diese eine Seite im Pop-up gezeigt. */
+    const nurDieser = await page.evaluate((id) =>
+      document.querySelector(`[data-bsp="${id}"]`).innerHTML, b.id);
+    fs.mkdirSync(path.join(WURZEL, 'entwuerfe/_bib'), { recursive: true });
+    fs.writeFileSync(path.join(WURZEL, 'entwuerfe/_bib', b.id + '.html'),
+      einzelseite(b, nurDieser));
     const roh = path.join(ZIEL, b.id + '.png');
     await el.screenshot({ path: roh });
     /* Als JPEG ablegen: die Ausschnitte haben ohnehin einen eigenen Grund,
@@ -57,6 +96,7 @@ for (const g of GRUPPEN) {
     } catch { b.bild = 'assets/bibliothek/' + b.id + '.png'; }
     const datei = path.join(WURZEL, 'dashboard', b.bild);
     b.bytes = fs.statSync(datei).size;
+    b.seite = '_bib/' + b.id + '.html';
   }
   await page.close();
 }

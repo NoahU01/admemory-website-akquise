@@ -38,6 +38,7 @@ const ICONS = {
      18 Pixeln zwei Kringel, die man nicht erkennt. */
   /* Für den Aufklapper an den Bibliothekskarten. */
   buch:       'M4 5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2zM4 19a2 2 0 0 1 2-2h13v4H6a2 2 0 0 1-2-2z',
+  band:       'M3 7h18v5H3zM6 16h12M8 20h8',
   navigation: 'M3 6h18M3 12h12M3 18h18M19 12h2',
   knopf:      'M3 9a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3zM8.5 12h7',
   stimmen:    'M4 5h16v11H9l-4 4v-4H4zM8 9h8M8 12.5h5',
@@ -601,48 +602,60 @@ hole('/api/stand').then(zeigeApp).catch(zeigeTor);
 function zeichneBibliothek(){
   const g = bibliothek.gruppen.find((x) => 'bib:' + x.id === seite);
   if (!g) { el('inhalt').innerHTML = '<div class="hint">Diese Modulart gibt es nicht.</div>'; return; }
-  const basis = 'https://entwuerfe.admemory.de/' + g.seite + '/';
 
-  /* In der Übersicht steht nur die Fassung selbst. Wann und Grenzen sind
-     beim Vergleichen im Weg und klappen deshalb auf. */
+  /* Nur Bild und Name. Alles Weitere steht im Pop-up — eine Übersicht mit
+     zwei Absätzen je Karte vergleicht sich nicht. */
   el('inhalt').innerHTML =
-    '<p class="bibkopf">Stand ' + text(bibliothek.stand) + '.</p>' +
-    '<div class="bibliste">' + g.bausteine.map((b, i) =>
-      '<article class="bib">' +
-        (b.bild
-          ? '<a class="bib__bild" href="' + basis + '" target="_blank" rel="noopener">' +
-            '<img src="/' + text(b.bild) + '" alt="Beispiel für ' + text(b.name) + '" loading="lazy"></a>'
-          : '') +
-        '<div class="bib__text">' +
-          '<div class="bib__kopf"><h3>' + text(b.name) + '</h3>' +
-            '<span class="bib__id">' + text(b.id) + '</span>' +
-            (b.erste ? '<span class="pille pille--good">erste Wahl</span>' : '') +
-          '</div>' +
-          '<button class="bibklappe" type="button" data-bib="' + i + '" aria-expanded="false"' +
-            ' aria-controls="bibdetail' + i + '">' +
-            ic('buch') + '<span>Informationen</span>' +
-            '<svg class="ic bibpfeil" viewBox="0 0 24 24" aria-hidden="true"><path d="' + PFEIL + '"/></svg>' +
-          '</button>' +
-          '<div class="bibdetail" id="bibdetail' + i + '" hidden>' +
-            '<div class="bib__zeile">' + ic('uhr') + '<div><b>Wann</b>' + text(b.wann) + '</div></div>' +
-            '<div class="bib__zeile">' + ic('befund') + '<div><b>Grenzen</b>' + text(b.grenzen) + '</div></div>' +
-          '</div>' +
-          '<div class="bib__fuss">' +
-            '<a href="' + basis + '" target="_blank" rel="noopener">' +
-              ic('pfeilauf') + 'Prüfseite öffnen</a>' +
-          '</div>' +
-        '</div>' +
-      '</article>').join('') +
+    '<p class="bibkopf">Stand ' + text(bibliothek.stand) + '. Klick auf eine Fassung zeigt sie groß.</p>' +
+    '<div class="bibgitter">' + g.bausteine.map((b, i) =>
+      '<button class="bibkachel" type="button" data-bib="' + i + '">' +
+        '<span class="bibkachel__bild">' +
+          (b.bild ? '<img src="/' + text(b.bild) + '" alt="" loading="lazy">' : '') +
+        '</span>' +
+        '<span class="bibkachel__fuss">' +
+          '<span class="bibkachel__name">' + text(b.name) + '</span>' +
+          (b.erste ? '<span class="pille pille--good">erste Wahl</span>' : '') +
+        '</span>' +
+      '</button>').join('') +
     '</div>';
 }
 
-/* Aufklappen der Einzelheiten. Ein Zuhörer am Container, damit er das
-   Neuzeichnen der Liste überlebt. */
+/* ── Pop-up ─────────────────────────────────────────────────────────
+   Zeigt die Fassung als eigene Seite im Rahmen, nicht als Bild: Was im
+   Pop-up steht, ist dasselbe HTML, das ein Entwurf bekäme. */
+function zeigeBaustein(b, g){
+  const basis = 'https://entwuerfe.admemory.de/';
+  el('bsName').textContent = b.name;
+  el('bsUnter').textContent = b.id;
+  el('bsRumpf').innerHTML =
+    '<div class="bsrahmen"><iframe src="' + basis + text(b.seite) + '" title="' + text(b.name) + '"' +
+      ' loading="lazy" referrerpolicy="no-referrer"></iframe></div>' +
+    '<div class="bszeilen">' +
+      '<div class="bib__zeile">' + ic('uhr') + '<div><b>Wann</b>' + text(b.wann) + '</div></div>' +
+      '<div class="bib__zeile">' + ic('befund') + '<div><b>Grenzen</b>' + text(b.grenzen) + '</div></div>' +
+    '</div>' +
+    '<div class="bib__fuss">' +
+      '<a href="' + basis + text(b.seite) + '" target="_blank" rel="noopener">' +
+        ic('pfeilauf') + 'In eigenem Fenster öffnen</a>' +
+      '<a href="' + basis + text(g.seite) + '/" target="_blank" rel="noopener">' +
+        ic('pfeilauf') + 'Prüfseite mit allen Härtefällen</a>' +
+    '</div>';
+  el('bausteinblatt').hidden = false;
+}
+
 el('inhalt').addEventListener('click', (e) => {
   const k = e.target.closest('button[data-bib]');
   if (!k) return;
-  const auf = k.getAttribute('aria-expanded') === 'true';
-  k.setAttribute('aria-expanded', String(!auf));
-  const ziel = el(k.getAttribute('aria-controls'));
-  if (ziel) ziel.hidden = auf;
+  const g = bibliothek.gruppen.find((x) => 'bib:' + x.id === seite);
+  if (g) zeigeBaustein(g.bausteine[+k.dataset.bib], g);
 });
+el('bsZu').addEventListener('click', () => { el('bausteinblatt').hidden = true; el('bsRumpf').innerHTML = ''; });
+el('bausteinblatt').addEventListener('click', (e) => {
+  if (e.target.id === 'bausteinblatt') { el('bausteinblatt').hidden = true; el('bsRumpf').innerHTML = ''; }
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !el('bausteinblatt').hidden) {
+    el('bausteinblatt').hidden = true; el('bsRumpf').innerHTML = '';
+  }
+});
+

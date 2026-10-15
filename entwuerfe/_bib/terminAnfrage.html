@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<title>Anfrage mit Ablauf · Baukasten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="../baukasten/stil.css">
+<style>body{margin:0}</style>
+</head>
+<body>
+
+<section class="abschnitt " id="termin">
+  <div class="schale"><div class="termin">
+    <div class="stapel-3 kopf-eng">
+      <h2>Termin anfragen</h2>
+      <p class="lead lead--zwei">Kein Kalender, kein Konto, keine Anmeldung — ein Anruf oder drei Zeilen genügen.</p>
+      <ol class="termin__schritte">
+        <li>
+          <span class="termin__nummer">1</span>
+          <div><b>Sie melden sich</b><span>Telefonisch oder über das Formular, mit ein paar Sätzen zum Anliegen.</span></div>
+        </li><li>
+          <span class="termin__nummer">2</span>
+          <div><b>Wir melden uns am selben Tag</b><span>Werktags innerhalb von drei Stunden, auch wenn es nur eine Rückfrage ist.</span></div>
+        </li><li>
+          <span class="termin__nummer">3</span>
+          <div><b>Fester Termin, kein Zeitfenster</b><span>Sie bekommen eine Uhrzeit. Verschiebt sie sich, rufen wir vorher an.</span></div>
+        </li>
+      </ol>
+    </div>
+    <div class="termin__karte">
+      
+      
+        <a class="termin__ruf" href="tel:+4979511234560">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 4.5l2 3.5l-2 1.5a11 11 0 0 0 6 6l1.5-2l3.5 2l-1 3a2 2 0 0 1-2 1.3A16 16 0 0 1 4.2 7.5A2 2 0 0 1 5.5 5.5z"></path></svg><span>07951 123456-0</span></a>
+        <dl class="termin__zeiten">
+          <div><dt>Montag bis Donnerstag</dt><dd>7:00 – 17:00 Uhr</dd></div><div><dt>Freitag</dt><dd>7:00 – 13:00 Uhr</dd></div><div><dt>Störungsdienst</dt><dd>rund um die Uhr</dd></div>
+        </dl>
+        <a class="knopf knopf--wichtig knopf--voll" href="#kontakt">Anfrage schreiben</a>
+        <p class="klein termin__hinweis">Außerhalb der Zeiten ist der Störungsdienst besetzt.</p>
+    </div>
+  </div></div>
+</section>
+
+<script>
+(function () {
+  var teile = document.querySelectorAll('[data-erscheinen]');
+  if (!teile.length) return;
+  if (!('IntersectionObserver' in window) ||
+      matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    teile.forEach(function (t) { t.setAttribute('data-sichtbar', ''); });
+    return;
+  }
+  var w = new IntersectionObserver(function (eintraege) {
+    eintraege.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.setAttribute('data-sichtbar', '');
+      w.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -12% 0px' });
+  teile.forEach(function (t) { w.observe(t); });
+})();
+</script>
+
+<script>
+(function () {
+  var sterne = 'M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4 6.2 20.5l1.1-6.5L2.6 9.4l6.5-.9z';
+  function kuerzel(n) {
+    return String(n || '').split(/[\s.]+/).filter(Boolean).slice(0, 2)
+      .map(function (w) { return w[0].toUpperCase(); }).join('');
+  }
+  function sicher(t) {
+    var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML;
+  }
+  document.querySelectorAll('[data-buehne]').forEach(function (b) {
+    var quelle = document.querySelector('[data-buehne-daten="' + b.id + '"]');
+    if (!quelle) return;
+    var stimmen; try { stimmen = JSON.parse(quelle.textContent); } catch (e) { return; }
+    if (!stimmen.length) return;
+    var bilder = b.querySelectorAll('.buehne__bild');
+    var inhalt = b.querySelector('[data-buehne-inhalt]');
+    var i = 0, n = stimmen.length;
+
+    function zeichne() {
+      bilder.forEach(function (el, k) {
+        var wo = 'weg';
+        if (k === i) wo = 'mitte';
+        else if (k === (i - 1 + n) % n) wo = 'links';
+        else if (k === (i + 1) % n) wo = 'rechts';
+        el.setAttribute('data-wo', wo);
+      });
+      var s = stimmen[i];
+      var note = '';
+      if (typeof s.note === 'number' && s.note > 0) {
+        var r = '';
+        for (var k = 0; k < Math.round(s.note); k++)
+          r += '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + sterne + '"/></svg>';
+        note = '<div class="stimme__noten" role="img" aria-label="' + Math.round(s.note) +
+               ' von 5 Sternen">' + r + '</div>';
+      }
+      var kopf = '<div class="stimme__kopf">' + (s.bild
+        ? '<img class="stimme__bild" src="' + sicher(s.bild) + '" alt="">'
+        : '<span class="stimme__initialen" aria-hidden="true">' + sicher(kuerzel(s.name)) + '</span>')
+        + '<span class="stimme__wer"><b>' + sicher(s.name) + '</b>'
+        + (s.rolle ? '<span>' + sicher(s.rolle) + '</span>' : '') + '</span></div>';
+      inhalt.innerHTML = note + '<blockquote>' + sicher(s.text) + '</blockquote>' + kopf;
+    }
+    var vor = b.querySelector('[data-buehne-vor]');
+    var zurueck = b.querySelector('[data-buehne-zurueck]');
+    if (vor) vor.addEventListener('click', function () { i = (i + 1) % n; zeichne(); });
+    if (zurueck) zurueck.addEventListener('click', function () { i = (i - 1 + n) % n; zeichne(); });
+    zeichne();
+  });
+})();
+</script>
+
+<script>
+(function () {
+  document.querySelectorAll('[data-reihe-vor]').forEach(function (knopf) {
+    verdrahte(knopf, 1);
+  });
+  document.querySelectorAll('[data-reihe-zurueck]').forEach(function (knopf) {
+    verdrahte(knopf, -1);
+  });
+  function verdrahte(knopf, richtung) {
+    var id = knopf.getAttribute('data-reihe-vor') || knopf.getAttribute('data-reihe-zurueck');
+    var reihe = document.getElementById(id);
+    if (!reihe) return;
+    knopf.addEventListener('click', function () {
+      var karte = reihe.querySelector('.reihe__karte');
+      if (!karte) return;
+      /* Um genau eine Karte weiter, Abstand eingerechnet. Eine feste
+         Pixelzahl ginge bei jeder Bildschirmbreite daneben. */
+      var spur = reihe.querySelector('.reihe__spur');
+      var abstand = parseFloat(getComputedStyle(spur).columnGap) || 0;
+      reihe.scrollBy({ left: richtung * (karte.getBoundingClientRect().width + abstand),
+                       behavior: 'smooth' });
+    });
+  }
+  /* Knöpfe abschalten, wo es nicht weitergeht. */
+  document.querySelectorAll('.reihe').forEach(function (reihe) {
+    var vor = document.querySelector('[data-reihe-vor="' + reihe.id + '"]');
+    var zurueck = document.querySelector('[data-reihe-zurueck="' + reihe.id + '"]');
+    function stand() {
+      if (zurueck) zurueck.disabled = reihe.scrollLeft < 8;
+      if (vor) vor.disabled = reihe.scrollLeft + reihe.clientWidth >= reihe.scrollWidth - 8;
+    }
+    reihe.addEventListener('scroll', stand, { passive: true });
+    window.addEventListener('resize', stand);
+    stand();
+  });
+})();
+</script>
+
+<script>
+(function () {
+  var el = document.querySelector('[data-tiefe] .hero-tiefe__bild');
+  if (!el) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var laeuft = false;
+  function schieben() {
+    var y = window.scrollY;
+    if (y < window.innerHeight * 1.2) el.style.transform = 'translate3d(0,' + (y * 0.28) + 'px,0)';
+    laeuft = false;
+  }
+  addEventListener('scroll', function () {
+    if (!laeuft) { laeuft = true; requestAnimationFrame(schieben); }
+  }, { passive: true });
+  schieben();
+})();
+</script>
+
+<script>
+document.querySelectorAll('[data-ankuendigung]').forEach(function (k) {
+  k.addEventListener('click', function () {
+    var b = document.getElementById(k.getAttribute('data-ankuendigung'));
+    if (b) b.hidden = true;
+  });
+});
+</script>
+</body>
+</html>
