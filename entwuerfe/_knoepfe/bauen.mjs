@@ -42,6 +42,19 @@ const html = seite({
        knopf({ text: 'Mehr erfahren', href: '#', art: 'leise' })]
         .join(' '), true),
 
+    bsp('knopfRund', block('Vollrund · die schlanke Fassung · hell',
+      [knopf({ text: 'Termin anfragen', href: '#', art: 'wichtig', rund: true }),
+       knopf({ text: 'Rückruf anfordern', href: '#', art: 'rand', rund: true }),
+       knopf({ text: 'Mehr erfahren', href: '#', art: 'leise', rund: true })].join(' '))),
+
+    block('Vollrund · auf dunklem Grund',
+      [knopf({ text: 'Termin anfragen', href: '#', art: 'wichtig', rund: true }),
+       knopf({ text: 'Rückruf anfordern', href: '#', art: 'rand', rund: true })].join(' '), true),
+
+    block('Vollrund · große Fassung als Paar',
+      knopfPaar({ haupt: { text: 'Termin anfragen', href: '#' },
+                  neben: { text: 'Leistungen ansehen', href: '#' }, gross: true, rund: true })),
+
     bsp('knopfPille', block('knopfPille · Pfeil wandert beim Überfahren · nur einmal je Seite',
       knopfPille({ text: 'Unsere Leistungen', href: '#leistungen' }), true)),
 

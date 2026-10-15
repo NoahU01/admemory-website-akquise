@@ -122,6 +122,12 @@ a{color:inherit}
 
 /* Große Fassung, nur im Kopfbereich. */
 .knopf--gross{min-height:52px;padding:.8rem 1.6rem;font-size:1rem}
+
+/* Vollrund. sofortsichtbar.de macht es durchgehend so. Das ist die schlanke
+   Fassung — knopfPille ist die große mit eigenem Pfeilkreis daneben. */
+.knopf--rund{border-radius:999px;padding-inline:1.5rem}
+.knopf--rund.knopf--gross{padding-inline:1.9rem}
+.knopf--rund.knopf--leise{padding-inline:.9rem}
 .abschnitt--tief .knopf--rand{border-color:#51607380}
 .knopf:focus-visible{outline:3px solid var(--akzent);outline-offset:3px}
 .abschnitt--tief .knopf:focus-visible{outline-color:#ff8e8e}

@@ -4,7 +4,7 @@
     {
       "id": "knoepfe",
       "icon": "knopf",
-      "name": "Knöpfe",
+      "name": "Buttons",
       "seite": "_knoepfe",
       "zweck": "Die Maße stammen aus zwölf Vorbildseiten: 44 px hoch, 8 px Radius, Schriftgewicht 500.",
       "bausteine": [
@@ -18,12 +18,20 @@
           "bytes": 10158
         },
         {
+          "id": "knopfRund",
+          "name": "Vollrund, schlank",
+          "wann": "Wenn die Seite weicher wirken soll. sofortsichtbar.de macht es durchgehend so.",
+          "grenzen": "Dieselben Maße wie der eckige, nur mit vollem Radius und etwas mehr Polsterung an den Seiten. Entweder die ganze Seite rund oder keine — gemischt wirkt es unentschieden.",
+          "bild": "assets/bibliothek/knopfRund.jpg",
+          "bytes": 10408
+        },
+        {
           "id": "knopfPille",
           "name": "Pille mit wanderndem Pfeil",
           "wann": "Der betonte Knopf für Kopfbereiche.",
           "grenzen": "Nur einmal je Seite, sonst verliert er seine Wirkung. Nur 12 von 49 vermessenen Knöpfen auf den Vorbildseiten waren überhaupt vollrund.",
           "bild": "assets/bibliothek/knopfPille.jpg",
-          "bytes": 10805
+          "bytes": 10796
         }
       ]
     },

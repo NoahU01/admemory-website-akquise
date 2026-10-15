@@ -46,19 +46,21 @@ export function hero({ ueber, titel, text, knoepfe = [], bild, bildAlt = '',
 }
 
 /* art: 'wichtig' laut und gefüllt · 'rand' Umriss · 'leise' nur Text mit
-   Pfeil · gross: die größere Fassung für Kopfbereiche.
+   Pfeil. gross: die größere Fassung für Kopfbereiche. rund: vollrund,
+   die schlanke Pille — knopfPille ist die große mit eigenem Pfeilkreis.
    Zwei Knöpfe nebeneinander sind der Normalfall, nicht die Ausnahme:
    einer führt, einer bietet an. Dafür gibt es knopfPaar. */
-export const knopf = ({ text, href, art = 'rand', gross = false, neu = false }) =>
-  `<a class="knopf knopf--${esc(art)}${gross ? ' knopf--gross' : ''}" href="${esc(href)}"` +
+export const knopf = ({ text, href, art = 'rand', gross = false, rund = false, neu = false }) =>
+  `<a class="knopf knopf--${esc(art)}${gross ? ' knopf--gross' : ''}` +
+  `${rund ? ' knopf--rund' : ''}" href="${esc(href)}"` +
   `${neu ? ' target="_blank" rel="noopener"' : ''}>${esc(text)}` +
   `${art === 'leise' ? zeichen('pfeilrechts') : ''}</a>`;
 
 /* Das Paar aus leisem und lautem Knopf. */
-export const knopfPaar = ({ haupt, neben, gross = false, mittig = false }) =>
+export const knopfPaar = ({ haupt, neben, gross = false, rund = false, mittig = false }) =>
   `<div class="knopfreihe"${mittig ? ' style="justify-content:center"' : ''}>` +
-  `${knopf({ ...haupt, art: 'wichtig', gross })}` +
-  `${wenn(neben, () => knopf({ ...neben, art: neben.art ?? 'leise', gross }))}</div>`;
+  `${knopf({ ...haupt, art: 'wichtig', gross, rund })}` +
+  `${wenn(neben, () => knopf({ ...neben, art: neben.art ?? 'leise', gross, rund }))}</div>`;
 
 /* Notfallband: eine Zeile, eine Nummer, nichts drumherum. Nur verwenden, wenn
    es wirklich einen Notdienst gibt. */
