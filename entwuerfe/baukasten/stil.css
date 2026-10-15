@@ -677,7 +677,11 @@ a{color:inherit}
   background:var(--grund);display:grid;place-items:center;padding:.5rem}
 .vertrauen__kachel--leer{background:color-mix(in srgb,var(--linie) 32%,transparent);
   border-color:transparent;opacity:.55}
-.vertrauen__kachel img{max-width:100%;max-height:100%;object-fit:contain}
+/* max-height:100% greift hier nicht: Die Kachel bekommt ihre Höhe aus
+   aspect-ratio, und ein Prozentwert gegen eine so bestimmte Höhe bleibt
+   unbestimmt. Das becoa-Logo lief dadurch aus der Kachel heraus und
+   schob sich über die Überschrift. Feste Maße plus object-fit lösen es. */
+.vertrauen__kachel img{width:100%;height:100%;object-fit:contain}
 .vertrauen__text{max-width:34rem}
 @media(max-width:560px){.vertrauen__kacheln{grid-template-columns:repeat(min(var(--spalten,4),3),1fr)}}
 
@@ -707,7 +711,7 @@ a{color:inherit}
   box-shadow:0 1px 2px rgba(17,22,29,.04)}
 .streu__feld--leer{background:color-mix(in srgb,var(--linie) 45%,transparent);
   border-color:transparent;box-shadow:none}
-.streu__feld img{max-width:100%;max-height:100%;object-fit:contain}
+.streu__feld img{width:100%;height:100%;object-fit:contain}
 
 /* Weiße Grafik auf Transparenz braucht auch in den Kacheln dunklen Grund. */
 .vertrauen__kachel:has(img[data-invers]),
@@ -926,7 +930,7 @@ blockquote,figure{margin:0}
   border-radius:12px;background:var(--grund);display:grid;place-items:center;padding:.9rem}
 /* Ohne Deckel skaliert ein Schriftzug auf die ganze Kachel und wirkt wie
    eine Überschrift statt wie ein Logo. */
-.wand-note__kachel img{max-width:82%;max-height:2.8rem;object-fit:contain}
+.wand-note__kachel img{width:82%;height:100%;max-height:2.8rem;object-fit:contain}
 .wand-note__kachel:has(img[data-invers]){background:var(--tief);border-color:var(--tief)}
 .auf-dunkel .wand-note__kachel,.abschnitt--tief .wand-note__kachel{background:#fff;border-color:transparent}
 

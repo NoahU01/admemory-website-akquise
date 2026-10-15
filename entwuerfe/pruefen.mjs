@@ -83,6 +83,22 @@ for (const breite of [1400, 390]) {
     const bilderLeer = [...document.images].filter((i) => !i.complete || !i.naturalWidth)
       .map((i) => i.getAttribute('src'));
 
+    /* Bilder, die aus ihrem Kasten laufen. Das becoa-Logo schob sich so
+       über eine Überschrift: max-height:100% greift nicht, wenn die Höhe
+       des Kastens aus aspect-ratio kommt. Sichtbar war es nur im Bild,
+       nicht in den Messwerten — deshalb steht es jetzt hier. */
+    const ausgebuext = [];
+    for (const el of document.querySelectorAll('[class*="kachel"],[class*="feld"],.karte,figure')) {
+      const im = el.querySelector(':scope > img');
+      if (!im) continue;
+      const r = el.getBoundingClientRect(), ir = im.getBoundingClientRect();
+      if (!r.width || !ir.width) continue;
+      if (getComputedStyle(el).overflow !== 'visible') continue;
+      const ue = Math.max(ir.bottom - r.bottom, r.top - ir.top, ir.right - r.right, r.left - ir.left);
+      if (ue > 1) ausgebuext.push({ bild: im.getAttribute('src').split('/').pop(),
+        raus: Math.round(ue), kasten: el.className.toString().slice(0, 28) });
+    }
+
     /* Winzige Logos in Kacheln aufspüren */
     const klein = [...document.querySelectorAll('.vertrauen__kachel img,.streu__feld img')]
       .map((i) => ({ src: i.getAttribute('src').split('/').pop(), b: Math.round(i.getBoundingClientRect().width), h: Math.round(i.getBoundingClientRect().height) }))
@@ -131,7 +147,7 @@ for (const breite of [1400, 390]) {
       .filter((e) => e.getBoundingClientRect().right > window.innerWidth + 1)
       .slice(0,5).map((e) => `${e.tagName.toLowerCase()}.${e.className}`.slice(0,60));
 
-    return { unbekannt, unmessbar, ueberlauf: ue, breiter, schlecht, bilderLeer, klein, verdeckt, sterne,
+    return { unbekannt, unmessbar, ausgebuext, ueberlauf: ue, breiter, schlecht, bilderLeer, klein, verdeckt, sterne,
       hoehe: document.body.scrollHeight };
   });
 
@@ -140,6 +156,7 @@ for (const breite of [1400, 390]) {
   console.log('Kontrast unter Schwelle:', m.schlecht.length, m.schlecht.slice(0,6));
   console.log('Nicht messbar (Verlauf/Bild dahinter):', m.unmessbar.length, m.unmessbar.slice(0,4));
   console.log('Leere Bilder:', m.bilderLeer.length, m.bilderLeer);
+  console.log('Bilder außerhalb ihres Kastens:', m.ausgebuext.length, m.ausgebuext.slice(0,4));
   console.log('Zu kleine Logos:', m.klein.length, m.klein.slice(0,5));
   console.log('Von Maske verdeckt:', m.verdeckt.length, m.verdeckt.slice(0,8));
   console.log('Unbekannte Klassen:', m.unbekannt);

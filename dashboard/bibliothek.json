@@ -24,7 +24,7 @@
           "wann": "Wenn die Seite weicher wirken soll. sofortsichtbar.de macht es durchgehend so.",
           "grenzen": "Dieselben Maße wie der eckige, nur mit vollem Radius und etwas mehr Polsterung an den Seiten. Entweder die ganze Seite rund oder keine — gemischt wirkt es unentschieden.",
           "bild": "assets/bibliothek/knopfRund.jpg",
-          "bytes": 23053,
+          "bytes": 23056,
           "seite": "_bib/knopfRund.html"
         },
         {
@@ -135,7 +135,7 @@
           "name": "Geteilt mit Merkmalen",
           "grenzen": "Die Merkmale brauchen Zeichen aus ZEICHEN. Bei nur einem Merkmal wirkt die Spalte leer.",
           "bild": "assets/bibliothek/heroGeteilt.jpg",
-          "bytes": 204432,
+          "bytes": 204463,
           "seite": "_bib/heroGeteilt.html"
         },
         {
@@ -153,7 +153,7 @@
           "wann": "Nur bei einem wirklich guten, großen Foto.",
           "grenzen": "Inhalt steht senkrecht mittig. Hat einen dunklen Grund hinterlegt, falls das Bild nicht lädt — schlechte Fotos fallen hier am meisten auf.",
           "bild": "assets/bibliothek/heroVoll.jpg",
-          "bytes": 111408,
+          "bytes": 111474,
           "seite": "_bib/heroVoll.html"
         }
       ]
@@ -200,7 +200,7 @@
           "wann": "Erste Wahl. Die einzige Fassung ohne Bilder — und damit die einzige, die allein aus Google-Bewertungen entsteht. Ab sechs Stimmen am besten.",
           "grenzen": "Unter drei Stimmen bricht der Baustein ab, darunter gibt es kein Modul. Beim Überfahren hält der Lauf an; wer Bewegung abgestellt hat, bekommt die Liste ohne Deckel.",
           "bild": "assets/bibliothek/stimmenSpalten.jpg",
-          "bytes": 193197,
+          "bytes": 193194,
           "seite": "_bib/stimmenSpalten.html"
         },
         {
@@ -209,7 +209,7 @@
           "wann": "Bei drei bis sechs ausgesuchten Stimmen, wenn es Porträts gibt.",
           "grenzen": "Ohne Bilder bricht der Baustein ab. Bei gleichen Bildern wirkt der Stapel flach — er lebt von verschiedenen Gesichtern.",
           "bild": "assets/bibliothek/stimmenBuehne.jpg",
-          "bytes": 61166,
+          "bytes": 61124,
           "seite": "_bib/stimmenBuehne.html"
         },
         {
@@ -218,7 +218,7 @@
           "wann": "Wenn es gute Bilder gibt. Das Foto ist die Karte, unten steht nur der Name.",
           "grenzen": "Ohne Bilder bricht der Baustein ab. Hochformate und Szenen aus dem Betrieb sitzen besser als quadratische Porträts, die unten angeschnitten werden.",
           "bild": "assets/bibliothek/stimmenBilder.jpg",
-          "bytes": 127964,
+          "bytes": 127577,
           "seite": "_bib/stimmenBilder.html"
         },
         {
@@ -227,7 +227,7 @@
           "wann": "Die einzige Fassung ohne einzelne Stimmen — sie braucht nur Partnerlogos und eine Gesamtnote. Damit die Wahl bei jedem Betrieb, dessen Bewertungen keine brauchbaren Texte hergeben.",
           "grenzen": "Mindestens vier Logos, am besten acht: dann füllen Wand und Notenkarte zusammen ein sauberes Rechteck. Ohne Note bricht der Baustein ab. Quelle ist Google oder Trustpilot, die Zahl verlinkt dorthin.",
           "bild": "assets/bibliothek/stimmenNote.jpg",
-          "bytes": 94663,
+          "bytes": 94623,
           "seite": "_bib/stimmenNote.html"
         },
         {
@@ -236,7 +236,7 @@
           "wann": "Wenn es zu den Stimmen harte Zahlen gibt — Dauer, Ersparnis, Jahre. Die Zahl trägt die Karte, das Zitat belegt sie.",
           "grenzen": "Braucht Bilder und mindestens drei Stimmen. Ohne Kennzahl rücken die Sterne an ihre Stelle; ohne beides ist es die falsche Fassung.",
           "bild": "assets/bibliothek/stimmenReihe.jpg",
-          "bytes": 194770,
+          "bytes": 194717,
           "seite": "_bib/stimmenReihe.html"
         }
       ]
@@ -283,7 +283,7 @@
           "wann": "Bei sehr vielen Leistungen oder wenn alle gleich wichtig sind.",
           "grenzen": "Spaltenzahl einstellbar, Icon im Kreis oder im Kasten. Lässt keinen Eintrag weg. Karten heben sich beim Überfahren an.",
           "bild": "assets/bibliothek/leistungen.jpg",
-          "bytes": 103668,
+          "bytes": 103690,
           "seite": "_bib/leistungen.html"
         }
       ]
