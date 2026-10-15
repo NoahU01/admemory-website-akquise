@@ -33,7 +33,7 @@
           "wann": "Der betonte Knopf für Kopfbereiche.",
           "grenzen": "Nur einmal je Seite, sonst verliert er seine Wirkung. Nur 12 von 49 vermessenen Knöpfen auf den Vorbildseiten waren überhaupt vollrund.",
           "bild": "assets/bibliothek/knopfPille.jpg",
-          "bytes": 20897,
+          "bytes": 20896,
           "seite": "_bib/knopfPille.html"
         }
       ]
@@ -126,7 +126,7 @@
           "wann": "Erste Wahl. Trägt jedes Gewerbe und kommt mit einem einzigen Querformat aus.",
           "grenzen": "Braucht ein Bild im Breitformat. Die Logoleiste darunter läuft und sitzt auf der Breite der Navigation; unter acht Logos wird die Liste wiederholt, sonst klafft eine Lücke.",
           "bild": "assets/bibliothek/heroMitte.jpg",
-          "bytes": 123285,
+          "bytes": 123234,
           "seite": "_bib/heroMitte.html"
         },
         {
@@ -135,7 +135,7 @@
           "name": "Geteilt mit Merkmalen",
           "grenzen": "Die Merkmale brauchen Zeichen aus ZEICHEN. Bei nur einem Merkmal wirkt die Spalte leer.",
           "bild": "assets/bibliothek/heroGeteilt.jpg",
-          "bytes": 206705,
+          "bytes": 206656,
           "seite": "_bib/heroGeteilt.html"
         },
         {
@@ -144,7 +144,7 @@
           "wann": "Nur bei einem wirklich guten, großen Foto.",
           "grenzen": "Inhalt steht senkrecht mittig. Hat einen dunklen Grund hinterlegt, falls das Bild nicht lädt — schlechte Fotos fallen hier am meisten auf.",
           "bild": "assets/bibliothek/heroVoll.jpg",
-          "bytes": 111408,
+          "bytes": 111474,
           "seite": "_bib/heroVoll.html"
         }
       ]
@@ -163,7 +163,7 @@
           "wann": "Erste Wahl, sobald ein brauchbares Foto vom Betrieb da ist. Gibt es hell und dunkel.",
           "grenzen": "Drei bis neun Kacheln. Auf der Bildkarte steht die Bewertung groß: Note, Sterne, Anzahl. Ohne Note bleibt die Anzahl, geraten wird nichts.",
           "bild": "assets/bibliothek/vertrauenDuo.jpg",
-          "bytes": 107201,
+          "bytes": 107203,
           "seite": "_bib/vertrauenDuo.html"
         },
         {
@@ -209,7 +209,7 @@
           "wann": "Wenn es gute Bilder gibt. Das Foto ist die Karte, unten steht nur der Name.",
           "grenzen": "Ohne Bilder bricht der Baustein ab. Hochformate und Szenen aus dem Betrieb sitzen besser als quadratische Porträts, die unten angeschnitten werden.",
           "bild": "assets/bibliothek/stimmenBilder.jpg",
-          "bytes": 127964,
+          "bytes": 127577,
           "seite": "_bib/stimmenBilder.html"
         },
         {
@@ -218,7 +218,7 @@
           "wann": "Die einzige Fassung ohne einzelne Stimmen — sie braucht nur Partnerlogos und eine Gesamtnote. Damit die Wahl bei jedem Betrieb, dessen Bewertungen keine brauchbaren Texte hergeben.",
           "grenzen": "Mindestens vier Logos, am besten acht: dann füllen Wand und Notenkarte zusammen ein sauberes Rechteck. Ohne Note bricht der Baustein ab. Quelle ist Google oder Trustpilot, die Zahl verlinkt dorthin.",
           "bild": "assets/bibliothek/stimmenNote.jpg",
-          "bytes": 94656,
+          "bytes": 94663,
           "seite": "_bib/stimmenNote.html"
         },
         {
@@ -227,7 +227,7 @@
           "wann": "Wenn es zu den Stimmen harte Zahlen gibt — Dauer, Ersparnis, Jahre. Die Zahl trägt die Karte, das Zitat belegt sie.",
           "grenzen": "Braucht Bilder und mindestens drei Stimmen. Ohne Kennzahl rücken die Sterne an ihre Stelle; ohne beides ist es die falsche Fassung.",
           "bild": "assets/bibliothek/stimmenReihe.jpg",
-          "bytes": 194704,
+          "bytes": 194717,
           "seite": "_bib/stimmenReihe.html"
         }
       ]
@@ -246,7 +246,7 @@
           "wann": "Überall da, wo ein Termin der nächste Schritt ist. Links was nach der Anfrage passiert, rechts Telefonnummer, Zeiten und der Knopf.",
           "grenzen": "Bricht ab, wenn weder Telefonnummer noch Knopf noch Einbettung da ist — ein Block, der nirgendwohin führt, ist schlimmer als keiner. Kein Kalender im Entwurf; wird jemand Kunde, kommt sein eigener an dieselbe Stelle.",
           "bild": "assets/bibliothek/terminAnfrage.jpg",
-          "bytes": 89703,
+          "bytes": 89702,
           "seite": "_bib/terminAnfrage.html"
         }
       ]
@@ -265,7 +265,7 @@
           "wann": "Erste Wahl bei fünf bis neun Leistungen.",
           "grenzen": "Unter fünf bricht der Baustein ab — dafür ist das gleichmäßige Raster da. Bei genau sechs stehen alle Karten gleich groß nebeneinander, die hervorgehobene bleibt hervorgehoben. Karten heben sich beim Überfahren an.",
           "bild": "assets/bibliothek/leistungenBento.jpg",
-          "bytes": 170892,
+          "bytes": 170863,
           "seite": "_bib/leistungenBento.html"
         },
         {
@@ -302,7 +302,7 @@
           "wann": "Sobald mehr Logos da sind, als in eine Zeile passen. Hält beim Überfahren an.",
           "grenzen": "Läuft nicht über die ganze Seitenbreite, sondern in einem begrenzten Band. Unter sechs Logos wird die Liste wiederholt, sonst klafft eine Lücke.",
           "bild": "assets/bibliothek/logowandLauf.jpg",
-          "bytes": 36640,
+          "bytes": 36642,
           "seite": "_bib/logowandLauf.html"
         }
       ]

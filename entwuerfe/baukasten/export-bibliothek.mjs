@@ -65,15 +65,14 @@ for (const g of GRUPPEN) {
   await page.setViewport({ width: 1280, height: 900, deviceScaleFactor: 1 });
   await page.goto('file://' + path.join(WURZEL, 'entwuerfe', g.seite, 'index.html'),
     { waitUntil: 'networkidle0' });
-  /* Faule Bilder anstoßen und das Hereinscrollen überspringen — sonst
-     stehen halb durchsichtige Logos auf den Bildern. */
-  await page.evaluate(async () => {
-    for (const i of document.querySelectorAll('img')) { i.loading = 'eager'; i.src = i.src; }
-    /* Das Hereinscrollen setzt data-sichtbar. Wer stattdessen an den
-       Kindstilen dreht, lässt halb durchsichtige Logos stehen. */
-    document.querySelectorAll('[data-erscheinen]').forEach((e) => e.setAttribute('data-sichtbar', ''));
-    await new Promise((r) => setTimeout(r, 2500));
-  });
+  /* Hier wird nur das HTML herausgelöst, nicht fotografiert — die Bilder
+     müssen also gar nicht geladen werden. Wichtiger: `i.src = i.src` würde
+     die aufgelöste Adresse ins Attribut zurückschreiben, und dann stünden
+     in den Einzelseiten file:///Users/... statt der relativen Pfade. Genau
+     das ist einmal passiert und war erst auf dem Server zu sehen, nicht
+     in der lokalen Prüfung. */
+  await page.evaluate(() =>
+    document.querySelectorAll('[data-erscheinen]').forEach((e) => e.setAttribute('data-sichtbar', '')));
 
   for (const b of BAUSTEINE.filter((x) => x.gruppe === g.id)) {
     const el = await page.$(`[data-bsp="${b.id}"]`);
