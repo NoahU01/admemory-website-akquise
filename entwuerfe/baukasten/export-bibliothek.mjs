@@ -29,6 +29,13 @@ for (const g of GRUPPEN) {
    wertlos. Die Skripte sind alle enthalten; jedes prüft selbst, ob es
    auf der Seite etwas zu tun gibt. */
 function einzelseite(b, inhalt) {
+  /* Ein Beispiel muss kein ganzer Abschnitt sein — bei den Knöpfen sind es
+     drei Verweise. Ohne Hülle stehen sie auf der Einzelseite ohne Schale
+     und werden von der Zentrierung in die Breite gezogen. */
+  const istAbschnitt = /^\s*<(section|header|footer|nav|div class="ankuendigung)/.test(inhalt);
+  if (!istAbschnitt) {
+    inhalt = `<section class="abschnitt--eng"><div class="schale">${inhalt}</div></section>`;
+  }
   return `<!doctype html>
 <html lang="de">
 <head>
@@ -80,16 +87,54 @@ for (const g of GRUPPEN) {
     fs.mkdirSync(path.join(WURZEL, 'entwuerfe/_bib'), { recursive: true });
     fs.writeFileSync(path.join(WURZEL, 'entwuerfe/_bib', b.id + '.html'),
       einzelseite(b, nurDieser));
+    /* Nicht den Baustein selbst abfotografieren: Eine Knopfzeile ist
+       1280 x 120 und wurde im 16:10-Kasten formatfüllend hochskaliert —
+       daher die Unschärfe. Stattdessen die Einzelseite in einem festen
+       Rahmen von 1440 x 900 aufnehmen, Inhalt senkrecht mittig. Dann hat
+       jede Vorschau dasselbe Seitenverhältnis und wird nie vergrößert. */
+    /* Nicht den Baustein selbst abfotografieren: Eine Knopfzeile ist
+       1280 x 120 und wurde im 16:10-Kasten formatfüllend hochskaliert —
+       daher die Unschärfe. Stattdessen die Einzelseite in einem festen
+       Rahmen aufnehmen.
+
+       Das Fenster ist 1100 statt 1440 Pixel breit: Dadurch erscheint der
+       Baustein in der kleinen Kachel um ein Drittel größer, und 1100 liegt
+       noch über allen Umbruchpunkten des Baukastens — ein schmaleres
+       Fenster würde die Handy-Ansicht auslösen und etwas anderes zeigen,
+       als der Entwurf hat. Skalieren per transform hat nicht funktioniert:
+       Der Körper lief dabei seitlich aus dem Rahmen. */
+    const FENSTER = 1100;
+    const rahmen = await browser.newPage();
+    await rahmen.setViewport({ width: FENSTER, height: 700, deviceScaleFactor: 2 });
+    await rahmen.goto('file://' + path.join(WURZEL, 'entwuerfe/_bib', b.id + '.html'),
+      { waitUntil: 'networkidle0' });
+    await rahmen.evaluate(async () => {
+      for (const i of document.querySelectorAll('img')) { i.loading = 'eager'; i.src = i.src; }
+      document.querySelectorAll('[data-erscheinen]').forEach((e) => e.setAttribute('data-sichtbar', ''));
+      document.querySelectorAll('.stimmen-spalte,.logowand-lauf__spur')
+        .forEach((e) => { e.style.animation = 'none'; });
+      await new Promise((r) => setTimeout(r, 2200));
+    });
+    /* Höhe aus dem Inhalt, aber nie flacher als 16:10 — sonst hätte jede
+       Kachel ein anderes Verhältnis und die Übersicht würde unruhig. */
+    const inhaltHoch = await rahmen.evaluate(() => document.body.scrollHeight);
+    const hoehe = Math.max(Math.round(FENSTER * 10 / 16), Math.min(inhaltHoch + 80, 1400));
+    await rahmen.setViewport({ width: FENSTER, height: hoehe, deviceScaleFactor: 2 });
+    await rahmen.addStyleTag({ content:
+      'html,body{min-height:100vh}body{display:flex;flex-direction:column;justify-content:center}' });
+    await new Promise((r) => setTimeout(r, 350));
+
     const roh = path.join(ZIEL, b.id + '.png');
-    await el.screenshot({ path: roh });
+    await rahmen.screenshot({ path: roh });
+    await rahmen.close();
+
     /* Als JPEG ablegen: die Ausschnitte haben ohnehin einen eigenen Grund,
-       Transparenz braucht hier niemand. Gemessen 77 statt 215 kB. Behalten
-       wird nur, was wirklich kleiner ist — beim ersten Verkleinern im
-       Baukasten wurden die Dateien größer statt kleiner. */
+       Transparenz braucht hier niemand. 1200 statt 900 Pixel breit, damit
+       es auf einem Bildschirm mit doppelter Auflösung scharf bleibt. */
     const ziel = path.join(ZIEL, b.id + '.jpg');
     const vorher = fs.statSync(roh).size;
     try {
-      execFileSync('sips', ['-Z', '900', '-s', 'format', 'jpeg', '-s', 'formatOptions', '85',
+      execFileSync('sips', ['-Z', '1200', '-s', 'format', 'jpeg', '-s', 'formatOptions', '80',
         roh, '--out', ziel], { stdio: 'pipe' });
       if (fs.statSync(ziel).size < vorher) { fs.unlinkSync(roh); b.bild = 'assets/bibliothek/' + b.id + '.jpg'; }
       else { fs.unlinkSync(ziel); b.bild = 'assets/bibliothek/' + b.id + '.png'; }

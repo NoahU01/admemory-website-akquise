@@ -291,8 +291,12 @@ textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86r
   box-shadow:0 1px 2px rgba(17,22,29,.05);transition:box-shadow .15s,transform .15s}
 .bibkachel:hover{box-shadow:0 10px 30px rgba(17,22,29,.11);transform:translateY(-2px)}
 .bibkachel:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.bibkachel__bild{display:block;aspect-ratio:16/10;background:var(--sunk);overflow:hidden}
-.bibkachel__bild img{width:100%;height:100%;object-fit:cover;object-position:top center}
+/* Die Vorschau hat dasselbe Verhältnis wie die Aufnahme, deshalb wird
+   nichts beschnitten und nichts vergrößert. */
+.bibkachel__bild{display:block;aspect-ratio:16/10;background:#fff;overflow:hidden}
+/* Hohe Bausteine werden oben beschnitten statt gestaucht — dort steht die
+   Ueberschrift, daran erkennt man die Fassung. */
+.bibkachel__bild img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
 .bibkachel__fuss{display:flex;align-items:center;gap:.5rem;padding:.8rem 1rem;flex-wrap:wrap}
 .bibkachel__name{font-size:.88rem;font-weight:600;flex:1;min-width:0}
 
@@ -308,8 +312,10 @@ textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86r
 .bs-kopf h2{font-size:1.05rem;font-weight:600;margin:0}
 .bs-kopf .lede{font-family:"IBM Plex Mono",monospace;font-size:.74rem;margin:.1rem 0 0}
 .bs-rumpf{padding:1.3rem;overflow:auto}
-.bsrahmen{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
-.bsrahmen iframe{display:block;width:100%;height:min(62vh,620px);border:0}
+.bsrahmen{position:relative;border:1px solid var(--line);border-radius:10px;
+  overflow:hidden;background:#fff;height:min(62vh,620px)}
+.bsrahmen__bild{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.bsrahmen iframe{position:relative;display:block;width:100%;height:100%;border:0}
 .bszeilen{margin-top:1.1rem}
 .bib__zeile{display:flex;gap:.55rem;margin-top:.8rem;font-size:.82rem;color:var(--ink-2);line-height:1.55}
 .bib__zeile b{display:block;color:var(--ink);font-weight:600;margin-bottom:.1rem}

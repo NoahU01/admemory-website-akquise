@@ -18,8 +18,8 @@ const html = seite({
   beschreibung: 'Interne Prüfseite: alle Knopffassungen hell und dunkel.',
   betrieb: 'Baukasten', nav: [], fuss: '<div><p class="klein">Interne Prüfseite</p></div>',
   inhalt: [
-    bsp('knopfPaar', block('knopfPaar · einer führt, einer bietet an · erste Wahl',
-      knopfPaar({ haupt: { text: 'Termin anfragen', href: '#termin' },
+    block('knopfPaar · einer führt, einer bietet an · erste Wahl',
+      bsp('knopfPaar', knopfPaar({ haupt: { text: 'Termin anfragen', href: '#termin' },
                   neben: { text: 'Leistungen ansehen', href: '#leistungen' } }))),
 
     block('knopfPaar · große Fassung für Kopfbereiche',
@@ -42,8 +42,8 @@ const html = seite({
        knopf({ text: 'Mehr erfahren', href: '#', art: 'leise' })]
         .join(' '), true),
 
-    bsp('knopfRund', block('Vollrund · die schlanke Fassung · hell',
-      [knopf({ text: 'Termin anfragen', href: '#', art: 'wichtig', rund: true }),
+    block('Vollrund · die schlanke Fassung · hell',
+      bsp('knopfRund', [knopf({ text: 'Termin anfragen', href: '#', art: 'wichtig', rund: true }),
        knopf({ text: 'Rückruf anfordern', href: '#', art: 'rand', rund: true }),
        knopf({ text: 'Mehr erfahren', href: '#', art: 'leise', rund: true })].join(' '))),
 
@@ -55,8 +55,8 @@ const html = seite({
       knopfPaar({ haupt: { text: 'Termin anfragen', href: '#' },
                   neben: { text: 'Leistungen ansehen', href: '#' }, gross: true, rund: true })),
 
-    bsp('knopfPille', block('knopfPille · Pfeil wandert beim Überfahren · nur einmal je Seite',
-      knopfPille({ text: 'Unsere Leistungen', href: '#leistungen' }), true)),
+    block('knopfPille · Pfeil wandert beim Überfahren · nur einmal je Seite',
+      bsp('knopfPille', knopfPille({ text: 'Unsere Leistungen', href: '#leistungen' })), true),
 
     block('Sehr langer Text · bricht um statt überzulaufen',
       knopfPaar({ haupt: { text: 'Unverbindliche Anfrage für einen Vor-Ort-Termin stellen', href: '#' },

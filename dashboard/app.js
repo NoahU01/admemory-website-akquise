@@ -628,8 +628,13 @@ function zeigeBaustein(b, g){
   el('bsName').textContent = b.name;
   el('bsUnter').textContent = b.id;
   el('bsRumpf').innerHTML =
-    '<div class="bsrahmen"><iframe src="' + basis + text(b.seite) + '" title="' + text(b.name) + '"' +
-      ' loading="lazy" referrerpolicy="no-referrer"></iframe></div>' +
+    /* Das Vorschaubild liegt hinter dem Rahmen. Laedt der Rahmen nicht —
+       blockiert, offline, Seite noch nicht deployt —, steht da trotzdem
+       etwas statt einer leeren Flaeche. */
+    '<div class="bsrahmen">' +
+      (b.bild ? '<img class="bsrahmen__bild" src="/' + text(b.bild) + '" alt="">' : '') +
+      '<iframe src="' + basis + text(b.seite) + '" title="' + text(b.name) + '"' +
+      ' referrerpolicy="no-referrer"></iframe></div>' +
     '<div class="bszeilen">' +
       '<div class="bib__zeile">' + ic('uhr') + '<div><b>Wann</b>' + text(b.wann) + '</div></div>' +
       '<div class="bib__zeile">' + ic('befund') + '<div><b>Grenzen</b>' + text(b.grenzen) + '</div></div>' +
