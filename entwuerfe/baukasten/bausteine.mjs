@@ -211,6 +211,7 @@ export const ZEICHEN = {
   ort:        'M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11M12 10m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0',
   pfeilrechts:'M5 12h13M13 6l6 6l-6 6',
   pfeillinks: 'M19 12H6M11 6l-6 6l6 6',
+  pfeilab:    'M6 9l6 6l6-6',
   schliessen: 'M6 6l12 12M18 6L6 18',
   pfeilauf:   'M7 17L17 7M9 7h8v8',
   facebook:   'M13 21v-8h2.5l.5-3h-3V8.3c0-.8.2-1.3 1.4-1.3H16V4.3A18 18 0 0 0 13.9 4C11.7 4 10 5.3 10 8v2H7.5v3H10v8z',
@@ -277,7 +278,7 @@ export function logoband({ ueber, titel, logos, nachsatz, tief = false }) {
   return `
 <section class="abschnitt--eng ${wenn(tief, 'abschnitt--tief')}">
   ${schale(`<div class="stapel-3">
-    ${wenn(titel, () => `<h2 style="font-size:var(--t-l)">${esc(titel)}</h2>`)}
+    ${wenn(titel, () => `<h2 class="h2-klein">${esc(titel)}</h2>`)}
     <div class="logoband">${logos.map((l) =>
       `<img src="${esc(l.pfad)}" alt="${esc(l.name)}" loading="lazy">`).join('')}</div>
     ${wenn(nachsatz, () => `<p class="klein">${esc(nachsatz)}</p>`)}
@@ -813,7 +814,10 @@ export function vertrauenDuo({ ueber, titel, text, kacheln = [], bild, bildAlt =
     <div class="vertrauen__karte">
       <div class="vertrauen__kacheln" style="--spalten:${spalten}" data-erscheinen>${felder.join('')}</div>
       <div class="vertrauen__text stapel-3">
-        <h2 style="font-size:var(--t-l)">${esc(titel)}</h2>
+        <!-- Größe kommt aus dem Stil, nicht aus einer Angabe am Element:
+             Eine Angabe hier schlägt jede Regel und war der Grund, warum
+             die Überschrift trotz Korrektur zu groß blieb. -->
+        <h2>${esc(titel)}</h2>
         ${wenn(text, () => `<p>${esc(text)}</p>`)}
       </div>
     </div>
@@ -1052,7 +1056,7 @@ export function stimmenBuehne({ titel, stimmen = [], tief = false }) {
       </div>`).join('')}
     </div>
     <div class="buehne__text stapel-3">
-      ${wenn(titel, () => `<h2 style="font-size:var(--t-l)">${esc(titel)}</h2>`)}
+      ${wenn(titel, () => `<h2 class="h2-klein">${esc(titel)}</h2>`)}
       <div data-buehne-inhalt aria-live="polite">
         ${noten(stimmen[0].note)}
         <blockquote>${esc(kuerze(stimmen[0].text))}</blockquote>
@@ -1354,7 +1358,8 @@ const navMarke = ({ betrieb, logo, logoEinfarbig = false, basis = '' }) =>
 
 const navLinks = (nav = []) => nav.length
   ? `<div class="nav__links">${nav.map((n) =>
-      `<a class="nav__link" href="${esc(n.href)}">${esc(n.text)}</a>`).join('')}</div>` : '';
+      `<a class="nav__link" href="${esc(n.href)}">${esc(n.text)}` +
+      `${n.mehr ? zeichen('pfeilab') : ''}</a>`).join('')}</div>` : '';
 
 /* Rechts stehen höchstens zwei Wege. Drei sind keiner mehr. */
 function navRechts({ knopf: k, leise, rund }) {
@@ -1471,4 +1476,19 @@ export function heroKarte({ plakette, titel, text, punkte = [], knoepfe = [],
     </div>`).join('')}
   </dl>`))}
 </header>`;
+}
+
+/* ── Dunkle Leiste, die über dem Inhalt schwebt ──────────────────
+   Nach dem Vorbild von admemory.de: ein dunkler Balken mit Abstand zum
+   Rand, Logo links, Menü rechts, ein heller Knopf am Ende. Ein Punkt
+   darf einen Ausklapp-Pfeil tragen (mehr: true).
+
+   Braucht einen hellen Knopf, weil der dunkle Balken sonst keinen
+   Abschluss hat — ein Umrissknopf auf Dunkel verschwindet. */
+export function navDunkel(o = {}) {
+  if (!o.knopf) throw new Error('navDunkel: braucht einen Knopf, sonst endet die Leiste im Nichts.');
+  return navGeruest(`<div class="schale"><div class="nav__in nav__dunkel">
+    ${navMarke({ ...o, logoEinfarbig: true })}${navLinks(o.nav)}
+    <div class="nav__rest">${knopf({ ...o.knopf, art: 'hell' })}</div>
+  </div></div>`, { ...o, zusatz: ' nav--dunkel auf-dunkel' });
 }

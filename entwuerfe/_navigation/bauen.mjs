@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import { seite } from '../baukasten/seite.mjs';
 import { bsp } from '../baukasten/katalog.mjs';
 import { LOGO } from '../baukasten/beispiele.mjs';
-import { navKnopf, navTelefon, navSchwebend, navSchlicht,
+import { navDunkel, navKnopf, navTelefon, navSchwebend, navSchlicht,
          ankuendigung, ANKUENDIGUNG_SKRIPT } from '../baukasten/bausteine.mjs';
 
 const punkte = [
@@ -38,6 +38,15 @@ const html = seite({
     bsp('navSchwebend', navSchwebend({ betrieb: 'Berger Elektrotechnik', logo: LOGO, logoEinfarbig: true, nav: punkte, probe: true,
       leise: { text: 'Anrufen', href: 'tel:+49' },
       knopf: { text: 'Termin anfragen', href: '#termin' }, rund: true })),
+
+    marke('navDunkel · dunkler Balken mit Abstand zum Rand · nach admemory.de'),
+    bsp('navDunkel', navDunkel({ betrieb: 'Berger Elektrotechnik', logo: LOGO, logoEinfarbig: true,
+      probe: true,
+      nav: [{ text: 'Leistungen', href: '#leistungen', mehr: true },
+            { text: 'Referenzen', href: '#referenzen' },
+            { text: 'Der Betrieb', href: '#betrieb' },
+            { text: 'Jobs', href: '#jobs' }],
+      knopf: { text: 'Kontakt', href: '#kontakt' } })),
 
     marke('navSchlicht · nur Wortmarken, kein Knopf'),
     bsp('navSchlicht', navSchlicht({ betrieb: 'Berger Elektrotechnik', logo: LOGO, logoEinfarbig: true, nav: punkte, probe: true })),

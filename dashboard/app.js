@@ -38,6 +38,7 @@ const ICONS = {
      18 Pixeln zwei Kringel, die man nicht erkennt. */
   /* Für den Aufklapper an den Bibliothekskarten. */
   buch:       'M4 5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2zM4 19a2 2 0 0 1 2-2h13v4H6a2 2 0 0 1-2-2z',
+  bibliothek: 'M4 5a2 2 0 0 1 2-2h4v18H6a2 2 0 0 1-2-2zM10 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M18 6l2 12',
   band:       'M3 7h18v5H3zM6 16h12M8 20h8',
   navigation: 'M3 6h18M3 12h12M3 18h18M19 12h2',
   knopf:      'M3 9a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3zM8.5 12h7',
@@ -179,12 +180,13 @@ function zeichneNav(){
   const stuecke = [];
   for (const s of SEITEN) {
     if (s.gruppe && s.klappe) {
+      /* Die Gruppe bekommt ein eigenes Zeichen wie jeder Punkt darunter. */
       const auf = klappen[s.klappe] !== false;
       const drin = seite.startsWith(s.klappe + ':');
       stuecke.push('<button class="navklappe' + (drin && !auf ? ' navklappe--aktiv' : '') +
         '" data-klappe="' + s.klappe + '"' +
         ' aria-expanded="' + auf + '" aria-controls="navunter-' + s.klappe + '">' +
-        '<span class="navtext">' + text(s.gruppe) + '</span>' +
+        ic('bibliothek') + '<span class="navtext">' + text(s.gruppe) + '</span>' +
         '<svg class="ic navpfeil" viewBox="0 0 24 24" aria-hidden="true"><path d="' + PFEIL + '"/></svg>' +
         '</button><div class="navunter" id="navunter-' + s.klappe + '"' +
         (auf ? '' : ' hidden') + '>');
@@ -647,8 +649,12 @@ function zeigeBaustein(nr){
       ' referrerpolicy="no-referrer" style="width:' + RAHMEN_BREIT + 'px;height:' +
       RAHMEN_HOCH + 'px"></iframe>' +
     '</div>';
-  passeRahmenAn();
+  /* Erst zeigen, dann messen: Solange das Pop-up versteckt ist, hat der
+     Kasten die Breite null — der Rahmen wurde dadurch auf null skaliert
+     und das erste geöffnete Pop-up war leer. Beim zweiten stimmte es,
+     weil der Kasten dann schon einmal sichtbar war. */
   el('bausteinblatt').hidden = false;
+  requestAnimationFrame(passeRahmenAn);
 }
 
 /* Der Rahmen wird so verkleinert, dass er in die Breite des Pop-ups passt. */

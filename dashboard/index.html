@@ -283,6 +283,29 @@ textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86r
 .verlauf li{margin-bottom:.5rem}
 .verlauf b{color:var(--ink)}
 
+/* ── Klappbare Navigationsgruppe ────────────────────────────────── */
+.navklappe{all:unset;cursor:pointer;display:flex;align-items:center;gap:.4rem;
+  font-size:.7rem;font-weight:600;letter-spacing:.05em;color:var(--ink-3);
+  text-transform:uppercase;padding:1.1rem .85rem .4rem;min-height:0;
+  border-top:1px solid var(--nav-linie);margin-top:.6rem}
+.navklappe:hover{color:var(--nav-ink-hell)}
+.navklappe:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-radius:6px}
+.navklappe .navtext{flex:1}
+.navklappe > .ic:first-child{width:15px;height:15px;flex:none}
+.navpfeil{width:14px;height:14px;transition:transform .15s}
+.navklappe[aria-expanded="false"] .navpfeil{transform:rotate(-90deg)}
+.navklappe--aktiv{color:var(--nav-ink-hell)}
+.navklappe--aktiv::after{content:"";width:5px;height:5px;border-radius:50%;
+  background:var(--accent);flex:none;margin-left:.1rem}
+.navunter{display:flex;flex-direction:column;gap:2px}
+@media(max-width:900px){
+  /* Waagerechte Leiste: Die Gruppe wird dort nicht geklappt, sonst wären
+     die Unterpunkte hinter einem ausgeblendeten Kopf verschwunden. */
+  .navklappe{display:none}
+  .navunter{display:contents}
+  .navunter[hidden]{display:contents}
+}
+
 /* ── Bibliothek ─────────────────────────────────────────────────── */
 .bibkopf{margin:0 0 1.2rem;color:var(--ink-2);font-size:.86rem;max-width:62ch}
 .bibgitter{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr))}

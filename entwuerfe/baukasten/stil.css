@@ -1172,3 +1172,26 @@ img[data-einfarbig]{filter:brightness(0)}
 .hero-karte__leiste dt{font-size:var(--t-xs);text-transform:uppercase;letter-spacing:.06em;
   color:var(--text-2);margin-bottom:.2rem}
 .hero-karte__leiste dd{margin:0;font-size:var(--t-s);line-height:1.5}
+
+/* Eine Überschrift eine Stufe kleiner, ohne Angabe am Element. */
+.h2-klein{font-size:var(--t-l)}
+
+/* Laufband: Die Überschrift darüber war zu laut für eine Logoleiste. */
+.logowand-lauf-kopf h2,.logowand-kopf h2{font-size:clamp(1.05rem,2vw,1.3rem)}
+
+/* ── Dunkle schwebende Leiste ────────────────────────────────────
+   Vorbild admemory.de. Der Balken selbst ist dunkel, die Seite dahinter
+   nicht — deshalb hat die Navigation keinen eigenen Grund. */
+.nav--dunkel{background:none;border:0;padding-top:var(--a-2)}
+.nav__dunkel{background:var(--tief);border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;padding-inline:var(--a-3);min-height:62px;color:#fff}
+.nav__dunkel .nav__marke{color:#fff}
+.nav__dunkel .nav__link{color:rgba(255,255,255,.72)}
+.nav__dunkel .nav__link:hover{color:#fff}
+.nav__dunkel .nav__link svg{width:.95rem;height:.95rem;stroke:currentColor;fill:none;
+  stroke-width:1.8;margin-left:.25rem;vertical-align:-.15em}
+.nav__dunkel .nav__logo{height:1.6rem;width:auto}
+
+/* Heller Knopf: der Gegenpart zum gefüllten auf hellem Grund. */
+.knopf--hell{background:#fff;color:var(--tief);border-color:#fff}
+.knopf--hell:hover{background:rgba(255,255,255,.88)}
