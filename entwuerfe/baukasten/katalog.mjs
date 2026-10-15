@@ -6,6 +6,8 @@
 export const bsp = (id, html) => `<div data-bsp="${id}">${html}</div>`;
 
 export const GRUPPEN = [
+  { id: 'knoepfe', icon: 'knopf', name: 'Knöpfe', seite: '_knoepfe',
+    zweck: 'Die Maße stammen aus zwölf Vorbildseiten: 44 px hoch, 8 px Radius, Schriftgewicht 500.' },
   { id: 'hero', icon: 'kopfbereich', name: 'Kopfbereiche', seite: '_hero',
     zweck: 'Der erste Bildschirm. Vorzeile mit dem Kerngeschäft, Überschrift, ein Satz, Knöpfe.' },
   { id: 'vertrauen', icon: 'siegel', name: 'Vertrauen', seite: '_vertrauen',
@@ -25,6 +27,13 @@ export const GRUPPEN = [
 ];
 
 export const BAUSTEINE = [
+  { id: 'knopfPaar', gruppe: 'knoepfe', name: 'Paar: laut und leise', erste: true,
+    wann: 'Der Normalfall. Zehn von zwölf Vorbildseiten stellen genau zwei Knöpfe nebeneinander — einer führt, einer bietet an.',
+    grenzen: 'Der leise Knopf bekommt einen Pfeil, der beim Überfahren wandert. Mit gross: true für Kopfbereiche. Drei Knöpfe nebeneinander sind keiner.' },
+  { id: 'knopfPille', gruppe: 'knoepfe', name: 'Pille mit wanderndem Pfeil',
+    wann: 'Der betonte Knopf für Kopfbereiche.',
+    grenzen: 'Nur einmal je Seite, sonst verliert er seine Wirkung. Nur 12 von 49 vermessenen Knöpfen auf den Vorbildseiten waren überhaupt vollrund.' },
+
   { id: 'heroMitte', gruppe: 'hero', name: 'Mittig mit Bild darunter', erste: true,
     wann: 'Erste Wahl. Trägt jedes Gewerbe und kommt mit einem einzigen Querformat aus.',
     grenzen: 'Braucht ein Bild im Breitformat. Die Logoleiste darunter läuft und sitzt auf der Breite der Navigation; unter acht Logos wird die Liste wiederholt, sonst klafft eine Lücke.' },

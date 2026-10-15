@@ -38,6 +38,7 @@ const ICONS = {
      18 Pixeln zwei Kringel, die man nicht erkennt. */
   /* Für den Aufklapper an den Bibliothekskarten. */
   buch:       'M4 5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2zM4 19a2 2 0 0 1 2-2h13v4H6a2 2 0 0 1-2-2z',
+  knopf:      'M3 9a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3zM8.5 12h7',
   stimmen:    'M4 5h16v11H9l-4 4v-4H4zM8 9h8M8 12.5h5',
   logowand:   'M3 6h18v12H3zM7.6 12m-1.9 0a1.9 1.9 0 1 0 3.8 0a1.9 1.9 0 1 0-3.8 0M13 10h4.2v4h-4.2z',
   verlauf:    'M6 5.5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M6 18.5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M6 7.5v9M11 5.5h9M11 18.5h7',

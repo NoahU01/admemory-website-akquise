@@ -45,8 +45,20 @@ export function hero({ ueber, titel, text, knoepfe = [], bild, bildAlt = '',
 </header>`;
 }
 
-export const knopf = ({ text, href, art = 'rand', neu = false }) =>
-  `<a class="knopf knopf--${art}" href="${esc(href)}"${wenn(neu, ' target="_blank" rel="noopener"')}>${esc(text)}</a>`;
+/* art: 'wichtig' laut und gefüllt · 'rand' Umriss · 'leise' nur Text mit
+   Pfeil · gross: die größere Fassung für Kopfbereiche.
+   Zwei Knöpfe nebeneinander sind der Normalfall, nicht die Ausnahme:
+   einer führt, einer bietet an. Dafür gibt es knopfPaar. */
+export const knopf = ({ text, href, art = 'rand', gross = false, neu = false }) =>
+  `<a class="knopf knopf--${esc(art)}${gross ? ' knopf--gross' : ''}" href="${esc(href)}"` +
+  `${neu ? ' target="_blank" rel="noopener"' : ''}>${esc(text)}` +
+  `${art === 'leise' ? zeichen('pfeilrechts') : ''}</a>`;
+
+/* Das Paar aus leisem und lautem Knopf. */
+export const knopfPaar = ({ haupt, neben, gross = false, mittig = false }) =>
+  `<div class="knopfreihe"${mittig ? ' style="justify-content:center"' : ''}>` +
+  `${knopf({ ...haupt, art: 'wichtig', gross })}` +
+  `${wenn(neben, () => knopf({ ...neben, art: neben.art ?? 'leise', gross }))}</div>`;
 
 /* Notfallband: eine Zeile, eine Nummer, nichts drumherum. Nur verwenden, wenn
    es wirklich einen Notdienst gibt. */

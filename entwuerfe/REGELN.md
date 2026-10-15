@@ -222,3 +222,17 @@ Schriftfarbe an. Vier der sieben Kundenlogos sind weiße Grafik und wären auf
 hellem Grund unsichtbar; dunkle Kacheln für vier von sieben hätten die Wand
 fleckig gemacht. blewatec und AdMemory haben echte Farbe und bleiben, wie
 sie geliefert wurden.
+
+## Knopfmaße stammen aus einer Messung
+
+44 px hoch, 8 px Radius, Schriftgewicht 500. Das ist der Median aus 49
+Schaltflächen auf zwölf Vorbildseiten. Unsere waren vorher 53 px hoch und
+Gewicht 600 — zu schwer. Unter 44 px wird das Antippen auf dem Handy
+unzuverlässig, deshalb ist das die Untergrenze.
+
+## Zwei Knöpfe, nicht einer und nicht drei
+
+Zehn von zwölf Vorbildseiten stellen genau zwei nebeneinander: einer führt
+(gefüllt), einer bietet an (nur Text mit Pfeil). Dafür gibt es `knopfPaar`.
+Die vollrunde Pille ist die Ausnahme, nicht die Regel — nur 12 von 49
+vermessenen Knöpfen waren überhaupt rund.
