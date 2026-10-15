@@ -36,6 +36,64 @@
       ]
     },
     {
+      "id": "navigation",
+      "icon": "navigation",
+      "name": "Navigationen",
+      "seite": "_navigation",
+      "zweck": "Fünf Fassungen aus zwölf Vorbildseiten. Durchgehend: Logo links, rechts zwei Wege — einer leise, einer laut.",
+      "bausteine": [
+        {
+          "id": "navStandard",
+          "name": "Standard",
+          "erste": true,
+          "wann": "Der Normalfall. Logo links, Menü mittig, rechts ein leiser und ein lauter Weg.",
+          "grenzen": "Rechts stehen höchstens zwei Wege — drei sind keiner mehr. Ab etwa sechs Menüpunkten wird die Leiste eng.",
+          "bild": "assets/bibliothek/navStandard.jpg",
+          "bytes": 10565
+        },
+        {
+          "id": "navKnopf",
+          "name": "Wenige Punkte, ein Knopf",
+          "wann": "Für kleine Betriebe mit drei Unterseiten die ehrlichere Fassung. Der Knopf ist groß und führt zum Termin.",
+          "grenzen": "Bricht ab fünf Menüpunkten ab — dann ist es navStandard.",
+          "bild": "assets/bibliothek/navKnopf.jpg",
+          "bytes": 8221
+        },
+        {
+          "id": "navTelefon",
+          "name": "Zweistöckig mit Telefonnummer",
+          "wann": "Für Handwerk und Mittelstand. Oben eine dünne Zeile mit Nummer und Zeiten, unten die Navigation.",
+          "grenzen": "Ohne Telefonnummer bricht der Baustein ab. Die Zeitenzeile verschwindet auf schmalen Bildschirmen.",
+          "bild": "assets/bibliothek/navTelefon.jpg",
+          "bytes": 15378
+        },
+        {
+          "id": "navSchwebend",
+          "name": "Schwebende Leiste",
+          "wann": "Über einem großen Bild. Die Leiste steht als Karte mit Abstand zum Rand.",
+          "grenzen": "Auf dunklem Grund wird sie durchscheinend mit Unschärfe dahinter. Braucht ein Bild, sonst schwebt sie über nichts.",
+          "bild": "assets/bibliothek/navSchwebend.jpg",
+          "bytes": 12689
+        },
+        {
+          "id": "navSchlicht",
+          "name": "Nur Wortmarken",
+          "wann": "Wenn der Rest der Seite sehr aufgeräumt ist.",
+          "grenzen": "Kein Knopf heißt: kein Weg zum Termin aus der Navigation. Nur nehmen, wenn der Kopfbereich das übernimmt.",
+          "bild": "assets/bibliothek/navSchlicht.jpg",
+          "bytes": 7545
+        },
+        {
+          "id": "ankuendigung",
+          "name": "Ankündigungsband",
+          "wann": "Betriebsferien, Notdienst, eine Aktion. Eine Zeile über der Navigation, schließbar.",
+          "grenzen": "Eine Zeile, nicht zwei. Ohne Text bricht der Baustein ab. Dunkel oder in der Akzentfarbe.",
+          "bild": "assets/bibliothek/ankuendigung.jpg",
+          "bytes": 5839
+        }
+      ]
+    },
+    {
       "id": "hero",
       "icon": "kopfbereich",
       "name": "Kopfbereiche",
@@ -211,7 +269,7 @@
           "wann": "Sobald mehr Logos da sind, als in eine Zeile passen. Hält beim Überfahren an.",
           "grenzen": "Läuft nicht über die ganze Seitenbreite, sondern in einem begrenzten Band. Unter sechs Logos wird die Liste wiederholt, sonst klafft eine Lücke.",
           "bild": "assets/bibliothek/logowandLauf.jpg",
-          "bytes": 16129
+          "bytes": 16332
         }
       ]
     },

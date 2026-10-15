@@ -1038,3 +1038,43 @@ img[data-einfarbig]{filter:brightness(0)}
 .knopf--voll{width:100%;justify-content:center;text-align:center}
 .termin__hinweis{text-align:center;margin:0}
 .termin__einbettung{min-height:18rem;display:grid;place-items:center}
+
+/* ══ Navigationen ════════════════════════════════════════════════ */
+
+/* Auf der Prüfseite stehen fünf Fassungen untereinander — da darf keine
+   kleben bleiben. */
+.nav--probe{position:static}
+.nav__in--weit{justify-content:space-between}
+.nav__in--schlicht{justify-content:center;gap:var(--a-4);min-height:52px}
+.nav__in--schlicht .nav__marke{margin-right:var(--a-3)}
+.nav__rest{display:flex;align-items:center;gap:.4rem;margin-left:auto}
+
+/* Zweistöckig: dünne Zeile mit Telefonnummer über der Navigation. Auf
+   einer Handwerkerseite ist die Nummer der kürzeste Weg zum Auftrag. */
+.nav__oben{background:var(--gedaempft);border-bottom:1px solid var(--linie)}
+.nav__obenIn{display:flex;align-items:center;justify-content:space-between;
+  gap:var(--a-3);min-height:38px;font-size:var(--t-xs);color:var(--text-2)}
+.nav__obenIn a{display:inline-flex;align-items:center;gap:.4rem;color:var(--text);
+  font-weight:600;text-decoration:none}
+.nav__obenIn a:hover{text-decoration:underline;text-underline-offset:3px}
+.nav__obenIn svg{width:.95rem;height:.95rem;stroke:var(--akzent-schrift);fill:none;stroke-width:1.8}
+@media(max-width:620px){.nav__obenIn span{display:none}}
+
+/* Schwebend: die Leiste steht als Karte über dem Bild, nicht am Rand. */
+.nav--schwebend{background:none;border:0;padding-top:var(--a-2)}
+.nav__schweber{background:var(--grund);border:1px solid var(--linie);
+  border-radius:999px;padding-inline:var(--a-3);box-shadow:0 6px 24px rgba(17,22,29,.08)}
+.auf-dunkel .nav__schweber,.abschnitt--tief .nav__schweber{
+  background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);backdrop-filter:blur(10px)}
+
+/* ── Ankündigungsband ──────────────────────────────────────────── */
+.ankuendigung{background:var(--tief);color:#fff}
+.ankuendigung--hell{background:var(--akzent);color:var(--akzent-text)}
+.ankuendigung__in{display:flex;align-items:center;gap:var(--a-2);min-height:40px}
+.ankuendigung p{margin:0;flex:1;font-size:var(--t-xs);text-align:center}
+.ankuendigung a{color:inherit;text-underline-offset:3px}
+.ankuendigung__zu{all:unset;cursor:pointer;flex:none;width:28px;height:28px;
+  display:grid;place-items:center;border-radius:6px;opacity:.7}
+.ankuendigung__zu:hover{opacity:1;background:rgba(255,255,255,.14)}
+.ankuendigung__zu svg{width:.95rem;height:.95rem;stroke:currentColor;fill:none;stroke-width:1.8}
+.ankuendigung__zu:focus-visible{outline:2px solid currentColor;outline-offset:2px}

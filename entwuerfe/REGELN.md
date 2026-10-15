@@ -236,3 +236,13 @@ Zehn von zwölf Vorbildseiten stellen genau zwei nebeneinander: einer führt
 (gefüllt), einer bietet an (nur Text mit Pfeil). Dafür gibt es `knopfPaar`.
 Die vollrunde Pille ist die Ausnahme, nicht die Regel — nur 12 von 49
 vermessenen Knöpfen waren überhaupt rund.
+
+## Rechts in der Navigation stehen höchstens zwei Wege
+
+Einer leise, einer laut. Drei Knöpfe nebeneinander sind keiner. Das ist das
+Muster von zehn der zwölf vermessenen Vorbildseiten.
+
+## Eine Navigation ohne Knopf braucht einen Kopfbereich, der führt
+
+`navSchlicht` sieht aufgeräumt aus, lässt aber keinen Weg zum Termin. Nur
+nehmen, wenn der Kopfbereich diese Aufgabe übernimmt.

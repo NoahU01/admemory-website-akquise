@@ -211,6 +211,7 @@ export const ZEICHEN = {
   ort:        'M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11M12 10m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0',
   pfeilrechts:'M5 12h13M13 6l6 6l-6 6',
   pfeillinks: 'M19 12H6M11 6l-6 6l6 6',
+  schliessen: 'M6 6l12 12M18 6L6 18',
   pfeilauf:   'M7 17L17 7M9 7h8v8',
   facebook:   'M13 21v-8h2.5l.5-3h-3V8.3c0-.8.2-1.3 1.4-1.3H16V4.3A18 18 0 0 0 13.9 4C11.7 4 10 5.3 10 8v2H7.5v3H10v8z',
   instagram:  'M4 8a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM12 8.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 0 0 0-7M16.9 7.1v.01',
@@ -1322,3 +1323,104 @@ export function terminAnfrage({ titel, text, schritte = [], telefon, telefonText
 const knopf2 = ({ text, href, neu = false }) =>
   `<a class="knopf knopf--wichtig knopf--voll" href="${esc(href)}"` +
   `${neu ? ' target="_blank" rel="noopener"' : ''}>${esc(text)}</a>`;
+
+/* ══ Navigationen ════════════════════════════════════════════════
+   Fünf Fassungen, aus zwölf Vorbildseiten herausgezogen. Durchgehend
+   gleich: Logo links, und rechts zwei Wege — einer leise, einer laut.
+
+   navStandard   Logo links, Menü mittig, Knopfpaar rechts. Der Normalfall.
+   navKnopf      Wenige Punkte, ein großer Knopf. Für kleine Betriebe mit
+                 drei Unterseiten die ehrlichere Fassung.
+   navTelefon    Zweistöckig: oben eine dünne Zeile mit Telefonnummer und
+                 Zeiten, unten die Navigation. Sehr verbreitet im deutschen
+                 Mittelstand, und für Handwerk das Richtige.
+   navSchwebend  Leiste mit Abstand zum Rand, schwebt über dem Bild.
+   navSchlicht   Nur Wortmarken, kein Knopf. Trägt nur, wenn der Rest der
+                 Seite sehr aufgeräumt ist.
+
+   ankuendigung  Das Band über der Navigation. Notdienst, Betriebsferien,
+                 eine Aktion. Eine Zeile, schließbar.                      */
+
+const navMarke = ({ betrieb, logo, basis = '' }) =>
+  `<a class="nav__marke" href="${esc(basis)}index.html">${logo
+    ? `<img class="nav__logo" src="${esc(basis)}${esc(logo)}" alt="${esc(betrieb)}">`
+    : esc(betrieb)}</a>`;
+
+const navLinks = (nav = []) => nav.length
+  ? `<div class="nav__links">${nav.map((n) =>
+      `<a class="nav__link" href="${esc(n.href)}">${esc(n.text)}</a>`).join('')}</div>` : '';
+
+/* Rechts stehen höchstens zwei Wege. Drei sind keiner mehr. */
+function navRechts({ knopf: k, leise, rund }) {
+  if (!k && !leise) return '';
+  return `<div class="nav__rest">
+    ${wenn(leise, () => knopf({ ...leise, art: leise.art ?? 'leise', rund }))}
+    ${wenn(k, () => knopf({ ...k, art: 'wichtig', rund }))}
+  </div>`;
+}
+
+function navGeruest(inhalt, { probe = false, zusatz = '' } = {}) {
+  return `<nav class="nav kein-druck${probe ? ' nav--probe' : ''}${zusatz}">${inhalt}</nav>`;
+}
+
+export function navStandard(o = {}) {
+  return navGeruest(`<div class="schale nav__in">
+    ${navMarke(o)}${navLinks(o.nav)}${navRechts(o)}
+  </div>`, o);
+}
+
+export function navKnopf(o = {}) {
+  if ((o.nav ?? []).length > 4)
+    throw new Error(`navKnopf: ${o.nav.length} Punkte — diese Fassung lebt von wenigen. `
+      + 'Ab fünf nimmt man navStandard.');
+  return navGeruest(`<div class="schale nav__in nav__in--weit">
+    ${navMarke(o)}${navLinks(o.nav)}
+    ${wenn(o.knopf, () => knopf({ ...o.knopf, art: 'wichtig', gross: true, rund: o.rund }))}
+  </div>`, o);
+}
+
+export function navTelefon(o = {}) {
+  if (!o.telefon) throw new Error('navTelefon: ohne Telefonnummer ist das navStandard.');
+  return navGeruest(`<div class="nav__oben"><div class="schale nav__obenIn">
+      <a href="tel:${esc(o.telefon)}">${zeichen('telefon')}${esc(o.telefonText ?? o.telefon)}</a>
+      ${wenn(o.zeile, () => `<span>${esc(o.zeile)}</span>`)}
+    </div></div>
+    <div class="schale nav__in">
+      ${navMarke(o)}${navLinks(o.nav)}${navRechts(o)}
+    </div>`, o);
+}
+
+export function navSchwebend(o = {}) {
+  return navGeruest(`<div class="schale"><div class="nav__in nav__schweber">
+    ${navMarke(o)}${navLinks(o.nav)}${navRechts(o)}
+  </div></div>`, { ...o, zusatz: ' nav--schwebend' });
+}
+
+export function navSchlicht(o = {}) {
+  return navGeruest(`<div class="schale nav__in nav__in--schlicht">
+    ${navMarke(o)}${navLinks(o.nav)}
+  </div>`, o);
+}
+
+export function ankuendigung({ text, link, linkText, tief = true }) {
+  if (!text) throw new Error('ankuendigung braucht einen Text.');
+  const id = 'band' + Math.random().toString(36).slice(2, 7);
+  return `<div class="ankuendigung${tief ? '' : ' ankuendigung--hell'}" id="${id}">
+  <div class="schale ankuendigung__in">
+    <p>${esc(text)}${wenn(link, () =>
+      ` <a href="${esc(link)}">${esc(linkText ?? 'Mehr erfahren')}</a>`)}</p>
+    <button type="button" class="ankuendigung__zu" data-ankuendigung="${id}"
+      aria-label="Hinweis schließen">${zeichen('schliessen')}</button>
+  </div>
+</div>`;
+}
+
+export const ANKUENDIGUNG_SKRIPT = `
+<script>
+document.querySelectorAll('[data-ankuendigung]').forEach(function (k) {
+  k.addEventListener('click', function () {
+    var b = document.getElementById(k.getAttribute('data-ankuendigung'));
+    if (b) b.hidden = true;
+  });
+});
+</script>`;
