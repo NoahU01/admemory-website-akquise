@@ -33,7 +33,7 @@
           "wann": "Der betonte Knopf für Kopfbereiche.",
           "grenzen": "Nur einmal je Seite, sonst verliert er seine Wirkung. Nur 12 von 49 vermessenen Knöpfen auf den Vorbildseiten waren überhaupt vollrund.",
           "bild": "assets/bibliothek/knopfPille.jpg",
-          "bytes": 20896,
+          "bytes": 20897,
           "seite": "_bib/knopfPille.html"
         }
       ]
@@ -52,7 +52,7 @@
           "wann": "Der Normalfall. Logo links, Menü mittig, rechts ein leiser und ein lauter Weg.",
           "grenzen": "Rechts stehen höchstens zwei Wege — drei sind keiner mehr. Ab etwa sechs Menüpunkten wird die Leiste eng.",
           "bild": "assets/bibliothek/navStandard.jpg",
-          "bytes": 27590,
+          "bytes": 28560,
           "seite": "_bib/navStandard.html"
         },
         {
@@ -61,7 +61,7 @@
           "wann": "Für kleine Betriebe mit drei Unterseiten die ehrlichere Fassung. Der Knopf ist groß und führt zum Termin.",
           "grenzen": "Bricht ab fünf Menüpunkten ab — dann ist es navStandard.",
           "bild": "assets/bibliothek/navKnopf.jpg",
-          "bytes": 26041,
+          "bytes": 27058,
           "seite": "_bib/navKnopf.html"
         },
         {
@@ -70,7 +70,7 @@
           "wann": "Für Handwerk und Mittelstand. Oben eine dünne Zeile mit Nummer und Zeiten, unten die Navigation.",
           "grenzen": "Ohne Telefonnummer bricht der Baustein ab. Die Zeitenzeile verschwindet auf schmalen Bildschirmen.",
           "bild": "assets/bibliothek/navTelefon.jpg",
-          "bytes": 38700,
+          "bytes": 39370,
           "seite": "_bib/navTelefon.html"
         },
         {
@@ -79,7 +79,7 @@
           "wann": "Über einem großen Bild. Die Leiste steht als Karte mit Abstand zum Rand.",
           "grenzen": "Auf dunklem Grund wird sie durchscheinend mit Unschärfe dahinter. Braucht ein Bild, sonst schwebt sie über nichts.",
           "bild": "assets/bibliothek/navSchwebend.jpg",
-          "bytes": 31462,
+          "bytes": 28868,
           "seite": "_bib/navSchwebend.html"
         },
         {
@@ -88,7 +88,7 @@
           "wann": "Wenn der Rest der Seite sehr aufgeräumt ist.",
           "grenzen": "Kein Knopf heißt: kein Weg zum Termin aus der Navigation. Nur nehmen, wenn der Kopfbereich das übernimmt.",
           "bild": "assets/bibliothek/navSchlicht.jpg",
-          "bytes": 24401,
+          "bytes": 25412,
           "seite": "_bib/navSchlicht.html"
         }
       ]
@@ -135,7 +135,7 @@
           "name": "Geteilt mit Merkmalen",
           "grenzen": "Die Merkmale brauchen Zeichen aus ZEICHEN. Bei nur einem Merkmal wirkt die Spalte leer.",
           "bild": "assets/bibliothek/heroGeteilt.jpg",
-          "bytes": 206656,
+          "bytes": 206705,
           "seite": "_bib/heroGeteilt.html"
         },
         {
@@ -163,7 +163,7 @@
           "wann": "Erste Wahl, sobald ein brauchbares Foto vom Betrieb da ist. Gibt es hell und dunkel.",
           "grenzen": "Drei bis neun Kacheln. Auf der Bildkarte steht die Bewertung groß: Note, Sterne, Anzahl. Ohne Note bleibt die Anzahl, geraten wird nichts.",
           "bild": "assets/bibliothek/vertrauenDuo.jpg",
-          "bytes": 107203,
+          "bytes": 107201,
           "seite": "_bib/vertrauenDuo.html"
         },
         {
@@ -191,7 +191,7 @@
           "wann": "Erste Wahl. Die einzige Fassung ohne Bilder — und damit die einzige, die allein aus Google-Bewertungen entsteht. Ab sechs Stimmen am besten.",
           "grenzen": "Unter drei Stimmen bricht der Baustein ab, darunter gibt es kein Modul. Beim Überfahren hält der Lauf an; wer Bewegung abgestellt hat, bekommt die Liste ohne Deckel.",
           "bild": "assets/bibliothek/stimmenSpalten.jpg",
-          "bytes": 193197,
+          "bytes": 193194,
           "seite": "_bib/stimmenSpalten.html"
         },
         {
@@ -200,7 +200,7 @@
           "wann": "Bei drei bis sechs ausgesuchten Stimmen, wenn es Porträts gibt.",
           "grenzen": "Ohne Bilder bricht der Baustein ab. Bei gleichen Bildern wirkt der Stapel flach — er lebt von verschiedenen Gesichtern.",
           "bild": "assets/bibliothek/stimmenBuehne.jpg",
-          "bytes": 61166,
+          "bytes": 61124,
           "seite": "_bib/stimmenBuehne.html"
         },
         {
@@ -209,7 +209,7 @@
           "wann": "Wenn es gute Bilder gibt. Das Foto ist die Karte, unten steht nur der Name.",
           "grenzen": "Ohne Bilder bricht der Baustein ab. Hochformate und Szenen aus dem Betrieb sitzen besser als quadratische Porträts, die unten angeschnitten werden.",
           "bild": "assets/bibliothek/stimmenBilder.jpg",
-          "bytes": 127577,
+          "bytes": 127964,
           "seite": "_bib/stimmenBilder.html"
         },
         {
@@ -227,7 +227,7 @@
           "wann": "Wenn es zu den Stimmen harte Zahlen gibt — Dauer, Ersparnis, Jahre. Die Zahl trägt die Karte, das Zitat belegt sie.",
           "grenzen": "Braucht Bilder und mindestens drei Stimmen. Ohne Kennzahl rücken die Sterne an ihre Stelle; ohne beides ist es die falsche Fassung.",
           "bild": "assets/bibliothek/stimmenReihe.jpg",
-          "bytes": 194717,
+          "bytes": 194704,
           "seite": "_bib/stimmenReihe.html"
         }
       ]
@@ -246,7 +246,7 @@
           "wann": "Überall da, wo ein Termin der nächste Schritt ist. Links was nach der Anfrage passiert, rechts Telefonnummer, Zeiten und der Knopf.",
           "grenzen": "Bricht ab, wenn weder Telefonnummer noch Knopf noch Einbettung da ist — ein Block, der nirgendwohin führt, ist schlimmer als keiner. Kein Kalender im Entwurf; wird jemand Kunde, kommt sein eigener an dieselbe Stelle.",
           "bild": "assets/bibliothek/terminAnfrage.jpg",
-          "bytes": 89702,
+          "bytes": 89703,
           "seite": "_bib/terminAnfrage.html"
         }
       ]
@@ -265,7 +265,7 @@
           "wann": "Erste Wahl bei fünf bis neun Leistungen.",
           "grenzen": "Unter fünf bricht der Baustein ab — dafür ist das gleichmäßige Raster da. Bei genau sechs stehen alle Karten gleich groß nebeneinander, die hervorgehobene bleibt hervorgehoben. Karten heben sich beim Überfahren an.",
           "bild": "assets/bibliothek/leistungenBento.jpg",
-          "bytes": 170863,
+          "bytes": 170892,
           "seite": "_bib/leistungenBento.html"
         },
         {
@@ -358,7 +358,7 @@
           "wann": "Erste Wahl. Anschrift, Telefon, Zeiten direkt im Fuß.",
           "grenzen": "Logo auf dunklem Grund braucht die weiße Fassung, wenn es eine gibt.",
           "bild": "assets/bibliothek/fussKontakt.jpg",
-          "bytes": 64923,
+          "bytes": 63841,
           "seite": "_bib/fussKontakt.html"
         },
         {
@@ -367,7 +367,7 @@
           "wann": "Bei vielen Unterseiten, die verlinkt werden sollen.",
           "grenzen": "Bei zwei Unterseiten wirken die Spalten leer.",
           "bild": "assets/bibliothek/fussSpalten.jpg",
-          "bytes": 55864,
+          "bytes": 58274,
           "seite": "_bib/fussSpalten.html"
         }
       ]

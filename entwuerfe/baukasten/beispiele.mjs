@@ -104,3 +104,7 @@ export const LEISTUNGEN = [
   { titel: 'Smart Home', icon: 'haken', text: 'Steuerung für Licht, Heizung und Rollläden.' },
   { titel: 'Wartungsvertrag', icon: 'miete', text: 'Feste Termine, feste Preise, ein Ansprechpartner.' },
 ];
+
+/* Platzhalter-Wortmarke für Navigation und Fußbereich: dieselbe, die auf
+   den Produktseiten steht. Einfarbig, darf also umgefärbt werden. */
+export const LOGO = BV + 'logo.svg';

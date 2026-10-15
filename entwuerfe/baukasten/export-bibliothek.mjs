@@ -146,6 +146,19 @@ for (const g of GRUPPEN) {
 }
 await browser.close();
 
+/* Nach dem Schreiben prüfen, was in den Einzelseiten wirklich steht.
+   Absolute Pfade von diesem Rechner funktionieren lokal und sind auf dem
+   Server tot — genau das ist einmal passiert und fiel erst im Dashboard
+   auf. Lieber hier abbrechen als eine kaputte Seite ausliefern. */
+const mitFestplatte = fs.readdirSync(path.join(WURZEL, 'entwuerfe/_bib'))
+  .filter((d) => d.endsWith('.html'))
+  .filter((d) => /file:\/\/|[A-Za-z]:\\/.test(
+    fs.readFileSync(path.join(WURZEL, 'entwuerfe/_bib', d), 'utf8')));
+if (mitFestplatte.length) {
+  throw new Error('Absolute Pfade in den Einzelseiten: ' + mitFestplatte.join(', ')
+    + '. Die funktionieren nur auf diesem Rechner.');
+}
+
 if (fehlend.length) {
   throw new Error('Kein Beispiel mit data-bsp gefunden für: ' + fehlend.join(', ')
     + '. Auf der Prüfseite mit bsp(id, …) auszeichnen.');

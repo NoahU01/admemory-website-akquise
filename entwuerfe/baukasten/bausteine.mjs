@@ -672,7 +672,7 @@ function fussUnten({ betrieb, jahr, recht = [] }) {
   </div>`;
 }
 
-export function fussKontakt({ betrieb, logo, anschrift = [], telefon, telefonText,
+export function fussKontakt({ betrieb, logo, logoEinfarbig = false, anschrift = [], telefon, telefonText,
                               zweitnummer, zweitnummerLabel, fax, email, zeiten = [],
                               zeitenHinweis, knopf: haupt, recht = [],
                               jahr = new Date().getFullYear(), dunkel = false }) {
@@ -681,7 +681,8 @@ export function fussKontakt({ betrieb, logo, anschrift = [], telefon, telefonTex
   <div class="schale">
     <div class="fuss__gitter fuss__gitter--drei">
       <div>
-        ${wenn(logo, () => `<img class="fuss__logo" src="${esc(logo)}" alt="${esc(betrieb)}">`)}
+        ${wenn(logo, () => `<img class="fuss__logo" src="${esc(logo)}"`
+          + `${logoEinfarbig ? ' data-einfarbig' : ''} alt="${esc(betrieb)}">`)}
         ${wenn(anschrift.length, () => `<p class="klein" style="margin-bottom:var(--a-2)">${anschrift.map(esc).join('<br>')}</p>`)}
         <div class="fuss__zeilen">
           ${wenn(telefon, () => fussZeile('telefon', `<a href="tel:${esc(telefon)}">${esc(telefonText ?? telefon)}</a>`))}
@@ -704,7 +705,7 @@ export function fussKontakt({ betrieb, logo, anschrift = [], telefon, telefonTex
 </footer>`;
 }
 
-export function fussSpalten({ betrieb, logo, text, spalten = [], telefon, telefonText,
+export function fussSpalten({ betrieb, logo, logoEinfarbig = false, text, spalten = [], telefon, telefonText,
                               email, anschrift = [], sozial = [], recht = [],
                               jahr = new Date().getFullYear(), dunkel = true }) {
   return `
@@ -712,7 +713,8 @@ export function fussSpalten({ betrieb, logo, text, spalten = [], telefon, telefo
   <div class="schale">
     <div class="fuss__gitter fuss__gitter--spalten" style="--fuss-spalten:${spalten.length + 2}">
       <div>
-        ${wenn(logo, () => `<img class="fuss__logo" src="${esc(logo)}" alt="${esc(betrieb)}">`)}
+        ${wenn(logo, () => `<img class="fuss__logo" src="${esc(logo)}"`
+          + `${logoEinfarbig ? ' data-einfarbig' : ''} alt="${esc(betrieb)}">`)}
         ${wenn(text, () => `<p class="klein" style="max-width:34ch">${esc(text)}</p>`)}
         ${wenn(sozial.length, () => `<div class="fuss__sozial" style="margin-top:var(--a-3)">${sozial.map((s) =>
           `<a href="${esc(s.href)}" target="_blank" rel="noopener" aria-label="${esc(s.name)}">${zeichen(s.icon ?? 'pfeilauf')}</a>`).join('')}</div>`)}
@@ -1341,9 +1343,13 @@ const knopf2 = ({ text, href, neu = false }) =>
    ankuendigung  Das Band über der Navigation. Notdienst, Betriebsferien,
                  eine Aktion. Eine Zeile, schließbar.                      */
 
-const navMarke = ({ betrieb, logo, basis = '' }) =>
+/* logoEinfarbig kommt wie bei den Partnerlogos aus einer Messung: Hat die
+   Marke keine Farbe, darf sie umgefärbt werden und bleibt auf dunklem
+   Grund sichtbar. Dunkle Grafik auf dunklem Fußbereich wäre sonst weg. */
+const navMarke = ({ betrieb, logo, logoEinfarbig = false, basis = '' }) =>
   `<a class="nav__marke" href="${esc(basis)}index.html">${logo
-    ? `<img class="nav__logo" src="${esc(basis)}${esc(logo)}" alt="${esc(betrieb)}">`
+    ? `<img class="nav__logo" src="${esc(basis)}${esc(logo)}"` +
+      `${logoEinfarbig ? ' data-einfarbig' : ''} alt="${esc(betrieb)}">`
     : esc(betrieb)}</a>`;
 
 const navLinks = (nav = []) => nav.length

@@ -6,6 +6,7 @@
 import fs from 'node:fs';
 import { seite } from '../baukasten/seite.mjs';
 import { bsp } from '../baukasten/katalog.mjs';
+import { LOGO } from '../baukasten/beispiele.mjs';
 import { fussKontakt, fussSpalten } from '../baukasten/bausteine.mjs';
 
 const P = '../rolltruck/bilder/';
@@ -21,7 +22,7 @@ const html = seite({
   titel: 'Prüfseite für die Fußbereiche im Baukasten',
   beschreibung: 'Interne Prüfseite: Beide Fußbereiche hell und dunkel, mit vielen und mit wenigen Angaben.',
   betrieb: 'Baukasten', nav: [],
-  fuss: fussKontakt({ betrieb: 'Roll Truckservice GmbH', logo: P + 'logoWeiss.png', dunkel: true,
+  fuss: fussKontakt({ betrieb: 'Berger Elektrotechnik', logo: LOGO, logoEinfarbig: true, dunkel: true,
     anschrift: ['Ludwig-Erhard-Straße 102', '74564 Crailsheim'],
     telefon: '+497951297930', telefonText: 'Werkstatt 07951 29793-0',
     zweitnummer: '+4979516048', zweitnummerLabel: 'Notdienst 07951 6048',
@@ -31,7 +32,7 @@ const html = seite({
   inhalt: [
     marke('fussKontakt · hell, voll bestückt'),
 
-    bsp('fussKontakt', fussKontakt({ betrieb: 'Roll Truckservice GmbH', logo: P + 'logo.png',
+    bsp('fussKontakt', fussKontakt({ betrieb: 'Berger Elektrotechnik', logo: LOGO, logoEinfarbig: true,
       anschrift: ['Ludwig-Erhard-Straße 102', '74564 Crailsheim'],
       telefon: '+497951297930', telefonText: 'Werkstatt 07951 29793-0',
       zweitnummer: '+4979516048', zweitnummerLabel: 'Notdienst 07951 6048',
@@ -41,7 +42,7 @@ const html = seite({
 
     marke('fussSpalten · dunkel, drei Spalten'),
 
-    bsp('fussSpalten', fussSpalten({ betrieb: 'Roll Truckservice GmbH', logo: P + 'logoWeiss.png', dunkel: true,
+    bsp('fussSpalten', fussSpalten({ betrieb: 'Berger Elektrotechnik', logo: LOGO, logoEinfarbig: true, dunkel: true,
       text: 'Werkstatt für alle Nutzfahrzeugmarken in Crailsheim, mit Notdienst rund um die Uhr.',
       spalten: [
         { titel: 'Leistungen', links: [{ text: 'Kundendienst', href: '#' }, { text: 'Reifenservice', href: '#' },

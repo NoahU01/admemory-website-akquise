@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import { seite } from '../baukasten/seite.mjs';
 import { bsp } from '../baukasten/katalog.mjs';
+import { LOGO } from '../baukasten/beispiele.mjs';
 import { navStandard, navKnopf, navTelefon, navSchwebend, navSchlicht,
          ankuendigung, ANKUENDIGUNG_SKRIPT } from '../baukasten/bausteine.mjs';
 
@@ -24,27 +25,27 @@ const html = seite({
   betrieb: 'Baukasten', nav: [], fuss: '<div><p class="klein">Interne Prüfseite</p></div>',
   inhalt: [
     marke('navStandard · Logo, Menü, zwei Wege rechts · erste Wahl'),
-    bsp('navStandard', navStandard({ betrieb: 'Berger Elektrotechnik', nav: punkte, probe: true,
+    bsp('navStandard', navStandard({ betrieb: 'Berger Elektrotechnik', logo: LOGO, logoEinfarbig: true, nav: punkte, probe: true,
       leise: { text: 'Anrufen', href: 'tel:+49' },
       knopf: { text: 'Termin anfragen', href: '#termin' } })),
 
     marke('navKnopf · wenige Punkte, ein großer Knopf · für kleine Betriebe'),
-    bsp('navKnopf', navKnopf({ betrieb: 'Berger Elektrotechnik', nav: wenige, probe: true,
+    bsp('navKnopf', navKnopf({ betrieb: 'Berger Elektrotechnik', logo: LOGO, logoEinfarbig: true, nav: wenige, probe: true,
       knopf: { text: 'Termin anfragen', href: '#termin' } })),
 
     marke('navTelefon · zweistöckig mit Telefonnummer oben'),
-    bsp('navTelefon', navTelefon({ betrieb: 'Berger Elektrotechnik', nav: punkte, probe: true,
+    bsp('navTelefon', navTelefon({ betrieb: 'Berger Elektrotechnik', logo: LOGO, logoEinfarbig: true, nav: punkte, probe: true,
       telefon: '+4979511234560', telefonText: '07951 123456-0',
       zeile: 'Mo–Do 7–17 Uhr · Fr 7–13 Uhr · Störungsdienst rund um die Uhr',
       knopf: { text: 'Termin anfragen', href: '#termin' } })),
 
     marke('navSchwebend · Leiste als Karte, mit Abstand zum Rand'),
-    bsp('navSchwebend', navSchwebend({ betrieb: 'Berger Elektrotechnik', nav: punkte, probe: true,
+    bsp('navSchwebend', navSchwebend({ betrieb: 'Berger Elektrotechnik', logo: LOGO, logoEinfarbig: true, nav: punkte, probe: true,
       leise: { text: 'Anrufen', href: 'tel:+49' },
       knopf: { text: 'Termin anfragen', href: '#termin' }, rund: true })),
 
     marke('navSchlicht · nur Wortmarken, kein Knopf'),
-    bsp('navSchlicht', navSchlicht({ betrieb: 'Berger Elektrotechnik', nav: punkte, probe: true })),
+    bsp('navSchlicht', navSchlicht({ betrieb: 'Berger Elektrotechnik', logo: LOGO, logoEinfarbig: true, nav: punkte, probe: true })),
 
     marke('ankuendigung · dunkel und in der Akzentfarbe'),
     bsp('ankuendigung', ankuendigung({ text: 'Vom 23. Dezember bis 6. Januar ist das Büro geschlossen.',

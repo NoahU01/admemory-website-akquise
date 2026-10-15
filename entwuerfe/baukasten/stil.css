@@ -1078,3 +1078,11 @@ img[data-einfarbig]{filter:brightness(0)}
 .ankuendigung__zu:hover{opacity:1;background:rgba(255,255,255,.14)}
 .ankuendigung__zu svg{width:.95rem;height:.95rem;stroke:currentColor;fill:none;stroke-width:1.8}
 .ankuendigung__zu:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+
+/* Einfarbige Wort-Bild-Marken in Navigation und Fußbereich: dunkel auf
+   hellem Grund, hell auf dunklem. Ohne diese Regel verschwindet eine
+   schwarze Marke im dunklen Fußbereich. */
+.nav__logo[data-einfarbig],.fuss__logo[data-einfarbig]{filter:brightness(0)}
+.auf-dunkel .fuss__logo[data-einfarbig],.fuss--dunkel .fuss__logo[data-einfarbig],
+.auf-dunkel .nav__logo[data-einfarbig],.nav--schwebend .nav__logo[data-einfarbig],
+.hero-mitte .nav__logo[data-einfarbig]{filter:brightness(0) invert(1)}
