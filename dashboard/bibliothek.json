@@ -24,7 +24,7 @@
           "wann": "Wenn die Seite weicher wirken soll. sofortsichtbar.de macht es durchgehend so.",
           "grenzen": "Dieselben Maße wie der eckige, nur mit vollem Radius und etwas mehr Polsterung an den Seiten. Entweder die ganze Seite rund oder keine — gemischt wirkt es unentschieden.",
           "bild": "assets/bibliothek/knopfRund.jpg",
-          "bytes": 23053,
+          "bytes": 23056,
           "seite": "_bib/knopfRund.html"
         },
         {
@@ -33,7 +33,7 @@
           "wann": "Der betonte Knopf für Kopfbereiche.",
           "grenzen": "Nur einmal je Seite, sonst verliert er seine Wirkung. Nur 12 von 49 vermessenen Knöpfen auf den Vorbildseiten waren überhaupt vollrund.",
           "bild": "assets/bibliothek/knopfPille.jpg",
-          "bytes": 20897,
+          "bytes": 20896,
           "seite": "_bib/knopfPille.html"
         }
       ]
@@ -46,22 +46,13 @@
       "zweck": "Fünf Fassungen aus zwölf Vorbildseiten. Durchgehend: Logo links, rechts zwei Wege — einer leise, einer laut.",
       "bausteine": [
         {
-          "id": "navStandard",
-          "name": "Standard",
-          "erste": true,
-          "wann": "Der Normalfall. Logo links, Menü mittig, rechts ein leiser und ein lauter Weg.",
-          "grenzen": "Rechts stehen höchstens zwei Wege — drei sind keiner mehr. Ab etwa sechs Menüpunkten wird die Leiste eng.",
-          "bild": "assets/bibliothek/navStandard.jpg",
-          "bytes": 28560,
-          "seite": "_bib/navStandard.html"
-        },
-        {
           "id": "navKnopf",
           "name": "Wenige Punkte, ein Knopf",
+          "erste": true,
           "wann": "Für kleine Betriebe mit drei Unterseiten die ehrlichere Fassung. Der Knopf ist groß und führt zum Termin.",
           "grenzen": "Bricht ab fünf Menüpunkten ab — dann ist es navStandard.",
           "bild": "assets/bibliothek/navKnopf.jpg",
-          "bytes": 27058,
+          "bytes": 27070,
           "seite": "_bib/navKnopf.html"
         },
         {
@@ -79,7 +70,7 @@
           "wann": "Über einem großen Bild. Die Leiste steht als Karte mit Abstand zum Rand.",
           "grenzen": "Auf dunklem Grund wird sie durchscheinend mit Unschärfe dahinter. Braucht ein Bild, sonst schwebt sie über nichts.",
           "bild": "assets/bibliothek/navSchwebend.jpg",
-          "bytes": 28868,
+          "bytes": 32920,
           "seite": "_bib/navSchwebend.html"
         },
         {
@@ -107,7 +98,7 @@
           "wann": "Betriebsferien, Notdienst, eine Aktion. Eine Zeile über der Navigation, schließbar.",
           "grenzen": "Eine Zeile, nicht zwei. Ohne Text bricht der Baustein ab. Dunkel oder in der Akzentfarbe.",
           "bild": "assets/bibliothek/ankuendigung.jpg",
-          "bytes": 28485,
+          "bytes": 28338,
           "seite": "_bib/ankuendigung.html"
         }
       ]
@@ -115,7 +106,7 @@
     {
       "id": "hero",
       "icon": "kopfbereich",
-      "name": "Kopfbereiche",
+      "name": "Hero",
       "seite": "_hero",
       "zweck": "Der erste Bildschirm. Vorzeile mit dem Kerngeschäft, Überschrift, ein Satz, Knöpfe.",
       "bausteine": [
@@ -126,7 +117,7 @@
           "wann": "Erste Wahl. Trägt jedes Gewerbe und kommt mit einem einzigen Querformat aus.",
           "grenzen": "Braucht ein Bild im Breitformat. Die Logoleiste darunter läuft und sitzt auf der Breite der Navigation; unter acht Logos wird die Liste wiederholt, sonst klafft eine Lücke.",
           "bild": "assets/bibliothek/heroMitte.jpg",
-          "bytes": 123234,
+          "bytes": 129345,
           "seite": "_bib/heroMitte.html"
         },
         {
@@ -135,8 +126,17 @@
           "name": "Geteilt mit Merkmalen",
           "grenzen": "Die Merkmale brauchen Zeichen aus ZEICHEN. Bei nur einem Merkmal wirkt die Spalte leer.",
           "bild": "assets/bibliothek/heroGeteilt.jpg",
-          "bytes": 206705,
+          "bytes": 204432,
           "seite": "_bib/heroGeteilt.html"
+        },
+        {
+          "id": "heroKarte",
+          "name": "Karte mit Infoleiste",
+          "wann": "Für Praxis, Kanzlei und Handwerk. Links Überschrift mit Hakenliste, rechts eine Karte mit Bild und einem Satz, darunter Anschrift, Zeiten und Telefon.",
+          "grenzen": "Braucht die Hakenliste, sonst ist es heroGeteilt. Die Leiste ist der eigentliche Gewinn — wer einen Betrieb sucht, will Adresse und Zeiten sehen, bevor er scrollt.",
+          "bild": "assets/bibliothek/heroKarte.jpg",
+          "bytes": 157687,
+          "seite": "_bib/heroKarte.html"
         },
         {
           "id": "heroVoll",
@@ -144,7 +144,7 @@
           "wann": "Nur bei einem wirklich guten, großen Foto.",
           "grenzen": "Inhalt steht senkrecht mittig. Hat einen dunklen Grund hinterlegt, falls das Bild nicht lädt — schlechte Fotos fallen hier am meisten auf.",
           "bild": "assets/bibliothek/heroVoll.jpg",
-          "bytes": 111474,
+          "bytes": 111408,
           "seite": "_bib/heroVoll.html"
         }
       ]
@@ -163,7 +163,7 @@
           "wann": "Erste Wahl, sobald ein brauchbares Foto vom Betrieb da ist. Gibt es hell und dunkel.",
           "grenzen": "Drei bis neun Kacheln. Auf der Bildkarte steht die Bewertung groß: Note, Sterne, Anzahl. Ohne Note bleibt die Anzahl, geraten wird nichts.",
           "bild": "assets/bibliothek/vertrauenDuo.jpg",
-          "bytes": 107201,
+          "bytes": 103568,
           "seite": "_bib/vertrauenDuo.html"
         },
         {
@@ -209,7 +209,7 @@
           "wann": "Wenn es gute Bilder gibt. Das Foto ist die Karte, unten steht nur der Name.",
           "grenzen": "Ohne Bilder bricht der Baustein ab. Hochformate und Szenen aus dem Betrieb sitzen besser als quadratische Porträts, die unten angeschnitten werden.",
           "bild": "assets/bibliothek/stimmenBilder.jpg",
-          "bytes": 127964,
+          "bytes": 127577,
           "seite": "_bib/stimmenBilder.html"
         },
         {
@@ -218,7 +218,7 @@
           "wann": "Die einzige Fassung ohne einzelne Stimmen — sie braucht nur Partnerlogos und eine Gesamtnote. Damit die Wahl bei jedem Betrieb, dessen Bewertungen keine brauchbaren Texte hergeben.",
           "grenzen": "Mindestens vier Logos, am besten acht: dann füllen Wand und Notenkarte zusammen ein sauberes Rechteck. Ohne Note bricht der Baustein ab. Quelle ist Google oder Trustpilot, die Zahl verlinkt dorthin.",
           "bild": "assets/bibliothek/stimmenNote.jpg",
-          "bytes": 94663,
+          "bytes": 94656,
           "seite": "_bib/stimmenNote.html"
         },
         {
@@ -227,7 +227,7 @@
           "wann": "Wenn es zu den Stimmen harte Zahlen gibt — Dauer, Ersparnis, Jahre. Die Zahl trägt die Karte, das Zitat belegt sie.",
           "grenzen": "Braucht Bilder und mindestens drei Stimmen. Ohne Kennzahl rücken die Sterne an ihre Stelle; ohne beides ist es die falsche Fassung.",
           "bild": "assets/bibliothek/stimmenReihe.jpg",
-          "bytes": 194704,
+          "bytes": 194717,
           "seite": "_bib/stimmenReihe.html"
         }
       ]
@@ -246,7 +246,7 @@
           "wann": "Überall da, wo ein Termin der nächste Schritt ist. Links was nach der Anfrage passiert, rechts Telefonnummer, Zeiten und der Knopf.",
           "grenzen": "Bricht ab, wenn weder Telefonnummer noch Knopf noch Einbettung da ist — ein Block, der nirgendwohin führt, ist schlimmer als keiner. Kein Kalender im Entwurf; wird jemand Kunde, kommt sein eigener an dieselbe Stelle.",
           "bild": "assets/bibliothek/terminAnfrage.jpg",
-          "bytes": 89703,
+          "bytes": 87957,
           "seite": "_bib/terminAnfrage.html"
         }
       ]
@@ -274,7 +274,7 @@
           "wann": "Bei sehr vielen Leistungen oder wenn alle gleich wichtig sind.",
           "grenzen": "Spaltenzahl einstellbar, Icon im Kreis oder im Kasten. Lässt keinen Eintrag weg. Karten heben sich beim Überfahren an.",
           "bild": "assets/bibliothek/leistungen.jpg",
-          "bytes": 103668,
+          "bytes": 103690,
           "seite": "_bib/leistungen.html"
         }
       ]
@@ -291,9 +291,9 @@
           "name": "Karten",
           "erste": true,
           "wann": "Erste Wahl bei vier bis sechs Marken, die in eine Zeile passen.",
-          "grenzen": "Unter vier bricht der Baustein ab — zwei Partner wirken wie eine Entschuldigung. Weiße Grafik auf Transparenz bekommt dunklen Grund, gemessen und nicht geraten.",
+          "grenzen": "Unter vier bricht der Baustein ab — zwei Partner wirken wie eine Entschuldigung. Weiße Grafik auf Transparenz bekommt dunklen Grund, gemessen und nicht geraten. Kein Nachsatz unter den Karten — der lenkt von den Marken ab.",
           "bild": "assets/bibliothek/logowandKarten.jpg",
-          "bytes": 38485,
+          "bytes": 31660,
           "seite": "_bib/logowandKarten.html"
         },
         {
@@ -302,7 +302,7 @@
           "wann": "Sobald mehr Logos da sind, als in eine Zeile passen. Hält beim Überfahren an.",
           "grenzen": "Läuft nicht über die ganze Seitenbreite, sondern in einem begrenzten Band. Unter sechs Logos wird die Liste wiederholt, sonst klafft eine Lücke.",
           "bild": "assets/bibliothek/logowandLauf.jpg",
-          "bytes": 36642,
+          "bytes": 36605,
           "seite": "_bib/logowandLauf.html"
         }
       ]

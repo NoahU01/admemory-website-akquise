@@ -5,8 +5,8 @@
 import fs from 'node:fs';
 import { seite } from '../baukasten/seite.mjs';
 import { bsp } from '../baukasten/katalog.mjs';
-import { ALLGEMEIN, MARKEN } from '../baukasten/beispiele.mjs';
-import { heroMitte, heroGeteilt, heroVoll } from '../baukasten/bausteine.mjs';
+import { ALLGEMEIN, MARKEN, LOGO } from '../baukasten/beispiele.mjs';
+import { heroMitte, heroGeteilt, heroVoll, heroKarte } from '../baukasten/bausteine.mjs';
 
 const marke = (t) => `<div class="schale" style="padding-block:var(--a-3)"><p class="ueber">${t}</p></div>`;
 
@@ -24,14 +24,18 @@ const html = seite({
       knopfHaupt: { text: 'Unsere Leistungen', href: '#leistungen' },
       knoepfe: [{ text: 'Kontakt aufnehmen', href: '#kontakt' }],
       bild: ALLGEMEIN.handwerk, bildAlt: 'Elektriker bei der Arbeit an einer Steckdose',
-      marken: MARKEN,
+      /* Im Kopfbereich steht die einheitliche Platzhaltermarke statt der
+         bunten Kundenlogos — sie ist einfarbig und wird auf dem dunklen
+         Bild weiß. Acht Stück, wie die Regel es verlangt. */
+      marken: Array.from({ length: 8 }, (_, i) =>
+        ({ name: 'Partner ' + (i + 1), pfad: LOGO, einfarbig: true })),
     })),
 
     marke('heroGeteilt · allgemein · mit Merkmalen'),
     bsp('heroGeteilt', heroGeteilt({
       plakette: 'Elektrotechnik seit 1984',
       titel: 'Alles rund um Strom an einem Ort',
-      text: 'Von der Hausinstallation bis zur Anlagenprüfung im Betrieb. '
+      text: 'Von der Hausinstallation bis zur Anlagenprüfung im Betrieb.\n'
         + 'Eigene Mannschaft, eigenes Lager, feste Ansprechpartner.',
       merkmale: [
         { icon: 'notruf', text: 'Störungsdienst rund um die Uhr' },
@@ -58,6 +62,30 @@ const html = seite({
       bild: ALLGEMEIN.handwerk, bildAlt: 'Elektriker bei der Arbeit',
       tief: true,
     }),
+
+    marke('heroKarte · Überschrift mit Hakenliste, Karte rechts, Infoleiste darunter'),
+    bsp('heroKarte', heroKarte({
+      plakette: 'Meisterbetrieb seit 1984',
+      titel: 'Elektrotechnik, auf die Sie sich verlassen können',
+      text: 'Installation, Prüfung und Störungsdienst für Privat und Gewerbe im Umkreis von 30 Kilometern.',
+      punkte: [
+        'Fester Termin, kein Zeitfenster von vier Stunden',
+        'Festpreis vor der Arbeit, keine Nachforderung',
+        'Störungsdienst rund um die Uhr erreichbar',
+      ],
+      knoepfe: [
+        { text: 'Termin anfragen', href: '#termin', art: 'wichtig' },
+        { text: 'Leistungen ansehen', href: '#leistungen', art: 'leise' },
+      ],
+      bild: ALLGEMEIN.handwerk, bildAlt: 'Elektriker bei der Arbeit',
+      satz: 'Wir sind ein Familienbetrieb in zweiter Generation. Was wir zusagen, halten wir.',
+      wer: 'Thomas Berger, Elektromeister',
+      leiste: [
+        { icon: 'ort', titel: 'Anschrift', zeilen: ['Hauptstraße 18', '74564 Crailsheim'] },
+        { icon: 'uhr', titel: 'Öffnungszeiten', zeilen: ['Mo–Do 7–17 Uhr', 'Fr 7–13 Uhr'] },
+        { icon: 'telefon', titel: 'Telefon', zeilen: ['07951 123456-0', 'Störungsdienst rund um die Uhr'] },
+      ],
+    })),
 
     marke('heroVoll · allgemein · Bild über die volle Breite'),
     bsp('heroVoll', heroVoll({

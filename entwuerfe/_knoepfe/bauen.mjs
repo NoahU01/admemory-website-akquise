@@ -14,6 +14,9 @@ const block = (titel, inhalt, tief = false) => `
 </section>`;
 
 const html = seite({
+  /* Schwarz statt der Akzentfarbe: In der Bibliothek geht es um Form und
+     Maße, nicht um die Farbe eines bestimmten Kunden. */
+  akzent: '#11161d',
   titel: 'Prüfseite für die Knöpfe im Baukasten',
   beschreibung: 'Interne Prüfseite: alle Knopffassungen hell und dunkel.',
   betrieb: 'Baukasten', nav: [], fuss: '<div><p class="klein">Interne Prüfseite</p></div>',

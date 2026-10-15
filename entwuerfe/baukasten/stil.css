@@ -95,7 +95,7 @@ a{color:inherit}
    Die Mindesthöhe bleibt bei 44 px, weil darunter das Antippen auf dem
    Handy unzuverlässig wird. */
 .knopf{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
-  min-height:44px;padding:.6rem 1.25rem;border:1px solid transparent;border-radius:8px;
+  min-height:44px;padding:.6rem 1.25rem;border:1.5px solid transparent;border-radius:8px;
   font-size:var(--t-s);font-weight:500;text-decoration:none;cursor:pointer;
   transition:background .15s,border-color .15s,color .15s,transform .15s}
 .knopf:active{transform:translateY(1px)}
@@ -424,6 +424,10 @@ a{color:inherit}
 /* margin-inline:auto nicht vergessen: Eine Maximalbreite allein zentriert
    nichts, der Block klebte dadurch links an der Schale. */
 .hero-mitte__in{max-width:60rem;margin-inline:auto;display:grid;gap:var(--a-3);justify-items:center}
+/* Plakette eine Spur kleiner und näher an der Überschrift: Der Abstand
+   war so groß wie zwischen zwei eigenständigen Zeilen. */
+.hero-mitte .plakette--hell{font-size:.72rem;padding:.25rem .7rem}
+.hero-mitte__in > .plakette--hell + h1{margin-top:calc(var(--a-3) * -0.2)}
 .hero-mitte h1{font-size:clamp(2.4rem,7vw,5rem);font-weight:800;letter-spacing:-.035em;
   max-width:20ch;color:#fff}
 .hero-mitte .lead{font-size:clamp(1.05rem,2vw,1.35rem);font-weight:600;
@@ -1009,13 +1013,19 @@ img[data-einfarbig]{filter:brightness(0)}
 @media(min-width:860px){.termin{grid-template-columns:1.1fr .9fr;gap:var(--a-5)}}
 .termin__schritte{list-style:none;margin:var(--a-3) 0 0;padding:0;display:grid;gap:var(--a-3)}
 .termin__schritte li{display:flex;gap:.9rem;align-items:flex-start}
-.termin__nummer{flex:none;width:1.9rem;height:1.9rem;border-radius:50%;display:grid;
-  place-items:center;font-size:.82rem;font-weight:700;
+/* line-height:1 ist nötig: Mit der geerbten Zeilenhöhe von 1,6 sass die
+   Ziffer über dem Kreis statt darin. */
+.termin__nummer{flex:none;width:1.9rem;height:1.9rem;border-radius:50%;display:inline-grid;
+  place-items:center;line-height:1;font-size:.82rem;font-weight:700;
   background:color-mix(in srgb,var(--akzent) 13%,var(--grund));color:var(--text)}
 .auf-dunkel .termin__nummer,.abschnitt--tief .termin__nummer{
   background:color-mix(in srgb,#fff 14%,transparent);color:#fff}
 .termin__schritte b{display:block;font-weight:600;line-height:1.4}
-.termin__schritte span{display:block;font-size:var(--t-s);color:var(--text-2);margin-top:.15rem}
+/* Nur die Beschreibung, nicht die Ziffer: Diese Regel stand später und
+   hat dem Kreis display:block verpasst — die Ziffer sass dadurch über
+   dem Kreis statt darin. */
+.termin__schritte li > div > span{display:block;font-size:var(--t-s);
+  color:var(--text-2);margin-top:.15rem}
 
 .termin__karte{background:var(--gedaempft);border:1px solid var(--linie);border-radius:16px;
   padding:var(--a-4) var(--a-3);display:grid;gap:var(--a-3);justify-items:stretch}
@@ -1070,10 +1080,13 @@ img[data-einfarbig]{filter:brightness(0)}
 /* ── Ankündigungsband ──────────────────────────────────────────── */
 .ankuendigung{background:var(--tief);color:#fff}
 .ankuendigung--hell{background:var(--akzent);color:var(--akzent-text)}
-.ankuendigung__in{display:flex;align-items:center;gap:var(--a-2);min-height:40px}
-.ankuendigung p{margin:0;flex:1;font-size:var(--t-xs);text-align:center}
+.ankuendigung__in{display:flex;align-items:center;gap:var(--a-3);min-height:42px}
+/* Der Text beginnt an der Inhaltskante wie alles andere, das Kreuz steht
+   ganz rechts. Mittig gesetzter Text neben einem rechten Kreuz sah aus,
+   als sei etwas verrutscht. */
+.ankuendigung p{margin:0;flex:1;font-size:var(--t-xs);text-align:left}
 .ankuendigung a{color:inherit;text-underline-offset:3px}
-.ankuendigung__zu{all:unset;cursor:pointer;flex:none;width:28px;height:28px;
+.ankuendigung__zu{all:unset;cursor:pointer;flex:none;margin-left:auto;width:28px;height:28px;
   display:grid;place-items:center;border-radius:6px;opacity:.7}
 .ankuendigung__zu:hover{opacity:1;background:rgba(255,255,255,.14)}
 .ankuendigung__zu svg{width:.95rem;height:.95rem;stroke:currentColor;fill:none;stroke-width:1.8}
@@ -1083,6 +1096,79 @@ img[data-einfarbig]{filter:brightness(0)}
    hellem Grund, hell auf dunklem. Ohne diese Regel verschwindet eine
    schwarze Marke im dunklen Fußbereich. */
 .nav__logo[data-einfarbig],.fuss__logo[data-einfarbig]{filter:brightness(0)}
+/* Die schwebende Leiste hat selbst einen hellen Grund — dort muss die
+   Marke dunkel bleiben. Mit invert war sie weiß auf weiß und unsichtbar. */
 .auf-dunkel .fuss__logo[data-einfarbig],.fuss--dunkel .fuss__logo[data-einfarbig],
-.auf-dunkel .nav__logo[data-einfarbig],.nav--schwebend .nav__logo[data-einfarbig],
+.auf-dunkel .nav__logo[data-einfarbig],
 .hero-mitte .nav__logo[data-einfarbig]{filter:brightness(0) invert(1)}
+.auf-dunkel .nav__schweber .nav__logo[data-einfarbig],
+.abschnitt--tief .nav__schweber .nav__logo[data-einfarbig]{filter:brightness(0) invert(1)}
+.nav__schweber .nav__logo[data-einfarbig]{filter:brightness(0)}
+
+/* Geteilter Kopfbereich: etwas engerer Zeilenabstand in der Überschrift. */
+.hero-geteilt h1{line-height:1.04}
+
+/* Vertrauenskarte: Die Überschrift war so fett, dass sie ins Kachelfeld
+   lief. Eine Nummer kleiner und etwas leichter. */
+.vertrauen__text h2{font-size:clamp(1.25rem,2.4vw,1.6rem);font-weight:700;line-height:1.22}
+.vertrauen__text p{font-size:var(--t-s)}
+
+/* Terminblock: alles im Kasten linksbündig. Oben und unten mittig,
+   dazwischen linksbündig sah aus, als wäre etwas verrutscht. */
+.termin__karte{justify-items:start;text-align:left}
+.termin__ruf{justify-content:flex-start}
+.termin__hinweis{text-align:left;font-size:var(--t-xs)}
+.knopf--voll{width:100%}
+
+/* Logowand-Überschrift: eine Stufe kleiner und ohne den hervorgehobenen
+   Vorsatz in anderer Farbe — das las sich wie ein Verlauf. */
+.logowand-kopf h2{font-size:clamp(1.3rem,2.6vw,1.7rem)}
+.logowand-kopf h2 em{font-style:normal;color:inherit;font-weight:inherit}
+
+/* Umbrüche im Vorspann des geteilten Kopfbereichs werden übernommen —
+   so lässt sich steuern, wo eine Zeile endet, ohne Markup im Text. */
+.hero-geteilt .lead{white-space:pre-line}
+
+/* Einfarbige Marken im Kopfbereich: weiß und ohne helle Fläche darunter.
+   Die Fläche ist nur für farbige Logos nötig, die man nicht umfärben darf. */
+.hero-mitte .logowand-lauf img[data-einfarbig]{
+  background:none;padding:0;filter:brightness(0) invert(1);opacity:.85}
+
+/* ══ Hero mit Karte und Infoleiste ═══════════════════════════════ */
+
+.hero-karte{background:color-mix(in srgb,var(--akzent) 5%,var(--gedaempft));
+  padding-block:var(--a-5) var(--a-4)}
+.hero-karte--tief{background:var(--tief)}
+.hero-karte__in{display:grid;gap:var(--a-4);align-items:center}
+@media(min-width:900px){.hero-karte__in{grid-template-columns:1.05fr .95fr;gap:var(--a-5)}}
+.hero-karte__text{min-width:0}
+.hero-karte h1{font-size:clamp(2rem,4.6vw,3.1rem);line-height:1.08;letter-spacing:-.03em;
+  margin-top:var(--a-2)}
+.hero-karte .lead{margin-top:var(--a-2)}
+.hero-karte__punkte{list-style:none;margin:var(--a-3) 0 0;padding:0;display:grid;gap:.6rem}
+.hero-karte__punkte li{display:flex;align-items:flex-start;gap:.6rem;font-weight:500}
+.hero-karte__punkte svg{width:1.1rem;height:1.1rem;flex:none;margin-top:.15rem;
+  stroke:var(--akzent-schrift);fill:none;stroke-width:2.4}
+.hero-karte .knopfreihe{margin-top:var(--a-4)}
+
+.hero-karte__karte{position:relative;background:var(--grund);border-radius:18px;
+  overflow:hidden;box-shadow:0 18px 50px rgba(17,22,29,.12)}
+.auf-dunkel .hero-karte__karte{background:color-mix(in srgb,#fff 8%,transparent)}
+.hero-karte__karte img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+.hero-karte__karte figcaption{padding:var(--a-3)}
+.hero-karte__karte blockquote{font-size:var(--t-m);line-height:1.45;font-weight:500}
+.hero-karte__karte cite{display:block;margin-top:.5rem;font-style:normal;
+  font-size:var(--t-s);color:var(--text-2)}
+
+/* Anschrift und Zeiten, bevor jemand scrollt. */
+.hero-karte__leiste{display:grid;gap:var(--a-3);margin:var(--a-5) 0 0;padding:var(--a-3);
+  background:var(--grund);border:1px solid var(--linie);border-radius:14px}
+@media(min-width:720px){.hero-karte__leiste{grid-template-columns:repeat(3,1fr)}}
+.auf-dunkel .hero-karte__leiste{background:color-mix(in srgb,#fff 6%,transparent);
+  border-color:color-mix(in srgb,#fff 13%,transparent)}
+.hero-karte__leiste > div{display:flex;gap:.7rem;align-items:flex-start;min-width:0}
+.hero-karte__leiste svg{width:1.15rem;height:1.15rem;flex:none;margin-top:.1rem;
+  stroke:var(--akzent-schrift);fill:none;stroke-width:1.8}
+.hero-karte__leiste dt{font-size:var(--t-xs);text-transform:uppercase;letter-spacing:.06em;
+  color:var(--text-2);margin-bottom:.2rem}
+.hero-karte__leiste dd{margin:0;font-size:var(--t-s);line-height:1.5}

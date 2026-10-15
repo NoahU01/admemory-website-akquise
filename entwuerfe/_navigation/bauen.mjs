@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import { seite } from '../baukasten/seite.mjs';
 import { bsp } from '../baukasten/katalog.mjs';
 import { LOGO } from '../baukasten/beispiele.mjs';
-import { navStandard, navKnopf, navTelefon, navSchwebend, navSchlicht,
+import { navKnopf, navTelefon, navSchwebend, navSchlicht,
          ankuendigung, ANKUENDIGUNG_SKRIPT } from '../baukasten/bausteine.mjs';
 
 const punkte = [
@@ -24,11 +24,6 @@ const html = seite({
   beschreibung: 'Interne Prüfseite: fünf Navigationsfassungen und das Ankündigungsband.',
   betrieb: 'Baukasten', nav: [], fuss: '<div><p class="klein">Interne Prüfseite</p></div>',
   inhalt: [
-    marke('navStandard · Logo, Menü, zwei Wege rechts · erste Wahl'),
-    bsp('navStandard', navStandard({ betrieb: 'Berger Elektrotechnik', logo: LOGO, logoEinfarbig: true, nav: punkte, probe: true,
-      leise: { text: 'Anrufen', href: 'tel:+49' },
-      knopf: { text: 'Termin anfragen', href: '#termin' } })),
-
     marke('navKnopf · wenige Punkte, ein großer Knopf · für kleine Betriebe'),
     bsp('navKnopf', navKnopf({ betrieb: 'Berger Elektrotechnik', logo: LOGO, logoEinfarbig: true, nav: wenige, probe: true,
       knopf: { text: 'Termin anfragen', href: '#termin' } })),

@@ -30,8 +30,7 @@ const html = seite({
   inhalt: [
     marke('logowandKarten · vier Marken · erste Wahl'),
     bsp('logowandKarten', logowandKarten({ titelLeise: 'Wir arbeiten mit', titel: 'diesen Marken.',
-      logos: MARKEN.slice(0, 4),
-      nachsatz: 'Dazu Innungsbetrieb und eingetragener Fachbetrieb nach § 19 WHG.' })),
+      logos: MARKEN.slice(0, 4) })),
 
     marke('logowandKarten · mit echten Logos von Roll Truckservice'),
     logowandKarten({ titelLeise: 'Vertragspartner für', titel: 'sechs Marken.', logos: echt }),

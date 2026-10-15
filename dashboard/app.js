@@ -621,46 +621,69 @@ function zeichneBibliothek(){
 }
 
 /* ── Pop-up ─────────────────────────────────────────────────────────
-   Zeigt die Fassung als eigene Seite im Rahmen, nicht als Bild: Was im
-   Pop-up steht, ist dasselbe HTML, das ein Entwurf bekäme. */
-function zeigeBaustein(b, g){
+   Zeigt die Fassung als eigene Seite im Rahmen, nicht als Bild. Der
+   Rahmen ist immer 1280 Pixel breit und wird heruntergerechnet: Sonst
+   springt ein Baustein im schmalen Pop-up in die Tablet-Ansicht und
+   sieht anders aus als im Entwurf — beim Bento-Raster war genau das zu
+   sehen. */
+const RAHMEN_BREIT = 1280, RAHMEN_HOCH = 820;
+let offen2 = { gruppe: null, nr: 0 };
+
+function zeigeBaustein(nr){
+  const g = bibliothek.gruppen.find((x) => 'bib:' + x.id === seite);
+  if (!g || !g.bausteine[nr]) return;
+  const b = g.bausteine[nr];
+  offen2 = { gruppe: g, nr };
   const basis = 'https://entwuerfe.admemory.de/';
   el('bsName').textContent = b.name;
-  el('bsUnter').textContent = b.id;
+  el('bsZaehler').textContent = (nr + 1) + ' / ' + g.bausteine.length;
+  el('bsOeffnen').href = basis + b.seite;
+  el('bsZurueck').disabled = nr === 0;
+  el('bsVor').disabled = nr === g.bausteine.length - 1;
   el('bsRumpf').innerHTML =
-    /* Das Vorschaubild liegt hinter dem Rahmen. Laedt der Rahmen nicht —
-       blockiert, offline, Seite noch nicht deployt —, steht da trotzdem
-       etwas statt einer leeren Flaeche. */
     '<div class="bsrahmen">' +
       (b.bild ? '<img class="bsrahmen__bild" src="/' + text(b.bild) + '" alt="">' : '') +
       '<iframe src="' + basis + text(b.seite) + '" title="' + text(b.name) + '"' +
-      ' referrerpolicy="no-referrer"></iframe></div>' +
-    '<div class="bszeilen">' +
-      '<div class="bib__zeile">' + ic('uhr') + '<div><b>Wann</b>' + text(b.wann) + '</div></div>' +
-      '<div class="bib__zeile">' + ic('befund') + '<div><b>Grenzen</b>' + text(b.grenzen) + '</div></div>' +
-    '</div>' +
-    '<div class="bib__fuss">' +
-      '<a href="' + basis + text(b.seite) + '" target="_blank" rel="noopener">' +
-        ic('pfeilauf') + 'In eigenem Fenster öffnen</a>' +
-      '<a href="' + basis + text(g.seite) + '/" target="_blank" rel="noopener">' +
-        ic('pfeilauf') + 'Prüfseite mit allen Härtefällen</a>' +
+      ' referrerpolicy="no-referrer" style="width:' + RAHMEN_BREIT + 'px;height:' +
+      RAHMEN_HOCH + 'px"></iframe>' +
     '</div>';
+  passeRahmenAn();
   el('bausteinblatt').hidden = false;
+}
+
+/* Der Rahmen wird so verkleinert, dass er in die Breite des Pop-ups passt. */
+function passeRahmenAn(){
+  const kasten = document.querySelector('.bsrahmen');
+  if (!kasten) return;
+  const f = Math.min(1, kasten.clientWidth / RAHMEN_BREIT);
+  const rahmen = kasten.querySelector('iframe');
+  if (rahmen) {
+    rahmen.style.transform = 'scale(' + f + ')';
+    rahmen.style.transformOrigin = 'top left';
+  }
+  kasten.style.height = Math.round(RAHMEN_HOCH * f) + 'px';
+}
+window.addEventListener('resize', passeRahmenAn);
+
+function blattZu(){ el('bausteinblatt').hidden = true; el('bsRumpf').innerHTML = ''; }
+function blaettere(richtung){
+  const g = offen2.gruppe; if (!g) return;
+  const z = offen2.nr + richtung;
+  if (z < 0 || z >= g.bausteine.length) return;
+  zeigeBaustein(z);
 }
 
 el('inhalt').addEventListener('click', (e) => {
   const k = e.target.closest('button[data-bib]');
-  if (!k) return;
-  const g = bibliothek.gruppen.find((x) => 'bib:' + x.id === seite);
-  if (g) zeigeBaustein(g.bausteine[+k.dataset.bib], g);
+  if (k) zeigeBaustein(+k.dataset.bib);
 });
-el('bsZu').addEventListener('click', () => { el('bausteinblatt').hidden = true; el('bsRumpf').innerHTML = ''; });
-el('bausteinblatt').addEventListener('click', (e) => {
-  if (e.target.id === 'bausteinblatt') { el('bausteinblatt').hidden = true; el('bsRumpf').innerHTML = ''; }
-});
+el('bsZu').addEventListener('click', blattZu);
+el('bsZurueck').addEventListener('click', () => blaettere(-1));
+el('bsVor').addEventListener('click', () => blaettere(1));
+el('bausteinblatt').addEventListener('click', (e) => { if (e.target.id === 'bausteinblatt') blattZu(); });
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && !el('bausteinblatt').hidden) {
-    el('bausteinblatt').hidden = true; el('bsRumpf').innerHTML = '';
-  }
+  if (el('bausteinblatt').hidden) return;
+  if (e.key === 'Escape') blattZu();
+  if (e.key === 'ArrowLeft') blaettere(-1);
+  if (e.key === 'ArrowRight') blaettere(1);
 });
-

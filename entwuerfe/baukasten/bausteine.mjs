@@ -1430,3 +1430,45 @@ document.querySelectorAll('[data-ankuendigung]').forEach(function (k) {
   });
 });
 </script>`;
+
+/* ── Hero mit Karte und Infoleiste ───────────────────────────────
+   Nach dem Vorbild von michael-milz.vercel.app: getönter Grund, links
+   Überschrift mit Hakenliste und Knöpfen, rechts eine Karte mit Bild und
+   einem Satz, darunter eine Leiste mit Anschrift und Zeiten.
+
+   Die Leiste ist der eigentliche Gewinn: Wer eine Praxis oder einen
+   Handwerksbetrieb sucht, will Adresse und Öffnungszeiten sehen, bevor
+   er scrollt.                                                            */
+export function heroKarte({ plakette, titel, text, punkte = [], knoepfe = [],
+  bild, bildAlt = '', satz, wer, leiste = [], tief = false }) {
+  if (!punkte.length)
+    throw new Error('heroKarte: ohne Hakenliste ist das heroGeteilt.');
+  return `
+<header class="hero-karte${wenn(tief, ' auf-dunkel hero-karte--tief')}" id="start">
+  ${schale(`<div class="hero-karte__in">
+    <div class="hero-karte__text">
+      ${wenn(plakette, () => `<span class="plakette">${esc(plakette)}</span>`)}
+      <h1>${esc(titel)}</h1>
+      ${wenn(text, () => `<p class="lead lead--zwei">${esc(text)}</p>`)}
+      <ul class="hero-karte__punkte">
+        ${punkte.map((p) => `<li>${zeichen('haken')}<span>${esc(p)}</span></li>`).join('')}
+      </ul>
+      ${wenn(knoepfe.length, () => `<div class="knopfreihe">${knoepfe.map(knopf).join('')}</div>`)}
+    </div>
+    ${wenn(bild, () => `<figure class="hero-karte__karte">
+      <img src="${esc(bild)}" alt="${esc(bildAlt)}" fetchpriority="high">
+      ${wenn(satz, () => `<figcaption>
+        <blockquote>${esc(satz)}</blockquote>
+        ${wenn(wer, () => `<cite>${esc(wer)}</cite>`)}
+      </figcaption>`)}
+    </figure>`)}
+  </div>`)}
+  ${wenn(leiste.length, () => schale(`<dl class="hero-karte__leiste">
+    ${leiste.map((e) => `<div>
+      ${wenn(e.icon, () => zeichen(e.icon))}
+      <div><dt>${esc(e.titel)}</dt>${e.zeilen.map((z) =>
+        `<dd>${esc(z)}</dd>`).join('')}</div>
+    </div>`).join('')}
+  </dl>`))}
+</header>`;
+}
