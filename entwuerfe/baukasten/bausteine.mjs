@@ -1492,3 +1492,238 @@ export function navDunkel(o = {}) {
     <div class="nav__rest">${knopf({ ...o.knopf, art: 'hell' })}</div>
   </div></div>`, { ...o, zusatz: ' nav--dunkel auf-dunkel' });
 }
+
+/* ══ Bildergalerie ═══════════════════════════════════════════════
+   galerieGitter        Mauerwerk-Raster, Klick öffnet die Großansicht.
+                        Erste Wahl, braucht mindestens sechs Bilder.
+   galerieZiehharmonika Waagerechte Felder, eines breit. Für fünf bis
+                        sieben Arbeiten mit Namen und einem Satz.
+   galerieReihe         Waagerechter Schieber mit hohen Karten. Teilt
+                        sich die Mechanik mit stimmenReihe — dieselbe
+                        Spur, andere Karteninhalte.
+   galerieCollage       Text links, zwei bis drei überlappende Bilder
+                        rechts. Ein Anreißer, keine Galerie: Er führt
+                        auf die eigentliche Seite.
+   galerieVorherNachher Zwei Bilder übereinander mit Schieberegler.
+                        Für Sanierung, Dach, Fassade das überzeugendste
+                        Format, das es gibt.                              */
+
+const GALERIE_MIN = 6;
+
+const galerieBild = (b, i) => `<button class="galerie__bild" type="button"
+  data-bild="${i}" data-gross="${esc(b.gross ?? b.pfad)}"
+  data-text="${esc(b.text ?? '')}" aria-label="${esc(b.text || 'Bild vergrößern')}">
+  <img src="${esc(b.pfad)}" alt="${esc(b.text ?? '')}" loading="lazy">
+</button>`;
+
+export function galerieGitter({ titel, text, bilder = [], spalten = 3, tief = false }) {
+  if (bilder.length < GALERIE_MIN)
+    throw new Error(`galerieGitter: ${bilder.length} Bilder — unter ${GALERIE_MIN} `
+      + 'ist das kein Raster. Dafür ist galerieCollage da.');
+  const id = 'gal' + Math.random().toString(36).slice(2, 7);
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}" id="galerie">
+  ${schale(`<div class="stapel-3 kopf-eng" style="margin-bottom:var(--a-4)">
+      ${wenn(titel, () => `<h2>${esc(titel)}</h2>`)}
+      ${wenn(text, () => `<p class="lead lead--zwei">${esc(kuerze(text, 150))}</p>`)}
+    </div>
+    <div class="galerie-gitter" data-galerie id="${id}" style="--spalten:${spalten}">
+      ${bilder.map(galerieBild).join('')}
+    </div>`)}
+</section>`;
+}
+
+export function galerieZiehharmonika({ titel, text, arbeiten = [], tief = false }) {
+  if (arbeiten.length < 3)
+    throw new Error(`galerieZiehharmonika: ${arbeiten.length} Arbeiten — unter 3 `
+      + 'gibt es nichts zum Aufklappen.');
+  if (arbeiten.length > 7)
+    throw new Error(`galerieZiehharmonika: ${arbeiten.length} Arbeiten — über 7 `
+      + 'werden die geschlossenen Felder zu schmal zum Lesen.');
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(`<div class="stapel-3 kopf-eng" style="margin-bottom:var(--a-4)">
+      ${wenn(titel, () => `<h2>${esc(titel)}</h2>`)}
+      ${wenn(text, () => `<p class="lead lead--zwei">${esc(kuerze(text, 150))}</p>`)}
+    </div>
+    <ul class="ziehharmonika" data-ziehharmonika>
+      ${arbeiten.map((a, i) => `<li${i === 0 ? ' data-auf' : ''} tabindex="0">
+        <img src="${esc(a.pfad)}" alt="${esc(a.titel)}" loading="lazy">
+        <div class="ziehharmonika__in">
+          <span class="ziehharmonika__quer">${esc(a.titel)}</span>
+          <div class="ziehharmonika__offen">
+            ${wenn(a.marke, () => `<span class="plakette plakette--hell">${esc(a.marke)}</span>`)}
+            <h3>${esc(a.titel)}</h3>
+            ${wenn(a.text, () => `<p>${esc(kuerze(a.text, 150))}</p>`)}
+          </div>
+        </div>
+      </li>`).join('')}
+    </ul>`)}
+</section>`;
+}
+
+export function galerieReihe({ titel, text, karten = [], tief = false }) {
+  if (karten.length < 3)
+    throw new Error(`galerieReihe: ${karten.length} Karten — unter 3 lohnt kein Schieber.`);
+  const id = 'greihe' + Math.random().toString(36).slice(2, 7);
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(`<div class="reihe__kopf">
+      <div class="stapel-3 kopf-eng">
+        ${wenn(titel, () => `<h2>${esc(titel)}</h2>`)}
+        ${wenn(text, () => `<p class="lead lead--zwei">${esc(kuerze(text, 150))}</p>`)}
+      </div>
+      <div class="reihe__knoepfe">
+        <button class="buehne__knopf" type="button" data-reihe-zurueck="${id}"
+          aria-label="Zurück">${zeichen('pfeillinks')}</button>
+        <button class="buehne__knopf" type="button" data-reihe-vor="${id}"
+          aria-label="Weiter">${zeichen('pfeilrechts')}</button>
+      </div>
+    </div>`)}
+  <div class="reihe" id="${id}" tabindex="0" role="group" aria-label="Arbeiten, waagerecht blätterbar">
+    <div class="reihe__spur">
+      ${karten.map((k) => `<figure class="reihe__karte galerie__karte">
+        <img src="${esc(k.pfad)}" alt="${esc(k.titel)}" loading="lazy">
+        <div class="reihe__in">
+          ${wenn(k.marke, () => `<p class="galerie__marke">${esc(k.marke)}</p>`)}
+          <h3>${esc(k.titel)}</h3>
+        </div>
+        ${wenn(k.href, () => `<a class="reihe__pfeil" href="${esc(k.href)}"
+          aria-label="Mehr zu ${esc(k.titel)}">${zeichen('pfeilauf')}</a>`)}
+      </figure>`).join('')}
+    </div>
+  </div>
+</section>`;
+}
+
+export function galerieCollage({ titel, text, knoepfe = [], bilder = [], tief = false }) {
+  if (bilder.length < 2 || bilder.length > 3)
+    throw new Error(`galerieCollage: ${bilder.length} Bilder — die Collage trägt zwei oder drei.`);
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(`<div class="collage">
+    <div class="stapel-3">
+      <h2>${esc(titel)}</h2>
+      ${wenn(text, () => `<p class="lead lead--zwei">${esc(kuerze(text, 170))}</p>`)}
+      ${wenn(knoepfe.length, () => `<div class="knopfreihe">${knoepfe.map(knopf).join('')}</div>`)}
+    </div>
+    <div class="collage__bilder" data-anzahl="${bilder.length}">
+      ${bilder.map((b, i) => `<img src="${esc(b.pfad)}" alt="${esc(b.text ?? '')}"
+        style="--nr:${i}" loading="lazy">`).join('')}
+    </div>
+  </div>`)}
+</section>`;
+}
+
+export function galerieVorherNachher({ titel, text, paare = [], tief = false }) {
+  if (!paare.length) throw new Error('galerieVorherNachher braucht mindestens ein Paar.');
+  const fehlt = paare.filter((p) => !p.vorher || !p.nachher).length;
+  if (fehlt) throw new Error(`galerieVorherNachher: ${fehlt} Paar(e) ohne Vorher oder Nachher. `
+    + 'Ein Vergleich braucht zwei Bilder.');
+  return `
+<section class="abschnitt ${wenn(tief, 'abschnitt--tief')}">
+  ${schale(`<div class="stapel-3 kopf-eng" style="margin-bottom:var(--a-4)">
+      ${wenn(titel, () => `<h2>${esc(titel)}</h2>`)}
+      ${wenn(text, () => `<p class="lead lead--zwei">${esc(kuerze(text, 150))}</p>`)}
+    </div>
+    <div class="vergleiche">
+      ${paare.map((p) => `<figure class="vergleich" data-vergleich style="--stand:50%">
+        <!-- Eigene Fläche für die Bilder: Mit inset:0 auf der ganzen Figur
+             lag das Vorher-Bild auch über der Bildunterschrift. -->
+        <div class="vergleich__flaeche">
+          <img class="vergleich__nachher" src="${esc(p.nachher)}" alt="${esc(p.titel ?? '')} nachher" loading="lazy">
+          <div class="vergleich__vorher"><img src="${esc(p.vorher)}" alt="${esc(p.titel ?? '')} vorher" loading="lazy"></div>
+          <span class="vergleich__linie" aria-hidden="true"></span>
+          <span class="vergleich__marke vergleich__marke--links">vorher</span>
+          <span class="vergleich__marke vergleich__marke--rechts">nachher</span>
+          <input class="vergleich__regler" type="range" min="0" max="100" value="50"
+            aria-label="${esc(p.titel ?? 'Vergleich')}: Vorher und Nachher vergleichen">
+        </div>
+        ${wenn(p.titel, () => `<figcaption>${esc(p.titel)}</figcaption>`)}
+      </figure>`).join('')}
+    </div>`)}
+</section>`;
+}
+
+export const GALERIE_SKRIPT = `
+<script>
+(function () {
+  /* ── Großansicht ──────────────────────────────────────────────
+     Kein Übergang mit geteiltem Element wie in React — das wären
+     achtzig Zeilen FLIP-Rechnerei. Auf- und Zublenden mit leichter
+     Vergrößerung sieht fast gleich aus und kann nicht brechen. */
+  var schau = null, bilder = [], nr = 0;
+
+  function bau() {
+    if (schau) return schau;
+    schau = document.createElement('div');
+    schau.className = 'grossansicht';
+    schau.hidden = true;
+    schau.innerHTML =
+      '<button class="grossansicht__zu" type="button" aria-label="Schließen">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>' +
+      '<button class="grossansicht__pfeil grossansicht__pfeil--links" type="button" aria-label="Vorheriges Bild">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6l6 6"/></svg></button>' +
+      '<figure><img alt=""><figcaption></figcaption></figure>' +
+      '<button class="grossansicht__pfeil grossansicht__pfeil--rechts" type="button" aria-label="Nächstes Bild">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6l-6 6"/></svg></button>';
+    document.body.appendChild(schau);
+    schau.addEventListener('click', function (e) {
+      if (e.target === schau || e.target.closest('.grossansicht__zu')) zu();
+      if (e.target.closest('.grossansicht__pfeil--links')) blaettere(-1);
+      if (e.target.closest('.grossansicht__pfeil--rechts')) blaettere(1);
+    });
+    return schau;
+  }
+
+  function zeige(i) {
+    nr = (i + bilder.length) % bilder.length;
+    var k = bilder[nr];
+    var b = bau();
+    b.querySelector('img').src = k.getAttribute('data-gross');
+    b.querySelector('img').alt = k.getAttribute('data-text') || '';
+    var bu = b.querySelector('figcaption');
+    bu.textContent = k.getAttribute('data-text') || '';
+    bu.hidden = !k.getAttribute('data-text');
+    b.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+  function blaettere(r) { if (bilder.length > 1) zeige(nr + r); }
+  function zu() { if (schau) schau.hidden = true; document.body.style.overflow = ''; }
+
+  document.querySelectorAll('[data-galerie]').forEach(function (g) {
+    g.addEventListener('click', function (e) {
+      var k = e.target.closest('[data-bild]');
+      if (!k) return;
+      bilder = [].slice.call(g.querySelectorAll('[data-bild]'));
+      zeige(bilder.indexOf(k));
+    });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (!schau || schau.hidden) return;
+    if (e.key === 'Escape') zu();
+    if (e.key === 'ArrowLeft') blaettere(-1);
+    if (e.key === 'ArrowRight') blaettere(1);
+  });
+
+  /* ── Ziehharmonika: Überfahren reicht am Rechner nicht, auf dem
+     Handy braucht es einen Fingertipp. ────────────────────────── */
+  document.querySelectorAll('[data-ziehharmonika]').forEach(function (z) {
+    var felder = [].slice.call(z.children);
+    function auf(el) { felder.forEach(function (f) { f.toggleAttribute('data-auf', f === el); }); }
+    felder.forEach(function (f) {
+      f.addEventListener('mouseenter', function () { auf(f); });
+      f.addEventListener('click', function () { auf(f); });
+      f.addEventListener('focus', function () { auf(f); });
+    });
+  });
+
+  /* ── Vorher und Nachher ─────────────────────────────────────── */
+  document.querySelectorAll('[data-vergleich]').forEach(function (v) {
+    var regler = v.querySelector('.vergleich__regler');
+    function stand() { v.style.setProperty('--stand', regler.value + '%'); }
+    regler.addEventListener('input', stand);
+    stand();
+  });
+})();
+</script>`;

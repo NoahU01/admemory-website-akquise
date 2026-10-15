@@ -33,7 +33,7 @@
           "wann": "Der betonte Knopf für Kopfbereiche.",
           "grenzen": "Nur einmal je Seite, sonst verliert er seine Wirkung. Nur 12 von 49 vermessenen Knöpfen auf den Vorbildseiten waren überhaupt vollrund.",
           "bild": "assets/bibliothek/knopfPille.jpg",
-          "bytes": 20896,
+          "bytes": 20897,
           "seite": "_bib/knopfPille.html"
         }
       ]
@@ -70,7 +70,7 @@
           "wann": "Über einem großen Bild. Die Leiste steht als Karte mit Abstand zum Rand.",
           "grenzen": "Auf dunklem Grund wird sie durchscheinend mit Unschärfe dahinter. Braucht ein Bild, sonst schwebt sie über nichts.",
           "bild": "assets/bibliothek/navSchwebend.jpg",
-          "bytes": 32713,
+          "bytes": 32920,
           "seite": "_bib/navSchwebend.html"
         },
         {
@@ -79,7 +79,7 @@
           "wann": "Wenn die Seite oben ein Bild oder einen dunklen Abschnitt hat. Der Balken schwebt mit Abstand zum Rand, wie auf admemory.de.",
           "grenzen": "Braucht einen hellen Knopf — ein Umrissknopf verschwindet auf dem dunklen Balken, deshalb bricht der Baustein ohne Knopf ab. Ein Menüpunkt darf einen Ausklapp-Pfeil tragen.",
           "bild": "assets/bibliothek/navDunkel.jpg",
-          "bytes": 28446,
+          "bytes": 28434,
           "seite": "_bib/navDunkel.html"
         },
         {
@@ -126,7 +126,7 @@
           "wann": "Erste Wahl. Trägt jedes Gewerbe und kommt mit einem einzigen Querformat aus.",
           "grenzen": "Braucht ein Bild im Breitformat. Die Logoleiste darunter läuft und sitzt auf der Breite der Navigation; unter acht Logos wird die Liste wiederholt, sonst klafft eine Lücke.",
           "bild": "assets/bibliothek/heroMitte.jpg",
-          "bytes": 129345,
+          "bytes": 129365,
           "seite": "_bib/heroMitte.html"
         },
         {
@@ -135,7 +135,7 @@
           "name": "Geteilt mit Merkmalen",
           "grenzen": "Die Merkmale brauchen Zeichen aus ZEICHEN. Bei nur einem Merkmal wirkt die Spalte leer.",
           "bild": "assets/bibliothek/heroGeteilt.jpg",
-          "bytes": 204463,
+          "bytes": 204432,
           "seite": "_bib/heroGeteilt.html"
         },
         {
@@ -144,7 +144,7 @@
           "wann": "Für Praxis, Kanzlei und Handwerk. Links Überschrift mit Hakenliste, rechts eine Karte mit Bild und einem Satz, darunter Anschrift, Zeiten und Telefon.",
           "grenzen": "Braucht die Hakenliste, sonst ist es heroGeteilt. Die Leiste ist der eigentliche Gewinn — wer einen Betrieb sucht, will Adresse und Zeiten sehen, bevor er scrollt.",
           "bild": "assets/bibliothek/heroKarte.jpg",
-          "bytes": 157711,
+          "bytes": 157687,
           "seite": "_bib/heroKarte.html"
         },
         {
@@ -172,7 +172,7 @@
           "wann": "Erste Wahl, sobald ein brauchbares Foto vom Betrieb da ist. Gibt es hell und dunkel.",
           "grenzen": "Drei bis neun Kacheln. Auf der Bildkarte steht die Bewertung groß: Note, Sterne, Anzahl. Ohne Note bleibt die Anzahl, geraten wird nichts.",
           "bild": "assets/bibliothek/vertrauenDuo.jpg",
-          "bytes": 106350,
+          "bytes": 106315,
           "seite": "_bib/vertrauenDuo.html"
         },
         {
@@ -236,7 +236,7 @@
           "wann": "Wenn es zu den Stimmen harte Zahlen gibt — Dauer, Ersparnis, Jahre. Die Zahl trägt die Karte, das Zitat belegt sie.",
           "grenzen": "Braucht Bilder und mindestens drei Stimmen. Ohne Kennzahl rücken die Sterne an ihre Stelle; ohne beides ist es die falsche Fassung.",
           "bild": "assets/bibliothek/stimmenReihe.jpg",
-          "bytes": 194717,
+          "bytes": 194704,
           "seite": "_bib/stimmenReihe.html"
         }
       ]
@@ -257,6 +257,61 @@
           "bild": "assets/bibliothek/terminAnfrage.jpg",
           "bytes": 87954,
           "seite": "_bib/terminAnfrage.html"
+        }
+      ]
+    },
+    {
+      "id": "galerie",
+      "icon": "galerie",
+      "name": "Bildergalerie",
+      "seite": "_galerie",
+      "zweck": "Referenzen zeigen. Fünf Fassungen vom Mauerwerk-Raster bis zum Vorher-Nachher-Regler.",
+      "bausteine": [
+        {
+          "id": "galerieGitter",
+          "name": "Mauerwerk mit Großansicht",
+          "erste": true,
+          "wann": "Erste Wahl. Unterschiedlich hohe Bilder greifen ineinander, ein Klick öffnet groß — mit Pfeilen, Escape und Klick daneben.",
+          "grenzen": "Unter sechs Bildern bricht der Baustein ab; dafür ist die Collage da. Die Großansicht blendet auf und vergrößert leicht — kein Übergang mit geteiltem Element, das wäre achtzig Zeilen Rechnerei für wenige Pixel Unterschied.",
+          "bild": "assets/bibliothek/galerieGitter.jpg",
+          "bytes": 239303,
+          "seite": "_bib/galerieGitter.html"
+        },
+        {
+          "id": "galerieZiehharmonika",
+          "name": "Ziehharmonika",
+          "wann": "Für fünf bis sieben benannte Arbeiten. Ein Feld breit, die anderen schmal; Überfahren oder Tippen wechselt.",
+          "grenzen": "Drei bis sieben Arbeiten, darüber werden die geschlossenen Felder zu schmal. Die senkrechte Beschriftung trägt einen Schatten, weil sie auf hellen wie dunklen Fotos stehen muss.",
+          "bild": "assets/bibliothek/galerieZiehharmonika.jpg",
+          "bytes": 167435,
+          "seite": "_bib/galerieZiehharmonika.html"
+        },
+        {
+          "id": "galerieReihe",
+          "name": "Schieber mit Karten",
+          "wann": "Wenn die Arbeiten Kategorien haben und einzeln verlinkt werden sollen.",
+          "grenzen": "Teilt sich die Mechanik mit stimmenReihe — dieselbe Spur, andere Karteninhalte. Mindestens drei Karten.",
+          "bild": "assets/bibliothek/galerieReihe.jpg",
+          "bytes": 162865,
+          "seite": "_bib/galerieReihe.html"
+        },
+        {
+          "id": "galerieCollage",
+          "name": "Collage als Anreißer",
+          "wann": "Auf der Startseite, wenn die eigentliche Galerie eine Unterseite ist. Text links, versetzte Bilder rechts, Knopf zur Galerie.",
+          "grenzen": "Zwei oder drei Bilder, nicht mehr — sonst ist es ein Raster und keine Collage.",
+          "bild": "assets/bibliothek/galerieCollage.jpg",
+          "bytes": 112391,
+          "seite": "_bib/galerieCollage.html"
+        },
+        {
+          "id": "galerieVorherNachher",
+          "name": "Vorher und nachher",
+          "wann": "Sanierung, Dach, Fassade, Malerarbeiten. Das überzeugendste Format, das es für Handwerk gibt.",
+          "grenzen": "Jedes Paar braucht zwei Bilder, sonst bricht es ab. Die beiden Aufnahmen müssen denselben Ausschnitt zeigen — sonst vergleicht der Regler nichts.",
+          "bild": "assets/bibliothek/galerieVorherNachher.jpg",
+          "bytes": 132452,
+          "seite": "_bib/galerieVorherNachher.html"
         }
       ]
     },
@@ -283,7 +338,7 @@
           "wann": "Bei sehr vielen Leistungen oder wenn alle gleich wichtig sind.",
           "grenzen": "Spaltenzahl einstellbar, Icon im Kreis oder im Kasten. Lässt keinen Eintrag weg. Karten heben sich beim Überfahren an.",
           "bild": "assets/bibliothek/leistungen.jpg",
-          "bytes": 103690,
+          "bytes": 103668,
           "seite": "_bib/leistungen.html"
         }
       ]

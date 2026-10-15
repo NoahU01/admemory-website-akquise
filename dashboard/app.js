@@ -39,6 +39,7 @@ const ICONS = {
   /* Für den Aufklapper an den Bibliothekskarten. */
   buch:       'M4 5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2zM4 19a2 2 0 0 1 2-2h13v4H6a2 2 0 0 1-2-2z',
   bibliothek: 'M4 5a2 2 0 0 1 2-2h4v18H6a2 2 0 0 1-2-2zM10 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M18 6l2 12',
+  galerie:    'M3 6h18v12H3zM3 14l4-4l4 4l3-3l7 7M8.5 9.5h.01',
   band:       'M3 7h18v5H3zM6 16h12M8 20h8',
   navigation: 'M3 6h18M3 12h12M3 18h18M19 12h2',
   knopf:      'M3 9a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3zM8.5 12h7',

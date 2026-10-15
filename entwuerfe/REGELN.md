@@ -246,3 +246,17 @@ Muster von zehn der zwölf vermessenen Vorbildseiten.
 
 `navSchlicht` sieht aufgeräumt aus, lässt aber keinen Weg zum Termin. Nur
 nehmen, wenn der Kopfbereich diese Aufgabe übernimmt.
+
+## Text auf Fotos wird abgesichert, nicht gemessen
+
+Was über einem Bild steht, lässt sich nicht nachrechnen — das Foto kann
+hell oder dunkel sein. Solche Stellen bekommen einen Verlauf oder einen
+Schatten, damit sie in jedem Fall lesbar bleiben. `pruefen.mjs` meldet sie
+als „nicht messbar" statt einen Kontrastwert zu erfinden.
+
+## Galerien brauchen Bilder, Vergleiche brauchen Paare
+
+Unter sechs Bildern ist ein Mauerwerk-Raster kein Raster — dann nimmt der
+Agent die Collage. Ein Vorher-Nachher-Vergleich braucht zwei Aufnahmen
+desselben Ausschnitts; mit zwei verschiedenen Motiven vergleicht der
+Regler nichts.

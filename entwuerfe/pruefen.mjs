@@ -54,12 +54,33 @@ for (const breite of [1400, 390]) {
         const lage = alsRgba(st.backgroundColor);
         if (lage[3] > 0) { lagen.push(lage); if (lage[3] >= .999) break; }
       }
+      /* Wurde keine deckende Lage gefunden, steht der Text über etwas,
+         das diese Rechnung nicht kennt — ein Bildelement zum Beispiel.
+         Dann wird Weiß angenommen, und das ist geraten. Solche Stellen
+         kommen unter "nicht messbar", nicht unter "zu wenig Kontrast":
+         Ein geratener Fehlalarm ist schlimmer als keine Angabe. */
+      const sicher = lagen.some((l) => l[3] >= .999);
+      /* Liegt ein Bildelement unter dem Text, ist der Grund unbekannt —
+         egal was weiter oben an Farben steht. Das passiert überall dort,
+         wo Text auf einem Foto sitzt; die Ziehharmonika war der Fall,
+         der es ans Licht brachte. */
+      if (!bild) {
+        const tr = el.getBoundingClientRect();
+        for (let e = el.parentElement; e && e !== document.documentElement; e = e.parentElement) {
+          for (const im of e.querySelectorAll(':scope > img')) {
+            const ir = im.getBoundingClientRect();
+            if (ir.width && ir.left <= tr.left + 1 && ir.right >= tr.right - 1
+                && ir.top <= tr.top + 1 && ir.bottom >= tr.bottom - 1) { bild = true; break; }
+          }
+          if (bild) break;
+        }
+      }
       let [R, G, B] = [255, 255, 255];
       for (let i = lagen.length - 1; i >= 0; i--) {
         const [r, g, b, a] = lagen[i];
         R = r * a + R * (1 - a); G = g * a + G * (1 - a); B = b * a + B * (1 - a);
       }
-      return { rgb: [R, G, B], bild };
+      return { rgb: [R, G, B], bild: bild || !sicher };
     };
 
     const schlecht = [], unmessbar = [];
@@ -68,7 +89,15 @@ for (const breite of [1400, 390]) {
       const txt = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent.trim()).join(' ').trim();
       if (!txt) continue;
       const s = getComputedStyle(el);
-      if (s.visibility === 'hidden' || s.display === 'none' || +s.opacity < .1) continue;
+      if (s.visibility === 'hidden' || s.display === 'none') continue;
+      /* Durchsichtigkeit vererbt sich in der Darstellung, nicht im
+         berechneten Wert: Ein Text in einem Elternteil mit opacity:0 hat
+         selbst opacity:1. Ohne diese Kette hat der Prüfer unsichtbaren
+         Text gemessen — die zugeklappten Felder der Ziehharmonika. */
+      let deckkraft = 1;
+      for (let e = el; e && e !== document.documentElement; e = e.parentElement)
+        deckkraft *= +getComputedStyle(e).opacity;
+      if (deckkraft < .1) continue;
       const r = el.getBoundingClientRect(); if (!r.width || !r.height) continue;
       const g = grund(el);
       const a = lum(alsRgba(s.color)), b = lum(g.rgb);

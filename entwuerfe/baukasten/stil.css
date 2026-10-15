@@ -1199,3 +1199,139 @@ img[data-einfarbig]{filter:brightness(0)}
 /* Heller Knopf: der Gegenpart zum gefüllten auf hellem Grund. */
 .knopf--hell{background:#fff;color:var(--tief);border-color:#fff}
 .knopf--hell:hover{background:rgba(255,255,255,.88)}
+
+/* ══ Bildergalerie ═══════════════════════════════════════════════ */
+
+/* Mauerwerk: Spalten statt Raster, damit unterschiedlich hohe Bilder
+   ohne Lücken ineinandergreifen. */
+.galerie-gitter{column-count:1;column-gap:.9rem}
+@media(min-width:620px){.galerie-gitter{column-count:2}}
+@media(min-width:980px){.galerie-gitter{column-count:var(--spalten,3)}}
+.galerie__bild{all:unset;cursor:zoom-in;display:block;break-inside:avoid;
+  margin-bottom:.9rem;border-radius:12px;overflow:hidden;position:relative}
+.galerie__bild img{display:block;width:100%;height:auto;
+  transition:transform .35s ease,filter .35s ease}
+.galerie__bild::after{content:"";position:absolute;inset:0;background:rgba(10,14,20,0);
+  transition:background .25s}
+.galerie__bild:hover img{transform:scale(1.03)}
+.galerie__bild:hover::after{background:rgba(10,14,20,.1)}
+.galerie__bild:focus-visible{outline:3px solid var(--akzent);outline-offset:3px}
+
+/* Großansicht */
+.grossansicht{position:fixed;inset:0;z-index:80;display:flex;align-items:center;
+  justify-content:center;gap:.8rem;padding:clamp(1rem,4vw,2.5rem);
+  background:rgba(8,12,18,.88);backdrop-filter:blur(14px);
+  animation:grossAuf .2s ease}
+@keyframes grossAuf{from{opacity:0}to{opacity:1}}
+.grossansicht figure{margin:0;display:flex;flex-direction:column;align-items:center;
+  gap:.8rem;max-width:100%;max-height:100%;animation:grossRein .25s cubic-bezier(.2,.9,.3,1)}
+@keyframes grossRein{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+.grossansicht img{max-width:min(100%,1200px);max-height:82vh;width:auto;height:auto;
+  border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.grossansicht figcaption{color:rgba(255,255,255,.88);font-size:var(--t-s);text-align:center}
+.grossansicht__zu{position:absolute;top:clamp(1rem,3vw,1.6rem);right:clamp(1rem,3vw,1.6rem)}
+.grossansicht__zu,.grossansicht__pfeil{all:unset;cursor:pointer;flex:none;
+  width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(255,255,255,.14);transition:background .15s,transform .15s}
+.grossansicht__zu:hover,.grossansicht__pfeil:hover{background:rgba(255,255,255,.26);transform:scale(1.05)}
+.grossansicht__zu svg,.grossansicht__pfeil svg{width:1.2rem;height:1.2rem;
+  stroke:#fff;fill:none;stroke-width:1.8}
+.grossansicht__zu:focus-visible,.grossansicht__pfeil:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media(max-width:620px){.grossansicht__pfeil{display:none}}
+@media(prefers-reduced-motion:reduce){
+  .grossansicht,.grossansicht figure{animation:none}
+  .galerie__bild img{transition:none}
+}
+
+/* ── Ziehharmonika ──────────────────────────────────────────────── */
+.ziehharmonika{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;
+  gap:.6rem;height:34rem}
+@media(min-width:860px){.ziehharmonika{flex-direction:row}}
+.ziehharmonika li{position:relative;overflow:hidden;border-radius:16px;cursor:pointer;
+  flex:1;min-width:0;min-height:0;isolation:isolate;
+  transition:flex .6s cubic-bezier(.25,1,.5,1),filter .6s}
+.ziehharmonika li[data-auf]{flex:4.5}
+.ziehharmonika li:not([data-auf]){filter:brightness(.48) saturate(.9)}
+.ziehharmonika li:not([data-auf]):hover{filter:brightness(.75)}
+.ziehharmonika img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  z-index:-2;transition:transform .9s ease}
+.ziehharmonika li:not([data-auf]) img{transform:scale(1.12)}
+.ziehharmonika li::after{content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,transparent 40%,rgba(10,14,20,.82));
+  opacity:0;transition:opacity .5s}
+.ziehharmonika li[data-auf]::after{opacity:1}
+.ziehharmonika__in{position:absolute;inset:0;display:flex;flex-direction:column;
+  justify-content:flex-end;padding:var(--a-3);color:#fff}
+/* Der Schatten ist nicht Zierde: Die Beschriftung steht auf einem Foto,
+   das hell oder dunkel sein kann. Ohne ihn verschwindet sie auf hellen
+   Aufnahmen — nachmessen lässt sich das nicht, also wird es abgesichert. */
+.ziehharmonika__quer{font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  font-size:var(--t-s);transition:opacity .3s;white-space:nowrap;
+  text-shadow:0 1px 8px rgba(8,12,18,.9),0 0 2px rgba(8,12,18,.6)}
+@media(min-width:860px){.ziehharmonika__quer{writing-mode:vertical-rl;
+  position:absolute;left:50%;bottom:var(--a-3);transform:translateX(-50%)}}
+.ziehharmonika li[data-auf] .ziehharmonika__quer{opacity:0}
+.ziehharmonika__offen{opacity:0;transform:translateY(14px);
+  transition:opacity .4s .15s,transform .4s .15s}
+.ziehharmonika li[data-auf] .ziehharmonika__offen{opacity:1;transform:none}
+.ziehharmonika__offen h3{color:#fff;font-size:clamp(1.3rem,2.6vw,2rem);margin-top:.5rem}
+.ziehharmonika__offen p{color:rgba(255,255,255,.84);font-size:var(--t-s);
+  margin-top:.5rem;max-width:34ch}
+.ziehharmonika li:focus-visible{outline:3px solid var(--akzent);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){
+  .ziehharmonika li,.ziehharmonika img,.ziehharmonika__offen{transition:none}
+}
+
+/* ── Karten im Schieber ─────────────────────────────────────────── */
+.galerie__karte .reihe__in{background:linear-gradient(180deg,rgba(10,14,20,0) 0%,
+  rgba(10,14,20,.5) 40%,rgba(10,14,20,.88) 100%)}
+.galerie__marke{font-size:var(--t-xs);text-transform:uppercase;letter-spacing:.07em;
+  color:rgba(255,255,255,.78);margin:0 0 .35rem}
+.galerie__karte h3{color:#fff;font-size:clamp(1.15rem,2.2vw,1.6rem);line-height:1.2}
+
+/* ── Collage ────────────────────────────────────────────────────── */
+.collage{display:grid;gap:var(--a-4);align-items:center}
+@media(min-width:900px){.collage{grid-template-columns:1fr 1fr;gap:var(--a-5)}}
+.collage__bilder{position:relative;display:grid;gap:var(--a-3)}
+.collage__bilder img{width:100%;border-radius:16px;display:block;
+  box-shadow:0 18px 50px rgba(17,22,29,.16)}
+@media(min-width:620px){
+  /* Versetzt statt untereinander: Zwei gleich große Bilder nebeneinander
+     wirken wie ein Raster, versetzt wie eine Collage. */
+  .collage__bilder{grid-template-columns:repeat(2,1fr)}
+  .collage__bilder img:nth-child(1){grid-row:span 2;aspect-ratio:3/4;object-fit:cover}
+  .collage__bilder img:nth-child(2){margin-top:var(--a-4);aspect-ratio:4/3;object-fit:cover}
+  .collage__bilder img:nth-child(3){aspect-ratio:4/3;object-fit:cover}
+  .collage__bilder[data-anzahl="2"] img:nth-child(2){margin-top:var(--a-5)}
+}
+
+/* ── Vorher und Nachher ─────────────────────────────────────────── */
+.vergleiche{display:grid;gap:var(--a-4)}
+@media(min-width:900px){.vergleiche{grid-template-columns:repeat(2,1fr)}}
+.vergleich{margin:0;border-radius:14px;overflow:hidden;background:var(--gedaempft)}
+.vergleich__flaeche{position:relative;aspect-ratio:4/3;overflow:hidden;isolation:isolate}
+.vergleich__flaeche img{display:block;width:100%;height:100%;object-fit:cover}
+.vergleich__nachher{position:absolute;inset:0;z-index:0}
+/* Das Vorher-Bild liegt darüber und wird auf die Reglerstellung
+   beschnitten. clip-path statt Breite, damit das Bild nicht gestaucht
+   wird — sonst verzerrt der Vergleich, was er zeigen soll. */
+.vergleich__vorher{position:absolute;inset:0;z-index:1;overflow:hidden;
+  clip-path:inset(0 calc(100% - var(--stand)) 0 0)}
+.vergleich__linie{position:absolute;z-index:2;top:0;bottom:0;left:var(--stand);width:2px;
+  background:#fff;box-shadow:0 0 0 1px rgba(10,14,20,.25);pointer-events:none}
+.vergleich__linie::after{content:"";position:absolute;top:50%;left:50%;
+  width:34px;height:34px;border-radius:50%;background:#fff;
+  transform:translate(-50%,-50%);box-shadow:0 2px 10px rgba(10,14,20,.35)}
+.vergleich__marke{position:absolute;z-index:3;top:.7rem;font-size:var(--t-xs);font-weight:600;
+  text-transform:uppercase;letter-spacing:.06em;color:#fff;
+  background:rgba(10,14,20,.6);padding:.2rem .6rem;border-radius:999px;
+  backdrop-filter:blur(4px);pointer-events:none}
+.vergleich__marke--links{left:.7rem}
+.vergleich__marke--rechts{right:.7rem}
+.vergleich__regler{position:absolute;z-index:4;inset:0;width:100%;height:100%;margin:0;
+  opacity:0;cursor:ew-resize}
+.vergleich:focus-within .vergleich__linie{box-shadow:0 0 0 3px var(--akzent)}
+.vergleich figcaption{padding:var(--a-2) var(--a-3);font-size:var(--t-s);
+  font-weight:600;background:var(--grund)}
+.auf-dunkel .vergleich figcaption,.abschnitt--tief .vergleich figcaption{
+  background:color-mix(in srgb,#fff 7%,transparent);color:#fff}
