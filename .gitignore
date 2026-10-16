@@ -9,3 +9,8 @@ results/
 
 # Vercel-Verknüpfung und das OIDC-Token daraus
 .vercel/
+
+# Fertige Kundenreports. Das Repo ist öffentlich, und ein Report nennt einen
+# Betrieb beim Namen und sagt, was an seiner Seite nicht stimmt. Das gehört
+# nicht auf GitHub. Gebaut wird mit  node kundenreport.mjs --alle
+entwuerfe/report/
