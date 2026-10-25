@@ -25,13 +25,16 @@ const ZIEL = 'entwuerfe/report';
 const ABSENDER = {
   firma: 'AdMemory',
   person: process.env.ABSENDER_PERSON || 'Noah Hermanns',
+  rolle: process.env.ABSENDER_ROLLE || 'Geschäftsführer AdMemory',
   ort: process.env.ABSENDER_ORT || 'Ilshofen',
   telefon: process.env.ABSENDER_TELEFON || null,
   email: process.env.ABSENDER_EMAIL || null,
+  termin: process.env.ABSENDER_TERMIN || null,   // Link zur Terminbuchung
   web: 'admemory.de',
 };
-if (!ABSENDER.telefon && !ABSENDER.email)
-  console.log('⚠  Kein ABSENDER_TELEFON und keine ABSENDER_EMAIL in der .env — der Report geht ohne Kontaktzeile raus.\n');
+if (!ABSENDER.termin && !ABSENDER.telefon && !ABSENDER.email)
+  console.log('⚠  Weder ABSENDER_TERMIN noch ABSENDER_TELEFON noch ABSENDER_EMAIL in der .env —\n'
+    + '   der Knopf "Gespräch vereinbaren" hat kein Ziel und wird weggelassen.\n');
 
 const normHost = (u) => { try { return new URL(/^https?:\/\//i.test(u) ? u : 'https://' + u).hostname.replace(/^www\./, ''); } catch { return u; } };
 
@@ -72,14 +75,16 @@ function bildAblegen(quelle, ziel, kante, guete = 78) {
   return path.basename(path.dirname(ziel)) + '/' + path.basename(ziel);
 }
 
-/* Unser eigenes Logo liegt einmal neben den Reports, nicht in jedem Ordner.
-   Bei 500 Reports wären das sonst 500 Kopien derselben Datei. */
-const LOGO_QUELLE = 'entwuerfe/baukasten/beispiel-bilder/marken/admemory.png';
-let logoPfad = null;
-if (fs.existsSync(LOGO_QUELLE)) {
+/* Das Logo zeichnet die Seite selbst als SVG — keine Datei, druckt scharf.
+   Das Porträt liegt einmal neben den Reports, nicht in jedem Ordner: Bei 500
+   Reports wären das sonst 500 Kopien derselben Datei. */
+const PORTRAET_QUELLE = 'entwuerfe/baukasten/beispiel-bilder/noah.webp';
+let portraetPfad = null;
+if (fs.existsSync(PORTRAET_QUELLE)) {
   fs.mkdirSync(ZIEL, { recursive: true });
-  fs.copyFileSync(LOGO_QUELLE, path.join(ZIEL, 'admemory.png'));
-  logoPfad = '../admemory.png';
+  execFileSync('sips', ['-Z', '160', '-s', 'format', 'jpeg', '-s', 'formatOptions', '85',
+    PORTRAET_QUELLE, '--out', path.join(ZIEL, 'absender.jpg')], { stdio: 'ignore' });
+  portraetPfad = '../absender.jpg';
 }
 
 let gebaut = 0;
@@ -94,7 +99,7 @@ for (const host of hosts) {
 
   const bilder = {
     mobil: bildAblegen(path.join('results', host, 'mobile.png'), path.join(ordner, 'bilder', 'handy.jpg'), 560),
-    logo: logoPfad,   // einmal für alle, nicht einmal je Report
+    portraet: portraetPfad,   // einmal für alle, nicht einmal je Report
   };
 
   const html = kundenreport({ scan, betrieb: stamm.get(host) || {}, bilder, absender: ABSENDER });
