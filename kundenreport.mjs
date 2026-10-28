@@ -23,6 +23,10 @@ import { db, dbAktiv } from './lib/db.mjs';
 const args = process.argv.slice(2);
 const flag = (n, d) => { const a = args.find((x) => x.startsWith(`--${n}=`)); return a ? a.split('=')[1] : d; };
 const ZIEL = 'entwuerfe/report';
+/* --farbe=gruen legt die Fassung in einen eigenen Ordner, damit beide
+   nebeneinander liegen und man sie vergleichen kann. */
+const FARBE = flag('farbe', 'indigo');
+const NACHSATZ = FARBE === 'indigo' ? '' : '-' + FARBE;
 
 const ABSENDER = {
   firma: 'AdMemory',
@@ -105,7 +109,7 @@ for (const host of hosts) {
   const scan = JSON.parse(fs.readFileSync(scanDatei, 'utf8'));
   if (scan.error || scan.stufe !== 2) { console.log(`${host.padEnd(34)} übersprungen — Scan unbrauchbar`); continue; }
 
-  const ordner = path.join(ZIEL, host);
+  const ordner = path.join(ZIEL, host + NACHSATZ);
   fs.mkdirSync(path.join(ordner, 'bilder'), { recursive: true });
 
   /* Das Logo des Betriebs von dessen eigener Seite holen. Schlaegt das fehl,
@@ -124,7 +128,8 @@ for (const host of hosts) {
     kundenlogo: kundenlogoPfad,
   };
 
-  const html = kundenreport({ scan, betrieb: stamm.get(host) || {}, bilder, absender: ABSENDER });
+  const html = kundenreport({ scan, betrieb: stamm.get(host) || {}, bilder,
+                              absender: ABSENDER, farbe: FARBE });
   fs.writeFileSync(path.join(ordner, 'index.html'), html);
 
   const kb = Math.round(Buffer.byteLength(html) / 1024);
