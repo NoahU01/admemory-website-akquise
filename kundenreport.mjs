@@ -15,7 +15,9 @@ import 'dotenv/config';
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import puppeteer from 'puppeteer-core';
 import { kundenreport } from './lib/kundenreport.mjs';
+import { kundenlogo } from './lib/kundenlogo.mjs';
 import { db, dbAktiv } from './lib/db.mjs';
 
 const args = process.argv.slice(2);
@@ -27,14 +29,14 @@ const ABSENDER = {
   person: process.env.ABSENDER_PERSON || 'Noah Hermanns',
   rolle: process.env.ABSENDER_ROLLE || 'Geschäftsführer AdMemory',
   ort: process.env.ABSENDER_ORT || 'Ilshofen',
-  telefon: process.env.ABSENDER_TELEFON || null,
-  email: process.env.ABSENDER_EMAIL || null,
-  termin: process.env.ABSENDER_TERMIN || null,   // Link zur Terminbuchung
+  // Die Kontaktdaten stehen so auf admemory.de/kontakt.
+  telefon: process.env.ABSENDER_TELEFON || '+49 171 4157580',
+  email: process.env.ABSENDER_EMAIL || 'kontakt@admemory.de',
+  // Der Buchungslink steckte im JS-Bundle der Kontaktseite, nicht im Quelltext.
+  termin: process.env.ABSENDER_TERMIN || 'https://cal.com/noah-admemory/letstalk',
   web: 'admemory.de',
 };
-if (!ABSENDER.termin && !ABSENDER.telefon && !ABSENDER.email)
-  console.log('⚠  Weder ABSENDER_TERMIN noch ABSENDER_TELEFON noch ABSENDER_EMAIL in der .env —\n'
-    + '   der Knopf "Gespräch vereinbaren" hat kein Ziel und wird weggelassen.\n');
+
 
 const normHost = (u) => { try { return new URL(/^https?:\/\//i.test(u) ? u : 'https://' + u).hostname.replace(/^www\./, ''); } catch { return u; } };
 
@@ -97,9 +99,19 @@ for (const host of hosts) {
   const ordner = path.join(ZIEL, host);
   fs.mkdirSync(path.join(ordner, 'bilder'), { recursive: true });
 
+  /* Das Logo des Betriebs von dessen eigener Seite holen. Schlaegt das fehl,
+     erscheint der Report ohne Logo statt mit einem falschen. */
+  let kundenlogoPfad = null;
+  if (!args.includes('--ohne-logo')) {
+    const l = await kundenlogo(scan.finalUrl || scan.url, path.join(ordner, 'bilder', 'logo.png'), puppeteer);
+    if (l.pfad) kundenlogoPfad = 'bilder/' + path.basename(l.pfad);
+    else console.log(`${' '.repeat(2)}${host.padEnd(32)} ohne Logo: ${l.grund}`);
+  }
+
   const bilder = {
     mobil: bildAblegen(path.join('results', host, 'mobile.png'), path.join(ordner, 'bilder', 'handy.jpg'), 560),
     portraet: portraetPfad,   // einmal für alle, nicht einmal je Report
+    kundenlogo: kundenlogoPfad,
   };
 
   const html = kundenreport({ scan, betrieb: stamm.get(host) || {}, bilder, absender: ABSENDER });
