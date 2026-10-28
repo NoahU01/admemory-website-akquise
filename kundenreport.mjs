@@ -31,7 +31,7 @@ const ABSENDER = {
   ort: process.env.ABSENDER_ORT || 'Ilshofen',
   // Die Kontaktdaten stehen so auf admemory.de/kontakt.
   telefon: process.env.ABSENDER_TELEFON || '+49 171 4157580',
-  email: process.env.ABSENDER_EMAIL || 'kontakt@admemory.de',
+  email: process.env.ABSENDER_EMAIL || 'noah.hermanns@admemory.de',
   // Der Buchungslink steckte im JS-Bundle der Kontaktseite, nicht im Quelltext.
   termin: process.env.ABSENDER_TERMIN || 'https://cal.com/noah-admemory/letstalk',
   web: 'admemory.de',
@@ -89,6 +89,15 @@ if (fs.existsSync(PORTRAET_QUELLE)) {
   portraetPfad = '../absender.jpg';
 }
 
+/* Unsere eigene Marke als Datei, nicht nachgezeichnet. */
+const MARKE_QUELLE = 'lib/marke/admemory-square-logo.png';
+let markePfad = null;
+if (fs.existsSync(MARKE_QUELLE)) {
+  fs.mkdirSync(ZIEL, { recursive: true });
+  fs.copyFileSync(MARKE_QUELLE, path.join(ZIEL, 'admemory.png'));
+  markePfad = '../admemory.png';
+}
+
 let gebaut = 0;
 for (const host of hosts) {
   const scanDatei = path.join('results', host, 'scan.json');
@@ -111,6 +120,7 @@ for (const host of hosts) {
   const bilder = {
     mobil: bildAblegen(path.join('results', host, 'mobile.png'), path.join(ordner, 'bilder', 'handy.jpg'), 560),
     portraet: portraetPfad,   // einmal für alle, nicht einmal je Report
+    marke: markePfad,
     kundenlogo: kundenlogoPfad,
   };
 
