@@ -25,8 +25,10 @@ const flag = (n, d) => { const a = args.find((x) => x.startsWith(`--${n}=`)); re
 const ZIEL = 'entwuerfe/report';
 /* --farbe=gruen legt die Fassung in einen eigenen Ordner, damit beide
    nebeneinander liegen und man sie vergleichen kann. */
-const FARBE = flag('farbe', 'indigo');
-const NACHSATZ = FARBE === 'indigo' ? '' : '-' + FARBE;
+/* Gruen ist der Standard, so hat Noah sich am 12.11.2026 entschieden. Indigo
+   und Lime bleiben ueber --farbe erreichbar. */
+const FARBE = flag('farbe', 'gruen');
+const NACHSATZ = FARBE === 'gruen' ? '' : '-' + FARBE;
 
 const ABSENDER = {
   firma: 'AdMemory',
