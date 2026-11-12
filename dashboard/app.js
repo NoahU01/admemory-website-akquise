@@ -125,6 +125,13 @@ async function ladeListe(veraltet){
         { alle: 'Alle', lohnend: 'Lohnend', voll: 'Vollscan', report: 'Mit Report' }[w] + '</button>').join('') +
       `<span class="treffermenge">${d.gesamt} Treffer</span>` +
     '</div>' +
+    /* Vor einem Gespräch braucht man oft einen Betrieb, der gar nicht in der
+       Liste steht. Ohne das hier müsste man dafür ins Terminal. */
+    '<div class="filter">' +
+      '<input class="feld" id="neu" placeholder="Neuer Betrieb: Adresse einfügen, etwa www.beispiel.de">' +
+      '<button class="tat tat--haupt" id="neuBauen">Scannen und Report bauen</button>' +
+      '<span class="treffermenge" id="neuStand"></span>' +
+    '</div>' +
     '<table class="liste"><thead><tr>' +
       '<th>Betrieb</th><th>Qualität</th><th>Lead</th><th>Größe</th><th></th>' +
     '</tr></thead><tbody>' +
@@ -150,7 +157,32 @@ el('inhalt').addEventListener('input', (e) => {
   tipp = setTimeout(() => { filter.suche = w; ladeListe(() => false); }, 250);
 });
 
+/* Neuer Betrieb: Adresse rein, Scan und Report raus. */
+async function baueNeuen(){
+  const feld = el('neu'), stand = el('neuStand'), knopf = el('neuBauen');
+  let host = feld.value.trim().replace(/^https?:\/\//i, '').replace(/\/.*$/, '')
+    .replace(/^www\./i, '').toLowerCase();
+  if (!/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(host)) {
+    stand.textContent = 'Das sieht nicht nach einer Adresse aus.'; return;
+  }
+  knopf.disabled = true;
+  stand.textContent = 'läuft, Scan und Report dauern gut eine Minute …';
+  try {
+    await hole('/api/report', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ host }) });
+    stand.innerHTML = `fertig — <a class="tat" href="/report/${text(host)}/" target="_blank" rel="noopener">Ansehen</a>`;
+    feld.value = '';
+  } catch (f) {
+    stand.textContent = f.message;
+  } finally { knopf.disabled = false; }
+}
+
+el('inhalt').addEventListener('keydown', (e) => {
+  if (e.target.id === 'neu' && e.key === 'Enter') { e.preventDefault(); baueNeuen(); }
+});
+
 el('inhalt').addEventListener('click', async (e) => {
+  if (e.target.id === 'neuBauen') return baueNeuen();
   const f = e.target.closest('button[data-nur]');
   if (f) { filter.nur = f.dataset.nur; return ladeListe(() => false); }
 

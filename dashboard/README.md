@@ -2,6 +2,12 @@
 
 Übersicht über den Bestand und Reports auf Knopfdruck.
 
+**Doppelklick auf `Werkzeug starten.command`** im Projektordner. Das baut die
+Betriebsliste frisch, startet den Server und öffnet den Browser. Läuft er
+schon, geht nur das Fenster auf. Zum Beenden das Terminalfenster schließen.
+
+Die Datei lässt sich ins Dock legen. Von Hand geht es auch:
+
 ```
 node dashboard/lokal.mjs      →  http://localhost:4000
 ```
@@ -31,7 +37,11 @@ Die Ordner unter `entwuerfe/report/` sind die Wahrheit.
 | Stufe-2-Scan liegt vor | ~20 s | – |
 | liegt nicht vor | ~70 s | ~11 ct |
 
-Der Knopf heißt entsprechend `Report` oder `Scan + Report`. Fertige Reports
+Für einen Betrieb, der noch gar nicht in der Liste steht, gibt es oben das
+Feld **Neuer Betrieb**: Adresse einfügen, Enter. Das ist der Weg vor einem
+Verkaufsgespräch.
+
+Der Knopf in der Zeile heißt entsprechend `Report` oder `Scan + Report`. Fertige Reports
 sind über `Ansehen` jederzeit wieder zu öffnen, `PDF` legt eine Druckfassung
 in den Download-Ordner, `↻` scannt neu.
 
