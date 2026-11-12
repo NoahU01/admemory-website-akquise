@@ -28,7 +28,8 @@ const SEITEN = [
 
 let seite = location.hash.slice(1) || 'dashboard';
 let uebersicht = null;
-let filter = { suche: '', nur: 'alle' };
+let filter = { suche: '', qmin: '', qmax: '', lmin: '', lmax: '',
+                groesse: '', scan: '', report: '', sortiere: 'lead' };
 
 async function hole(pfad, optionen) {
   const r = await fetch(pfad, optionen);
@@ -103,7 +104,8 @@ function zeichneUebersicht(){
 
 /* ── Betriebe ─────────────────────────────────────────────────────── */
 async function ladeListe(veraltet){
-  const p = new URLSearchParams({ suche: filter.suche, nur: filter.nur });
+  const p = new URLSearchParams(Object.fromEntries(
+    Object.entries(filter).filter(([, v]) => v !== '')));
   const d = await hole('/api/liste?' + p);
   if (veraltet()) return;
 
@@ -117,12 +119,35 @@ async function ladeListe(veraltet){
   const note = (w) => w === null ? '<span class="hint">–</span>'
     : `<span class="pille ${w < 45 ? 'pille--bad' : w < 65 ? 'pille--warn' : 'pille--good'}">${w}</span>`;
 
+  const wahl = (name, titel, moeglich) =>
+    `<div class="fgruppe"><label for="f-${name}">${text(titel)}</label>` +
+    `<select id="f-${name}" data-f="${name}">` +
+    moeglich.map(([w, t]) =>
+      `<option value="${text(w)}"${filter[name] === w ? ' selected' : ''}>${text(t)}</option>`).join('') +
+    '</select></div>';
+
+  const spanne = (name, titel) =>
+    `<div class="fgruppe"><label>${text(titel)}</label><div class="fspanne">` +
+    `<input type="number" min="0" max="100" placeholder="von" data-f="${name}min" value="${text(filter[name + 'min'])}">` +
+    '<span class="hint-inline">–</span>' +
+    `<input type="number" min="0" max="100" placeholder="bis" data-f="${name}max" value="${text(filter[name + 'max'])}">` +
+    '</div></div>';
+
+  const gesetzt = Object.entries(filter).some(([k, v]) => v !== '' && k !== 'sortiere');
+
   el('inhalt').innerHTML =
     '<div class="filter">' +
-      `<input class="feld" id="suche" placeholder="Name, Ort oder Domain" value="${text(filter.suche)}">` +
-      ['alle', 'lohnend', 'voll', 'report'].map((w) =>
-        `<button class="tat${filter.nur === w ? ' tat--haupt' : ''}" data-nur="${w}">` +
-        { alle: 'Alle', lohnend: 'Lohnend', voll: 'Vollscan', report: 'Mit Report' }[w] + '</button>').join('') +
+      `<div class="fgruppe" style="flex:1;min-width:14rem"><label for="suche">Suche</label>` +
+        `<input class="feld" id="suche" data-f="suche" placeholder="Name, Ort oder Domain" value="${text(filter.suche)}"></div>` +
+      spanne('q', 'Qualität') +
+      spanne('l', 'Lead-Wert') +
+      wahl('groesse', 'Größe', [['', 'alle'], ['kleinst', 'kleinst'], ['klein', 'klein'],
+        ['mittelstand', 'Mittelstand'], ['etabliert', 'etabliert']]) +
+      wahl('scan', 'Gescannt', [['', 'alle'], ['2', 'Vollscan'], ['1', 'nur Vorauswahl'], ['nein', 'gar nicht']]) +
+      wahl('report', 'Report', [['', 'alle'], ['ja', 'vorhanden'], ['nein', 'fehlt']]) +
+      wahl('sortiere', 'Sortiert nach', [['lead', 'Lead-Wert'], ['qualitaet', 'Qualität'],
+        ['name', 'Name'], ['groesse', 'Größe']]) +
+      (gesetzt ? '<button class="tat" id="zurueck">Zurücksetzen</button>' : '') +
       `<span class="treffermenge">${d.gesamt} Treffer</span>` +
     '</div>' +
     /* Vor einem Gespräch braucht man oft einen Betrieb, der gar nicht in der
@@ -145,16 +170,23 @@ async function ladeListe(veraltet){
     '</tr>').join('') +
     '</tbody></table>' +
     (d.gesamt > d.zeilen.length
-      ? `<p class="hint mt">${d.zeilen.length} von ${d.gesamt} gezeigt. Suche eingrenzen.</p>` : '');
+      ? `<p class="hint mt">${d.zeilen.length} von ${d.gesamt} gezeigt. Filter enger setzen.</p>` : '');
 }
 
 /* Suche ohne Knopf, aber nicht bei jedem Tastendruck eine Anfrage. */
 let tipp = null;
 el('inhalt').addEventListener('input', (e) => {
-  if (e.target.id !== 'suche') return;
+  const f = e.target.dataset?.f;
+  if (!f) return;
   clearTimeout(tipp);
   const w = e.target.value;
-  tipp = setTimeout(() => { filter.suche = w; ladeListe(() => false); }, 250);
+  /* Beim Tippen warten, bei Auswahlfeldern sofort. */
+  tipp = setTimeout(() => { filter[f] = w; ladeListe(() => false); },
+                    e.target.tagName === 'SELECT' ? 0 : 250);
+});
+el('inhalt').addEventListener('change', (e) => {
+  const f = e.target.dataset?.f;
+  if (f && e.target.tagName === 'SELECT') { filter[f] = e.target.value; ladeListe(() => false); }
 });
 
 /* Neuer Betrieb: Adresse rein, Scan und Report raus. */
@@ -183,8 +215,10 @@ el('inhalt').addEventListener('keydown', (e) => {
 
 el('inhalt').addEventListener('click', async (e) => {
   if (e.target.id === 'neuBauen') return baueNeuen();
-  const f = e.target.closest('button[data-nur]');
-  if (f) { filter.nur = f.dataset.nur; return ladeListe(() => false); }
+  if (e.target.id === 'zurueck') {
+    for (const k of Object.keys(filter)) if (k !== 'sortiere') filter[k] = '';
+    return ladeListe(() => false);
+  }
 
   const b = e.target.closest('button[data-bau],button[data-pdf],button[data-neu]');
   if (!b) return;

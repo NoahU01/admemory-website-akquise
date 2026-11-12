@@ -35,7 +35,15 @@ function zerlege(text) {
   });
 }
 
-const zahl = (v) => { const n = Number(String(v).replace(',', '.')); return Number.isFinite(n) ? n : null; };
+/* Number('') ist 0 und nicht NaN. Ohne die Leerprüfung wurde aus jeder leeren
+   Zelle eine Null: 1108 Betriebe "mit Qualität", obwohl nur 995 je bewertet
+   wurden, und jeder Bereichsfilter traf das Falsche. */
+const zahl = (v) => {
+  const t = String(v ?? '').trim();
+  if (!t) return null;
+  const n = Number(t.replace(',', '.'));
+  return Number.isFinite(n) ? n : null;
+};
 
 export function betriebe() {
   if (!fs.existsSync(BLATT)) {

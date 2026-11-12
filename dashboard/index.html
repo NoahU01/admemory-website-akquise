@@ -147,6 +147,14 @@ main{padding:1.7rem 1.9rem calc(2.5rem + var(--unten));min-width:0}
 /* ── Filterleiste ───────────────────────────────────────────────── */
 .filter{background:var(--panel);border-radius:var(--r);box-shadow:var(--shadow);
   padding:.9rem 1.1rem;margin-bottom:1.1rem;display:flex;flex-wrap:wrap;gap:.9rem;align-items:flex-end}
+/* Beim Aufräumen zu viel gelöscht und hier wieder gebraucht: Jede Angabe
+   steht als Beschriftung über ihrem Feld, Spannen stehen nebeneinander. */
+.fgruppe{display:flex;flex-direction:column;gap:.3rem;min-width:0}
+.fgruppe > label{font-size:.66rem;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--ink-3);font-weight:600}
+.fspanne{display:flex;align-items:center;gap:.35rem}
+.fspanne input{width:4.6rem}
+.hint-inline{color:var(--ink-3);font-size:.8rem}
 .filter select,.filter input{padding:.5rem .65rem;min-height:38px;border:1px solid var(--line);
   border-radius:8px;background:var(--panel-2);color:var(--ink);font:inherit;font-size:.85rem;
   appearance:none;-webkit-appearance:none}

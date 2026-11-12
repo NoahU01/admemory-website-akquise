@@ -37,6 +37,10 @@ Die Ordner unter `entwuerfe/report/` sind die Wahrheit.
 | Stufe-2-Scan liegt vor | ~20 s | – |
 | liegt nicht vor | ~70 s | ~11 ct |
 
+Gefiltert wird nach Qualität, Lead-Wert, Größe, Scan-Stand und Report,
+dazu Suche und Sortierung. Die Trefferzahl zählt den ganzen Bestand, nicht
+nur die gezeigten 400 Zeilen.
+
 Für einen Betrieb, der noch gar nicht in der Liste steht, gibt es oben das
 Feld **Neuer Betrieb**: Adresse einfügen, Enter. Das ist der Weg vor einem
 Verkaufsgespräch.
