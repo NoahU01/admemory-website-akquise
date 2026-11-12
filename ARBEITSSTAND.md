@@ -42,11 +42,20 @@ Bewertung. **Noch zu bauen.**
 
 ## Gebaut
 
-### Kundenreport (neu)
+### Kundenreport — fertig
+
+Zwei A4-Seiten, gestaltet nach Noahs eigener Meta-Ads-Analyse. Gemessen aus der
+Vorlage: Poppins, Papier #f6f7f9, Tinte #14161d. Markenfarbe ist seit dem
+12.11.2026 das dunkle Grün #047857.
 
 - `lib/kundenreport.mjs` — baut aus einem Stufe-2-Scan die Seite, die beim
-  Betrieb ankommt. Eigenes CSS, A4-druckbar, `noindex`.
-- `kundenreport.mjs` — `node kundenreport.mjs <host>`, `--top=N`, `--alle`.
+  Betrieb ankommt. Eigenes CSS, A4-druckbar, `noindex`. Drei Färbungen in
+  `PALETTEN`: gruen (Standard), indigo, lime.
+- `lib/kundenlogo.mjs` — holt das Logo des Betriebs von dessen eigener Seite.
+  Gewichtet die Bilder im Kopfbereich statt zu raten und liefert lieber nichts
+  als ein Partnerlogo.
+- `kundenreport.mjs` — `node kundenreport.mjs <host>`, `--top=N`, `--alle`,
+  `--farbe=indigo|lime`, `--ohne-logo`.
   Legt nach `entwuerfe/report/<host>/index.html` ab.
 
 Regeln, die darin stecken:
@@ -98,16 +107,55 @@ Vorzeilen. Die Vorlagen und die geplanten Fassungen dazu stehen im Verlauf vom
 Offen und von Noah nie beantwortet: ob der typografische Kniff aus conideo
 (Überschrift mischt aufrecht und kursive Serife) ins System soll.
 
-## Als Nächstes
+## Stand 12.11.2026: Kaltakquise zurückgestellt
 
-1. **Kontaktdaten erheben** — E-Mail, Telefon und **Adresse** aus Impressum und
-   Kontaktseite. Die Adresse, weil Noah auch an Post mit hochwertigen Flyern
-   denkt. Ohne diesen Schritt geht gar nichts raus.
-2. **Stufe-2-Scans nachziehen.** 61 von 1103 sind gescannt. 500 × Stufe 2 kostet
-   rund 55 € und gut drei Stunden Laufzeit bei zwei gleichzeitig.
-3. **Dashboard auf den Funnel umbauen.**
-4. **Erste Welle verschicken — in 25er-Schritten, nicht 500 auf einmal.** Alles,
-   was man lernt, lernt man aus den ersten 25.
+Der Report ist fertig und gut. Der **Versandweg** ist das Problem, nicht das
+Werkzeug.
+
+**Rechtlich** (§ 7 UWG, am Gesetzestext geprüft, siehe unten): Kalte E-Mail an
+Betriebe ist unzulässig, es braucht die vorherige ausdrückliche Einwilligung,
+und anders als beim Telefon gibt es hier keine mutmaßliche. Zulässig bleiben
+Brief und Telefon.
+
+**Wirtschaftlich** hat Noah das Vorhaben am 12.11.2026 zurückgestellt. Seine
+Begründung: 500 Briefe kosten rund 750 €, es bleibt Kaltakquise mit geringer
+Rücklaufquote, und das Geld steckt er lieber in Paid Ads, wo er die Zahlen
+kennt. Das ist nachvollziehbar, auch wenn die reine Kostenrechnung dagegen
+spricht: Der Median der geschätzten Projektgröße liegt bei den lohnenden Leads
+bei 3.500 €, ein einziger Abschluss trägt also die Portokosten von 500 Briefen
+fast fünffach. Der eigentliche Aufwand ist nicht das Porto, sondern Noahs Zeit
+für Gespräche und Angebote.
+
+**Was damit NICHT gestorben ist:** Scanner, Bewertung und Reportgenerator
+stehen und funktionieren. Der naheliegende Weiterweg ist, den Report von
+Ausgang auf **Eingang** zu drehen:
+
+1. Als **kostenlose Website-Analyse auf admemory.de**. Wer sie anfordert,
+   willigt ein, damit ist das UWG-Problem weg und die E-Mail-Adresse liegt vor.
+2. Als **Angebot hinter einer Paid-Ads-Anzeige**. Das verbindet Noahs
+   Budgetpräferenz mit dem, was hier gebaut ist.
+3. Als **Werkzeug im Verkaufsgespräch**: vor jedem Termin einmal laufen lassen,
+   Kosten etwa 11 ct.
+4. Für **Bestandskunden** als regelmäßiger Check.
+
+Die 1103 gescannten Betriebe bleiben nützlich: Fordert jemand einen Check an,
+liegt der Scan oft schon vor.
+
+**Wenn die Kaltakquise doch getestet wird:** nicht 500, sondern 25. Das kostet
+rund 40 € und einen Nachmittag. Dafür müssen **Adressen** erhoben werden, die
+stehen noch nicht in der Datenbank.
+
+## Offen, falls wieder aufgenommen
+
+1. **Kontaktdaten erheben** — E-Mail, Telefon und Adresse aus Impressum und
+   Kontaktseite. Ohne Adressen geht kein Brief raus.
+2. **Stufe-2-Scans nachziehen.** 61 von 1103. 500 × Stufe 2 kostet rund 55 €
+   und gut drei Stunden.
+3. **Druckfassung mit weißem Grund.** Der Report hat grauen Vollflächengrund
+   bis an die Blattkante. Am Bildschirm richtig, auf einem Bürodrucker heikel:
+   randlos geht dort nicht, und hellgraue Vollflächen werden streifig.
+4. **Dashboard auf den Funnel umbauen** (Scan → Bewertung → Report → Versendet
+   → Antwort → Abgelehnt → Kunde).
 
 ## Werkzeuge
 
