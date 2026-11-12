@@ -14,3 +14,8 @@ results/
 # Betrieb beim Namen und sagt, was an seiner Seite nicht stimmt. Das gehört
 # nicht auf GitHub. Gebaut wird mit  node kundenreport.mjs --alle
 entwuerfe/report/
+
+# Die Betriebsliste als Tabelle. Entsteht aus results/ und der Sicherung,
+# jederzeit mit `node archiv-blatt.mjs` neu zu bauen. Gehoert nicht ins
+# oeffentliche Repo: 1034 Telefonnummern namentlich genannter Betriebe.
+betriebe.csv
