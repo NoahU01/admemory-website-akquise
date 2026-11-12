@@ -20,7 +20,7 @@ const ICONS = {
   haken:     'M20 6L9 17l-5-5',
   uhr:       'M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0-18 0M12 7v5l3 2',
   zurueck:   'M3 12a9 9 0 1 0 3-6.7M3 4v4h4',
-  baustein:  'M4 8l8-4l8 4l-8 4zM4 8v8l8 4l8-4V8M12 12v8',
+  platzhalter: 'M4 8l8-4l8 4l-8 4zM4 8v8l8 4l8-4V8M12 12v8',   // Ersatz für unbekannte Namen
   /* Die sechs Modularten. Gleicher Strich wie der Rest: nur Pfade, 1,6
      Breite, runde Enden. Kopf- und Fußbereich unterscheiden sich allein
      durch die Höhe der Trennlinie — das reicht bei 18 Pixeln gerade noch. */
@@ -36,9 +36,7 @@ const ICONS = {
   /* Kundenstimmen: Sprechblase mit zwei Zeilen. Nicht die Anführungs-
      zeichen aus dem Baukasten — als Strich gezeichnet werden daraus bei
      18 Pixeln zwei Kringel, die man nicht erkennt. */
-  /* Für den Aufklapper an den Bibliothekskarten. */
   buch:       'M4 5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2zM4 19a2 2 0 0 1 2-2h13v4H6a2 2 0 0 1-2-2z',
-  bibliothek: 'M4 5a2 2 0 0 1 2-2h4v18H6a2 2 0 0 1-2-2zM10 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M18 6l2 12',
   galerie:    'M3 6h18v12H3zM3 14l4-4l4 4l3-3l7 7M8.5 9.5h.01',
   band:       'M3 7h18v5H3zM6 16h12M8 20h8',
   navigation: 'M3 6h18M3 12h12M3 18h18M19 12h2',
@@ -54,7 +52,7 @@ function ic(n, k = ''){
   const d = ICONS[n];
   if (!d) console.warn('Unbekanntes Zeichen "' + n + '". Vorhanden: ' + Object.keys(ICONS).join(', '));
   return '<svg class="ic ' + k + '" viewBox="0 0 24 24" aria-hidden="true"><path d="'
-    + (d || ICONS.baustein) + '"/></svg>';
+    + (d || ICONS.platzhalter) + '"/></svg>';
 }
 
 const SEITEN = [
@@ -65,35 +63,6 @@ const SEITEN = [
   { id: 'datenbank', label: 'Datenbank', icon: 'datenbank',
     titel: 'Datenbank', lede: 'Alle erfassten Betriebe, filterbar.' },
 ];
-
-/* Die Bibliothek wird beim ersten Aufruf nachgeladen und dann in die
-   Navigation eingehängt — eine Gruppe mit einem Unterpunkt je Modulart.
-   Quelle ist bibliothek.json, die der Baukasten selbst schreibt. */
-let bibliothek = null;
-let klappen = { bib: true };
-try {
-  const g = localStorage.getItem('klappen');
-  if (g) klappen = { ...klappen, ...JSON.parse(g) };
-} catch { /* ohne Speicher bleibt es beim Standard */ }
-const merkeKlappen = () => {
-  try { localStorage.setItem('klappen', JSON.stringify(klappen)); } catch {}
-};
-
-async function ladeBibliothek(){
-  if (bibliothek) return bibliothek;
-  const r = await fetch('/bibliothek.json', { cache: 'no-cache' });
-  if (!r.ok) throw new Error('Bibliothek nicht gefunden (' + r.status + ').');
-  bibliothek = await r.json();
-  /* Nur einhängen, was noch nicht drin steht — zeichneNav läuft mehrfach. */
-  if (!SEITEN.some((x) => x.id && x.id.startsWith('bib:'))) {
-    SEITEN.push({ gruppe: 'Bibliothek', klappe: 'bib' });
-    for (const g of bibliothek.gruppen) {
-      SEITEN.push({ id: 'bib:' + g.id, label: g.name, icon: g.icon || 'baustein',
-        unter: 'bib', titel: g.name, lede: g.zweck });
-    }
-  }
-  return bibliothek;
-}
 
 /* Begriffe, die in der Oberfläche auftauchen — bewusst ohne Fachjargon.
    'etabliert' klang nach einer Phase und meinte die Betriebsgröße. */
@@ -148,9 +117,6 @@ async function hole(pfad, opt) {
 function zeigeTor(){ el('tor').hidden = false; el('app').hidden = true; el('blatt').hidden = true; }
 function zeigeApp(){
   el('tor').hidden = true; el('app').hidden = false; zeichneNav(); lade();
-  /* Ohne diesen Aufruf stünde der Reiter erst da, nachdem man ihn
-     angeklickt hat — und anklicken kann man ihn dann nicht. */
-  ladeBibliothek().then(zeichneNav).catch(() => {});
 }
 
 el('anmeldung').addEventListener('submit', async (e) => {
@@ -169,60 +135,28 @@ el('abmelden').addEventListener('click', async () => {
 });
 
 /* ── Navigation ─────────────────────────────────────────────────── */
-const PFEIL = 'M6 9l6 6l6-6';
 
 function zeichneNav(){
-  /* Unterpunkte einer klappbaren Gruppe kommen in einen eigenen Kasten,
-     damit sie zusammen ein- und ausblenden. Auf dem Handy ist die Leiste
-     waagerecht und die Gruppenüberschrift ausgeblendet — dort muss der
-     Kasten durchgereicht werden, sonst wäre die Bibliothek unerreichbar.
-     Das erledigt display:contents im Stil. */
-  let offen = null;
   const stuecke = [];
   for (const s of SEITEN) {
-    if (s.gruppe && s.klappe) {
-      /* Die Gruppe bekommt ein eigenes Zeichen wie jeder Punkt darunter. */
-      const auf = klappen[s.klappe] !== false;
-      const drin = seite.startsWith(s.klappe + ':');
-      stuecke.push('<button class="navklappe' + (drin && !auf ? ' navklappe--aktiv' : '') +
-        '" data-klappe="' + s.klappe + '"' +
-        ' aria-expanded="' + auf + '" aria-controls="navunter-' + s.klappe + '">' +
-        ic('bibliothek') + '<span class="navtext">' + text(s.gruppe) + '</span>' +
-        '<svg class="ic navpfeil" viewBox="0 0 24 24" aria-hidden="true"><path d="' + PFEIL + '"/></svg>' +
-        '</button><div class="navunter" id="navunter-' + s.klappe + '"' +
-        (auf ? '' : ' hidden') + '>');
-      offen = s.klappe;
-      continue;
-    }
     if (s.gruppe) {
-      if (offen) { stuecke.push('</div>'); offen = null; }
       stuecke.push('<div class="navgruppentitel">' + text(s.gruppe) + '</div>');
       continue;
     }
     stuecke.push(navKnopf(s));
   }
-  if (offen) stuecke.push('</div>');
   el('nav').innerHTML = stuecke.join('');
 }
 
 function navKnopf(s){
   return [s].map((s) => {
     let n = s.id === 'datenbank' && uebersicht ? uebersicht.kennzahlen.gesamt : null;
-    if (s.id && s.id.startsWith('bib:') && bibliothek) {
-      const g = bibliothek.gruppen.find((x) => 'bib:' + x.id === s.id);
-      n = g ? g.bausteine.length : null;
-    }
     return '<button data-id="' + s.id + '" aria-current="' + (s.id === seite) + '">' +
            ic(s.icon) + '<span class="navtext">' + text(s.label) + '</span>' +
            (n ? '<span class="navzahl">' + zahl(n) + '</span>' : '') + '</button>';
   }).join('');
 }
 el('nav').addEventListener('click', (e) => {
-  const k = e.target.closest('button[data-klappe]');
-  if (k) {
-    klappen[k.dataset.klappe] = k.getAttribute('aria-expanded') !== 'true';
-    merkeKlappen(); zeichneNav(); return;
-  }
   const b = e.target.closest('button[data-id]');
   if (!b || b.dataset.id === seite) return;
   seite = b.dataset.id;
@@ -230,9 +164,8 @@ el('nav').addEventListener('click', (e) => {
 });
 
 /* Wer weiterklickt, während noch geladen wird, bekam bisher die alte
-   Antwort über die neue Seite gelegt: Der Dashboard-Abruf lief noch, und
-   als er zurückkam, überschrieb er die inzwischen geöffnete Bibliothek.
-   Jeder Ladevorgang merkt sich deshalb, für welche Seite er gedacht war. */
+   Antwort über die neue Seite gelegt. Jeder Ladevorgang merkt sich deshalb,
+   für welche Seite er gedacht war. */
 let ladelauf = 0;
 
 async function lade(){
@@ -244,11 +177,7 @@ async function lade(){
   el('untertitel').textContent = s.lede;
   el('inhalt').innerHTML = '<div class="hint">Lade …</div>';
   try {
-    if (seite.startsWith('bib:')) {
-      await ladeBibliothek();
-      if (veraltet()) return;
-      zeichneNav(); zeichneBibliothek();
-    } else if (seite === 'dashboard') {
+    if (seite === 'dashboard') {
       const u = await hole('/api/uebersicht');
       if (veraltet()) return;
       uebersicht = u; zeichneNav(); zeichneDashboard();
@@ -597,100 +526,3 @@ el('bRumpf').addEventListener('click', async (e) => {
 
 hole('/api/stand').then(zeigeApp).catch(zeigeTor);
 
-
-/* ── Bibliothek ─────────────────────────────────────────────────────
-   Zeigt je Modulart die Fassungen mit Bild, wann man sie nimmt und wo
-   die Grenzen liegen. Die Bilder entstehen aus den Prüfseiten des
-   Baukastens, nicht aus einer zweiten Beschreibung. */
-function zeichneBibliothek(){
-  const g = bibliothek.gruppen.find((x) => 'bib:' + x.id === seite);
-  if (!g) { el('inhalt').innerHTML = '<div class="hint">Diese Modulart gibt es nicht.</div>'; return; }
-
-  /* Nur Bild und Name. Alles Weitere steht im Pop-up — eine Übersicht mit
-     zwei Absätzen je Karte vergleicht sich nicht. */
-  el('inhalt').innerHTML =
-    '<p class="bibkopf">Stand ' + text(bibliothek.stand) + '. Klick auf eine Fassung zeigt sie groß.</p>' +
-    '<div class="bibgitter">' + g.bausteine.map((b, i) =>
-      '<button class="bibkachel" type="button" data-bib="' + i + '">' +
-        '<span class="bibkachel__bild">' +
-          (b.bild ? '<img src="/' + text(b.bild) + '" alt="" loading="lazy">' : '') +
-        '</span>' +
-        '<span class="bibkachel__fuss">' +
-          '<span class="bibkachel__name">' + text(b.name) + '</span>' +
-          (b.erste ? '<span class="pille pille--good">erste Wahl</span>' : '') +
-        '</span>' +
-      '</button>').join('') +
-    '</div>';
-}
-
-/* ── Pop-up ─────────────────────────────────────────────────────────
-   Zeigt die Fassung als eigene Seite im Rahmen, nicht als Bild. Der
-   Rahmen ist immer 1280 Pixel breit und wird heruntergerechnet: Sonst
-   springt ein Baustein im schmalen Pop-up in die Tablet-Ansicht und
-   sieht anders aus als im Entwurf — beim Bento-Raster war genau das zu
-   sehen. */
-const RAHMEN_BREIT = 1280, RAHMEN_HOCH = 820;
-let offen2 = { gruppe: null, nr: 0 };
-
-function zeigeBaustein(nr){
-  const g = bibliothek.gruppen.find((x) => 'bib:' + x.id === seite);
-  if (!g || !g.bausteine[nr]) return;
-  const b = g.bausteine[nr];
-  offen2 = { gruppe: g, nr };
-  const basis = 'https://entwuerfe.admemory.de/';
-  el('bsName').textContent = b.name;
-  el('bsZaehler').textContent = (nr + 1) + ' / ' + g.bausteine.length;
-  el('bsOeffnen').href = basis + b.seite;
-  el('bsZurueck').disabled = nr === 0;
-  el('bsVor').disabled = nr === g.bausteine.length - 1;
-  el('bsRumpf').innerHTML =
-    '<div class="bsrahmen">' +
-      (b.bild ? '<img class="bsrahmen__bild" src="/' + text(b.bild) + '" alt="">' : '') +
-      '<iframe src="' + basis + text(b.seite) + '" title="' + text(b.name) + '"' +
-      ' referrerpolicy="no-referrer" style="width:' + RAHMEN_BREIT + 'px;height:' +
-      RAHMEN_HOCH + 'px"></iframe>' +
-    '</div>';
-  /* Erst zeigen, dann messen: Solange das Pop-up versteckt ist, hat der
-     Kasten die Breite null — der Rahmen wurde dadurch auf null skaliert
-     und das erste geöffnete Pop-up war leer. Beim zweiten stimmte es,
-     weil der Kasten dann schon einmal sichtbar war. */
-  el('bausteinblatt').hidden = false;
-  requestAnimationFrame(passeRahmenAn);
-}
-
-/* Der Rahmen wird so verkleinert, dass er in die Breite des Pop-ups passt. */
-function passeRahmenAn(){
-  const kasten = document.querySelector('.bsrahmen');
-  if (!kasten) return;
-  const f = Math.min(1, kasten.clientWidth / RAHMEN_BREIT);
-  const rahmen = kasten.querySelector('iframe');
-  if (rahmen) {
-    rahmen.style.transform = 'scale(' + f + ')';
-    rahmen.style.transformOrigin = 'top left';
-  }
-  kasten.style.height = Math.round(RAHMEN_HOCH * f) + 'px';
-}
-window.addEventListener('resize', passeRahmenAn);
-
-function blattZu(){ el('bausteinblatt').hidden = true; el('bsRumpf').innerHTML = ''; }
-function blaettere(richtung){
-  const g = offen2.gruppe; if (!g) return;
-  const z = offen2.nr + richtung;
-  if (z < 0 || z >= g.bausteine.length) return;
-  zeigeBaustein(z);
-}
-
-el('inhalt').addEventListener('click', (e) => {
-  const k = e.target.closest('button[data-bib]');
-  if (k) zeigeBaustein(+k.dataset.bib);
-});
-el('bsZu').addEventListener('click', blattZu);
-el('bsZurueck').addEventListener('click', () => blaettere(-1));
-el('bsVor').addEventListener('click', () => blaettere(1));
-el('bausteinblatt').addEventListener('click', (e) => { if (e.target.id === 'bausteinblatt') blattZu(); });
-document.addEventListener('keydown', (e) => {
-  if (el('bausteinblatt').hidden) return;
-  if (e.key === 'Escape') blattZu();
-  if (e.key === 'ArrowLeft') blaettere(-1);
-  if (e.key === 'ArrowRight') blaettere(1);
-});
