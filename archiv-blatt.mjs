@@ -68,9 +68,13 @@ for (const ordner of fs.existsSync('results') ? fs.readdirSync('results') : []) 
   b.befunde_gesamt = f.length;
   if (s.groesse) { b.groesse_stufe = s.groesse.stufe; b.preis_von = s.groesse.preisVon; b.preis_bis = s.groesse.preisBis; }
   if (s.branche?.key) b.branche = s.branche.key;
+  /* Seitentitel als Name nur, wenn es wirklich einer ist. Ein Betrieb hiess
+     so "503 Service Unavailable" — der Titel der Fehlerseite, die der Server
+     an dem Tag ausgeliefert hat. */
+  const UNBRAUCHBAR = /^\s*(\d{3}\s|error|fehler|forbidden|not found|service unavailable|bad gateway|access denied|attention required|just a moment|site not found|untitled|neue seite|default web site|index of)/i;
   if (!b.name || /^[a-z0-9.-]+\.[a-z]{2,}$/i.test(b.name)) {
     const t = s.meta?.title;
-    if (t) {
+    if (t && !UNBRAUCHBAR.test(t)) {
       const teile = String(t).split(/\s+[-–—|]\s+|:\s+/).map((x) => x.trim())
         .filter((x) => x && !/^(home|start|startseite|index|(herzlich )?willkommen\b.*)$/i.test(x));
       const gut = teile.find((x) => x.length <= 45);

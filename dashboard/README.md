@@ -1,32 +1,43 @@
-# Lead-Dashboard
+# Werkzeug
 
-Oberfläche zur Bearbeitung der Lead-Tabelle. Läuft bei Vercel, redet mit
-Supabase **nur serverseitig** über die Funktionen in `api/`.
+Übersicht über den Bestand und Reports auf Knopfdruck.
 
-## Warum nicht direkt aus dem Browser
+```
+node dashboard/lokal.mjs      →  http://localhost:4000
+```
 
-Der Supabase `service_role`-Key umgeht jede Datenbanksicherung. Wer ihn hat,
-kann die komplette Tabelle lesen, ändern und löschen. In einer Webseite stünde
-er für jeden Besucher lesbar im Quelltext. Deshalb kennt die Oberfläche die
-Datenbank nicht — sie fragt ausschließlich die eigenen API-Funktionen, und der
-Key liegt in den Umgebungsvariablen bei Vercel.
+## Warum lokal
 
-## Umgebungsvariablen bei Vercel
+Der Knopf „Report" braucht Chrome für die Screenshots, Lighthouse für die
+Technik und die Dateien unter `results/`. Auf einer Serverless-Funktion gibt
+es nichts davon, und ein Vollscan dauert länger, als eine solche Funktion
+laufen darf. Deshalb läuft das hier auf dem eigenen Rechner — und deshalb
+gibt es auch keine Anmeldung mehr: Wer am Rechner sitzt, ist drin.
 
-| Name | Wert |
-|---|---|
-| `SUPABASE_URL` | aus Supabase → Project Settings → Data API |
-| `SUPABASE_SERVICE_KEY` | der `service_role`-Key, derselbe wie lokal in `.env` |
-| `DASHBOARD_PASSWORT` | frei wählbar, das Passwort zum Anmelden |
-| `DASHBOARD_SECRET` | mindestens 24 Zeichen Zufall, signiert den Anmelde-Keks |
+## Woher die Daten kommen
 
-`DASHBOARD_SECRET` erzeugen:
+Aus `betriebe.csv` im Projektverzeichnis, nicht aus einer Datenbank. Das
+Supabase-Projekt ist weg, und für Scanner und Report wird keine gebraucht.
+Die Tabelle entsteht mit `node archiv-blatt.mjs` aus `results/` und der
+Sicherung vom 28.09.2026 und lässt sich jederzeit neu bauen.
 
-    openssl rand -base64 32
+Welche Betriebe einen Report haben, wird nicht gemerkt, sondern nachgesehen:
+Die Ordner unter `entwuerfe/report/` sind die Wahrheit.
 
-## Aufträge
+## Zwei Wege beim Report
 
-Das Dashboard kann nichts bauen — Nachbau und Scan brauchen einen Browser und
-das Dateisystem. Ein Klick schreibt deshalb einen Auftrag in die Tabelle
-`auftraege`, und `agent.mjs` auf dem Mac holt ihn ab. Beide warten nie
-aufeinander.
+| Lage | Dauer | Kosten |
+|---|---|---|
+| Stufe-2-Scan liegt vor | ~20 s | – |
+| liegt nicht vor | ~70 s | ~11 ct |
+
+Der Knopf heißt entsprechend `Report` oder `Scan + Report`. Fertige Reports
+sind über `Ansehen` jederzeit wieder zu öffnen, `PDF` legt eine Druckfassung
+in den Download-Ordner, `↻` scannt neu.
+
+## Offen
+
+`vercel.json` liegt noch hier, und das Vercel-Projekt
+`admemory-website-akquise-dashboard` zeigt weiter auf diesen Ordner. Seit die
+Datenbank weg ist, läuft `dashboard.admemory.de` ins Leere. Ob die Domain
+abgeschaltet wird, entscheidet Noah.

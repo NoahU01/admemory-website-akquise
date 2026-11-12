@@ -1,9 +1,12 @@
 #!/usr/bin/env node
-/* Testserver. Bildet nach, was Vercel mit dem Ordner macht: index.html
-   ausliefern und /api/<name> auf api/<name>.mjs leiten. Nur zum Prüfen vor dem
-   Deployen — im Betrieb läuft das bei Vercel.
+/* Das Werkzeug. Läuft auf dem eigenen Rechner, nicht bei Vercel.
 
-     node dashboard/lokal.mjs        dann http://localhost:4000              */
+     node dashboard/lokal.mjs        dann http://localhost:4000
+
+   Warum lokal: Der Knopf "Report erstellen" braucht Chrome, Lighthouse und
+   die Dateien unter results/. Auf einer Serverless-Funktion gibt es nichts
+   davon, und ein Scan dauert länger, als sie laufen darf. Dafür braucht es
+   hier auch keine Anmeldung — wer am Rechner sitzt, ist drin.              */
 import 'dotenv/config';
 import http from 'node:http';
 import fs from 'node:fs';
@@ -28,8 +31,8 @@ const KOPFZEILEN = (() => {
 if (Object.keys(KOPFZEILEN).length)
   console.log(`${Object.keys(KOPFZEILEN).length} Kopfzeilen aus vercel.json übernommen`);
 
-for (const n of ['SUPABASE_URL', 'SUPABASE_SERVICE_KEY', 'DASHBOARD_PASSWORT', 'DASHBOARD_SECRET'])
-  if (!process.env[n]) console.warn(`⚠  ${n} fehlt — in .env ergänzen`);
+if (!process.env.ANTHROPIC_API_KEY)
+  console.warn('⚠  ANTHROPIC_API_KEY fehlt — ein Vollscan lässt dann das Design-Urteil aus.');
 
 const server = http.createServer(async (req, res) => {
   const pfad = new URL(req.url, 'http://x').pathname;
@@ -53,16 +56,27 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  const datei = path.join(hier, pfad === '/' ? 'index.html' : pfad.replace(/^\/+/, ''));
-  if (!datei.startsWith(hier) || !fs.existsSync(datei) || fs.statSync(datei).isDirectory())
+  /* Fertige Reports liegen außerhalb des Dashboard-Ordners und werden von
+     hier mit ausgeliefert, damit man sie aus der Tabelle heraus öffnen kann. */
+  let wurzel = hier, rest = pfad;
+  if (pfad === '/report' || pfad.startsWith('/report/')) {
+    wurzel = path.resolve(hier, '../entwuerfe/report');
+    rest = pfad.slice('/report'.length) || '/';
+  }
+  let datei = path.join(wurzel, rest === '/' ? 'index.html' : rest.replace(/^\/+/, ''));
+  if (fs.existsSync(datei) && fs.statSync(datei).isDirectory())
+    datei = path.join(datei, 'index.html');
+  if (!datei.startsWith(wurzel) || !fs.existsSync(datei) || fs.statSync(datei).isDirectory())
     return res.writeHead(404).end('nicht gefunden');
   /* Fehlt ein Typ, liefert der Server text/plain, und nosniff lässt das Bild
      dann nicht durch — der Test schlüge fehl, obwohl Vercel es richtig macht. */
   const typ = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',
                 '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg',
                 '.jpeg': 'image/jpeg', '.json': 'application/json',
-                '.woff2': 'font/woff2' }[path.extname(datei)] || 'text/plain';
-  res.writeHead(200, { ...KOPFZEILEN, 'Content-Type': typ, 'Cache-Control': 'no-store' });
+                '.woff2': 'font/woff2', '.webp': 'image/webp' }[path.extname(datei)] || 'text/plain';
+  const kopf = { ...KOPFZEILEN };
+  if (wurzel !== hier) delete kopf['Content-Security-Policy'];   // Report lädt Poppins
+  res.writeHead(200, { ...kopf, 'Content-Type': typ, 'Cache-Control': 'no-store' });
   fs.createReadStream(datei).pipe(res);
 });
 

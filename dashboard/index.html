@@ -55,11 +55,6 @@ svg.ic{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;
   stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 
 /* ── Anmeldung ──────────────────────────────────────────────────── */
-#tor{position:fixed;inset:0;background:var(--bg);z-index:60;display:grid;place-items:center;padding:24px}
-#tor .card{width:100%;max-width:330px;text-align:center}
-#tor img{width:40px;height:40px;margin-bottom:.9rem}
-#tor h1{font-size:1.05rem;margin:0 0 .15rem;letter-spacing:-.015em}
-#tor p{color:var(--ink-3);font-size:.8rem;margin:0 0 1.3rem}
 .feld{width:100%;padding:.7rem .8rem;border:1px solid var(--line);border-radius:7px;
   background:var(--panel-2);color:var(--ink);font:inherit}
 .feld:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
@@ -144,28 +139,14 @@ main{padding:1.7rem 1.9rem calc(2.5rem + var(--unten));min-width:0}
 .mt{margin-top:.85rem}
 
 /* ── Balken und Ring ────────────────────────────────────────────── */
-.bar-row{display:grid;grid-template-columns:minmax(96px,132px) 1fr auto;gap:.6rem;
-  align-items:center;margin-bottom:.4rem;font-size:.82rem}
-.bar-track{display:block;background:var(--sunk);border-radius:5px;height:20px;overflow:hidden}
-.bar-fill{display:block;height:100%;border-radius:0 5px 5px 0;background:var(--accent)}
-.bar-val{font-family:"IBM Plex Mono",monospace;font-size:.76rem;color:var(--ink-2);
-  min-width:94px;text-align:right}
-.bar-row .flabel{color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ring{display:flex;align-items:center;gap:1.3rem;flex-wrap:wrap}
 .legende{font-size:.8rem;display:flex;flex-direction:column;gap:.35rem;min-width:140px}
 .legende span{display:flex;align-items:center;gap:.5rem}
 .legende i{width:9px;height:9px;border-radius:3px;flex:none}
 .legende b{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-weight:500;color:var(--ink-2)}
-.verlaufbar{display:flex;align-items:flex-end;gap:3px;height:70px;margin-top:.4rem}
-.verlaufbar span{flex:1;background:var(--accent-soft);border-radius:3px 3px 0 0;min-height:2px}
-.verlaufbar span:last-child{background:var(--accent)}
 
 /* ── Filterleiste ───────────────────────────────────────────────── */
 .filter{background:var(--panel);border-radius:var(--r);box-shadow:var(--shadow);
   padding:.9rem 1.1rem;margin-bottom:1.1rem;display:flex;flex-wrap:wrap;gap:.9rem;align-items:flex-end}
-.fgruppe{display:flex;flex-direction:column;gap:.3rem;min-width:0}
-.fgruppe > label{font-size:.66rem;text-transform:uppercase;letter-spacing:.07em;
-  color:var(--ink-3);font-weight:600}
 .filter select,.filter input{padding:.5rem .65rem;min-height:38px;border:1px solid var(--line);
   border-radius:8px;background:var(--panel-2);color:var(--ink);font:inherit;font-size:.85rem;
   appearance:none;-webkit-appearance:none}
@@ -176,42 +157,48 @@ main{padding:1.7rem 1.9rem calc(2.5rem + var(--unten));min-width:0}
 .filter select:hover,.filter input:hover{border-color:var(--ink-3)}
 .filter select:focus,.filter input:focus{outline:2px solid var(--accent);outline-offset:1px;
   border-color:var(--accent)}
-.fspanne{display:flex;align-items:center;gap:.35rem}
-.fspanne input{width:5.5rem}
-.fspanne span{color:var(--ink-3);font-size:.8rem}
-.zuruecksetzen{all:unset;cursor:pointer;color:var(--accent);font-size:.82rem;
-  padding:.5rem .55rem;min-height:38px;border-radius:8px;
-  display:inline-flex;align-items:center;gap:.4rem}
-.zuruecksetzen:hover{background:var(--accent-soft)}
 .treffermenge{color:var(--ink-3);font-size:.82rem;margin-left:auto;padding-bottom:.5rem;
   font-variant-numeric:tabular-nums}
 @media(max-width:620px){
   .filter{gap:.7rem}
-  .fgruppe{flex:1 1 44%}
-  .fgruppe select{width:100%}
   .treffermenge{margin-left:0;flex:1 1 100%;padding-bottom:0}
 }
 
 /* ── Betriebskarten ─────────────────────────────────────────────── */
-.liste{display:grid;gap:.6rem;grid-template-columns:repeat(auto-fill,minmax(330px,1fr))}
-.treffer{all:unset;cursor:pointer;background:var(--panel);border-radius:10px;box-shadow:var(--shadow);
-  padding:1rem 1.15rem;display:block;box-sizing:border-box;transition:box-shadow .18s ease,transform .18s ease}
-.treffer:hover{box-shadow:var(--shadow-lift);transform:translateY(-1px)}
-.treffer:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-/* Alles in der Karte sind <span>, weil sie in einem <button> stehen — ein
-   <div> wäre dort nicht zulässig. Inline-Elemente kennen aber kein
-   overflow:hidden, der Name lief einfach weiter und schob die Seite um 595 px
-   auf. Deshalb hier die Anzeigeart ausdrücklich setzen. */
-.t-kopf{display:flex;align-items:flex-start;gap:.8rem}
-.t-titel{flex:1;min-width:0;display:block;overflow:hidden}
-.t-name{display:block;font-weight:600;font-size:.98rem;letter-spacing:-.01em;
+/* Die Betriebsliste ist eine Tabelle, kein Kartenraster: 1108 Zeilen will
+   man überfliegen und vergleichen, nicht durchblättern. */
+.liste{width:100%;border-collapse:collapse;background:var(--panel);
+  border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.liste th{text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--ink-3);font-weight:600;padding:.85rem 1rem;background:var(--panel-2);
+  border-bottom:1px solid var(--line);white-space:nowrap}
+.liste td{padding:.7rem 1rem;border-top:1px solid var(--line-soft);vertical-align:middle;
+  font-size:.86rem}
+.liste tbody tr:first-child td{border-top:0}
+.liste tbody tr:hover{background:var(--panel-2)}
+.liste td:nth-child(2),.liste td:nth-child(3){font-variant-numeric:tabular-nums;width:6.5rem}
+.liste td:nth-child(4){width:8rem}
+/* Die Namensspalte nimmt den Rest und darf dabei schrumpfen. Der Kniff ist
+   max-width:0 neben width:100%: Ohne das rechnet die Tabelle mit der vollen
+   Textlaenge, wird breiter als das Fenster, und abgeschnitten wird nie. */
+.t-name{width:100%;max-width:0}
+.t-titel{font-weight:600;font-size:.9rem;letter-spacing:-.01em;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.t-url{display:block;color:var(--ink-3);font-size:.76rem;margin-top:.1rem;
+.t-url{color:var(--ink-3);font-size:.74rem;margin-top:.1rem;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.t-wert{text-align:right;flex:none;display:block}
-.t-wert b{display:block;font-family:"IBM Plex Mono",monospace;font-size:1.3rem;font-weight:500;line-height:1}
-.t-wert span{font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3)}
-.pillen{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.85rem;min-width:0}
+/* Die Knoepfe stehen in einem Flex-Kasten, nicht frei in der Zelle. Eine
+   Mindestbreite auf dem <td> hat Chrome ignoriert: Die Tabelle gab der
+   Namensspalte alles und presste die Zelle auf 140 px, obwohl die drei
+   Knoepfe gemessene 155 brauchen. Ein Flex-Kasten mit nowrap hat eine
+   Mindestbreite, die die Tabelle respektieren muss. */
+.knopfreihe{text-align:right}
+.tatreihe{display:flex;flex-wrap:nowrap;justify-content:flex-end;gap:.3rem;align-items:center}
+.tatreihe .tat{padding:.4rem .7rem;min-height:32px;font-size:.78rem;flex:none}
+.knopfreihe .legende{display:block;min-width:0;font-size:.7rem;color:var(--ink-3);
+  text-align:right;white-space:normal;margin-top:.3rem}
+@media(max-width:820px){
+  .liste td:nth-child(4),.liste th:nth-child(4){display:none}
+}
 .pille{font-size:.72rem;padding:.25rem .55rem;border-radius:6px;background:var(--sunk);
   color:var(--ink-2);white-space:nowrap;font-weight:500}
 .pille--phase{background:var(--accent-soft);color:var(--accent)}
@@ -222,17 +209,6 @@ main{padding:1.7rem 1.9rem calc(2.5rem + var(--unten));min-width:0}
   padding:1.8rem 1rem;color:var(--ink-2);font-size:.84rem;text-align:center}
 
 /* ── Detailblatt ────────────────────────────────────────────────── */
-#blatt{position:fixed;inset:0;z-index:50;background:rgba(18,25,38,.45);display:flex;justify-content:flex-end}
-.blattinhalt{background:var(--bg);width:min(580px,100%);height:100%;overflow-y:auto;
-  -webkit-overflow-scrolling:touch;box-shadow:var(--shadow-lift)}
-.b-kopf{position:sticky;top:0;z-index:2;background:var(--panel);box-shadow:var(--shadow);
-  padding:calc(1.1rem + var(--oben)) 1.3rem 1.1rem;display:flex;align-items:flex-start;gap:.8rem}
-.b-kopf h2{font-size:1.05rem;margin:0;letter-spacing:-.015em;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.zu{all:unset;cursor:pointer;color:var(--ink-3);min-width:40px;min-height:40px;
-  display:grid;place-items:center;margin:-.4rem -.5rem 0 0;border-radius:8px}
-.zu:hover{background:var(--sunk);color:var(--ink)}
-.b-rumpf{padding:1.1rem 1.3rem calc(2.5rem + var(--unten));display:flex;flex-direction:column;gap:.75rem}
 h3{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);
   font-weight:600;margin:0 0 .75rem;display:flex;align-items:center;gap:.45rem}
 h3 .ic{width:14px;height:14px}
@@ -256,12 +232,6 @@ details.klapp > summary::-webkit-details-marker{display:none}
 details.klapp > summary .pfeil{margin-left:auto;transition:transform .18s ease}
 details.klapp[open] > summary .pfeil{transform:rotate(180deg)}
 details.klapp > div{padding:0 1.35rem 1.2rem}
-.befund{display:grid;grid-template-columns:auto 1fr;gap:.65rem;padding:.6rem 0;
-  border-top:1px solid var(--line-soft);font-size:.84rem}
-.punktmarke{width:7px;height:7px;border-radius:50%;margin-top:.45rem;background:var(--ink-3)}
-.punktmarke.high{background:var(--bad)} .punktmarke.medium{background:var(--warn)}
-.befund p{margin:0}
-.befund em{color:var(--ink-3);font-style:normal;font-size:.71rem;text-transform:uppercase;letter-spacing:.05em}
 
 .knopfreihe{display:flex;flex-wrap:wrap;gap:.45rem}
 .tat{all:unset;cursor:pointer;padding:.6rem .8rem;min-height:40px;box-sizing:border-box;
@@ -271,17 +241,11 @@ details.klapp > div{padding:0 1.35rem 1.2rem}
 .tat:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .tat--haupt{background:var(--accent);border-color:var(--accent);color:var(--on-brand)}
 .tat--haupt:hover{color:var(--on-brand);opacity:.92}
-.tat--warn{color:var(--bad-ink);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
 .tat[disabled]{opacity:.45;cursor:default}
-.wertzeile{display:flex;gap:.5rem;align-items:center}
-.wertzeile input{flex:1;min-width:0}
 textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86rem}
 .meldung{font-size:.8rem;margin-top:.6rem;min-height:1.2rem;color:var(--good-ink)}
 .meldung--fehler{color:var(--bad-ink)}
 .meldung--warn{color:var(--warn-ink)}
-.verlauf{margin:0;padding-left:1.1rem;font-size:.82rem;color:var(--ink-2)}
-.verlauf li{margin-bottom:.5rem}
-.verlauf b{color:var(--ink)}
 
 /* ── Klappbare Navigationsgruppe ────────────────────────────────── */
   font-size:.7rem;font-weight:600;letter-spacing:.05em;color:var(--ink-3);
@@ -318,19 +282,7 @@ textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86r
 </head>
 <body>
 
-<div id="tor">
-  <form class="card" id="anmeldung">
-    <img src="/assets/logo.svg" alt="">
-    <h1>Lead-Akquise</h1>
-    <p>AdMemory</p>
-    <input class="feld" type="password" id="passwort" placeholder="Passwort"
-           autocomplete="current-password" required>
-    <button class="knopf" type="submit">Anmelden</button>
-    <div class="fehler" id="torFehler" role="alert"></div>
-  </form>
-</div>
-
-<div class="app" id="app" hidden>
+<div class="app" id="app">
   <aside>
     <div class="marke">Lead-Akquise</div>
     <div class="konto">
@@ -342,8 +294,7 @@ textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86r
     </div>
     <nav id="nav"></nav>
     <div class="navfuss">
-      <div id="agentstand">&mdash;</div>
-      <button id="abmelden">Abmelden</button>
+      <div id="stand">&mdash;</div>
     </div>
   </aside>
 
@@ -358,20 +309,6 @@ textarea.feld{min-height:92px;resize:vertical;margin-bottom:.6rem;font-size:.86r
   </main>
 </div>
 
-<div id="blatt" hidden>
-  <div class="blattinhalt">
-    <div class="b-kopf">
-      <div style="flex:1;min-width:0">
-        <h2 id="bName"></h2>
-        <p class="lede" id="bUnter"></p>
-      </div>
-      <button class="zu" id="bZu" aria-label="Schließen">
-        <svg class="ic" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
-      </button>
-    </div>
-    <div class="b-rumpf" id="bRumpf"></div>
-  </div>
-</div>
 <script src="/app.js" defer></script>
 </body>
 </html>
